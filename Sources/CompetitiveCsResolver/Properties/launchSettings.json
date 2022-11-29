@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "Sln": {
+      "commandName": "Project",
+      "commandLineArgs": "$(ProjectDir)/../../Examples/Examples.sln",
+      "workingDirectory": "$(ProjectDir)/../.."
+    }
+  }
+}
