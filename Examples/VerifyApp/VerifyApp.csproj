@@ -8,7 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Sources\CompetitiveVerifierProblem\CompetitiveVerifierProblem.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" />
+    <ProjectReference Include="..\..\Sources\CompetitiveVerifierProblem\CompetitiveVerifierProblem.csproj" />
+    <ProjectReference Include="..\..\Sources\CompetitiveVerifierProblem.Generator\CompetitiveVerifierProblem.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" />
     <ProjectReference Include="..\ClassLibrary\ClassLibrary.csproj" />
   </ItemGroup>
 

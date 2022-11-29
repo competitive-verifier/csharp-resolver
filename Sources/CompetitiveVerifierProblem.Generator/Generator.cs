@@ -103,14 +103,10 @@ public partial class Generator : IIncrementalGenerator
         token.ThrowIfCancellationRequested();
 
         context.AddSource("ProblemSolver.cs", """
-            
             #nullable disable
             namespace CompetitiveVerifier
             {
-                using System.IO;
-                using System.Runtime.Serialization;
-                using System.Runtime.Serialization.Json;
-                using System.Text;
+                using Newtonsoft.Json;
 
                 internal abstract class ProblemSolver
                 {
@@ -120,27 +116,19 @@ public partial class Generator : IIncrementalGenerator
                     public abstract void Solve();
                     public string ToJson()
                     {
-                        using (var stream = new MemoryStream())
-                        using (var sw = new StringWriter())
-                        {
-                            var serializer = new DataContractJsonSerializer(typeof(JsonDataContract));
-                            serializer.WriteObject(stream, new JsonDataContract(this));
-                            var json = Encoding.UTF8.GetString(stream.ToArray());
-                            sw.Write(json);
-                            return sw.ToString();
-                        }
+                        return JsonConvert.SerializeObject(new JsonDataContract(this), Formatting.None);
                     }
-                    [DataContract]
+                    [JsonObject]
                     private struct JsonDataContract
                     {
-                        [DataMember(Name = "type", IsRequired = true)]
-                        public string Type { set; get; } = "problem";
-                        [DataMember(Name = "problem", IsRequired = true)]
-                        public string Url { set; get; }
-                        [DataMember(Name = "command", IsRequired = true)]
-                        public string Command { set; get; }
-                        [DataMember(Name = "error", EmitDefaultValue = false)]
-                        public double? Error { set; get; }
+                        [JsonProperty("type", Required = Required.DisallowNull)]
+                        public string Type { get; } = "problem";
+                        [JsonProperty("problem", Required = Required.DisallowNull)]
+                        public string Url { get; }
+                        [JsonProperty("command", Required = Required.DisallowNull)]
+                        public string Command { get; }
+                        [JsonProperty("error", Required = Required.AllowNull, DefaultValueHandling = DefaultValueHandling.Ignore)]
+                        public double? Error { get; }
 
                         public JsonDataContract(ProblemSolver solver)
                         {

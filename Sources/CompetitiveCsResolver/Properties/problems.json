@@ -1,0 +1,13 @@
+{
+  "VerifyApp.CircleAizu": {
+    "type": "problem",
+    "problem": "http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=ITP1_4_B",
+    "command": "dotnet Examples/VerifyApp/bin/Debug/net6.0/VerifyApp.dll VerifyApp.CircleAizu",
+    "error": 1E-05
+  },
+  "VerifyApp.HelloWorldAoj": {
+    "type": "problem",
+    "problem": "https://onlinejudge.u-aizu.ac.jp/courses/lesson/2/ITP1/1/ITP1_1_A",
+    "command": "dotnet Examples/VerifyApp/bin/Debug/net6.0/VerifyApp.dll VerifyApp.HelloWorldAoj"
+  }
+}

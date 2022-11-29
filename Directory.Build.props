@@ -2,11 +2,19 @@
 
   <PropertyGroup>
     <Version>1.0.0</Version>
+    <AssemblyVersion>1.0.0.100</AssemblyVersion>
     <Company>competitive-verifier</Company>
     <Copyright>Copyright (C) kzrnm</Copyright>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
+    <PackageTags>competitive programming</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryType>git</RepositoryType>
+    <PackageProjectUrl>https://github.com/competitive-verifier/csharp-resolver</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/competitive-verifier/csharp-resolver</RepositoryUrl>
+
+    <PackageOutputPath>$(MSBuildThisFileDirectory)bin\Packages\$(Configuration)\</PackageOutputPath>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
