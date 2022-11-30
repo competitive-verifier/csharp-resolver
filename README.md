@@ -6,6 +6,8 @@ See [Examples](Examples).
 
 Use in GitHub Actions.
 
+TODO: 書く
+
 ## Projects
 ### CompetitiveCsResolver
 Resolve solution dependency and verifications.
