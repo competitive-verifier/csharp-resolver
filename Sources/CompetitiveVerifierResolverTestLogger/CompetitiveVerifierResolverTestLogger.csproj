@@ -3,16 +3,8 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.1;netstandard2.0</TargetFrameworks>
     <IsPackable>true</IsPackable>
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <Authors>kzrnm</Authors>
-    <Description>C# resolver for https://github.com/competitive-verifier/competitive-verifier</Description>
-    <PackageTags>competitive programming</PackageTags>
-    <PackageProjectUrl>https://github.com/competitive-verifier/csharp-resolver</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <Description>C# unittest logger for https://github.com/competitive-verifier/competitive-verifier</Description>
     <DevelopmentDependency>true</DevelopmentDependency>
   </PropertyGroup>
 
@@ -20,7 +12,6 @@
     <None Include="README.md" Pack="true" PackagePath="" />
   </ItemGroup>
 
-  
   <ItemGroup>
     <PackageReference Include="IsExternalInit" Version="1.0.3" PrivateAssets="all" />
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />

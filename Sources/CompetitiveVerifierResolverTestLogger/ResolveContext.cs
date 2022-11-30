@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Client;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Logging;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -30,14 +31,23 @@ internal record ResolveContext(string? OutFile)
             };
 
             using var tee = new TeeStream(sw);
-
-            tee.WriteLine("FullyQualifiedName,success,skipped,failure");
-            foreach (var gr in _testResults.GroupBy(r => r.TestCase.FullyQualifiedName, r => r.Outcome))
+            tee.WriteLine("Class,success,skipped,failure");
+            foreach (var gr in _testResults.GroupBy(r => GetClassNameFromFullyQualifiedName(r.TestCase.FullyQualifiedName), r => r.Outcome))
             {
                 (int success, int skipped, int failure) = OutcomeCount(gr);
                 tee.WriteLine($"{gr.Key},{success},{skipped},{failure}");
             }
         }
+    }
+
+    static string GetClassNameFromFullyQualifiedName(string fullyQualifiedName)
+    {
+        var classAndMethodLength = Math.Min((uint)fullyQualifiedName.IndexOf('('), (uint)fullyQualifiedName.Length);
+        var classNameLength = Math.Min((uint)fullyQualifiedName.LastIndexOf('.', (int)classAndMethodLength - 1), classAndMethodLength);
+
+#pragma warning disable IDE0057
+        return fullyQualifiedName.Substring(0, (int)classNameLength);
+#pragma warning restore IDE0057
     }
 
     (int success, int skipped, int failure) OutcomeCount(IEnumerable<TestOutcome> outcomes)

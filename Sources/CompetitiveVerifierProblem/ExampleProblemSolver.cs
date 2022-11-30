@@ -1,7 +1,6 @@
 ﻿#pragma warning disable IDE0161
 // Example of ProblemSolver
 
-#nullable disable
 namespace CompetitiveVerifier
 {
     using Newtonsoft.Json;
@@ -14,27 +13,25 @@ namespace CompetitiveVerifier
         public abstract void Solve();
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(new JsonDataContract(this), Formatting.None);
+            return JsonConvert.SerializeObject(new JsonDataContract
+            {
+                Type = "problem",
+                Url = Url,
+                Command = $"dotnet {System.Reflection.Assembly.GetEntryAssembly().Location} {GetType().FullName}",
+                Error = Error,
+            }, Formatting.None);
         }
         [JsonObject]
         private struct JsonDataContract
         {
             [JsonProperty("type", Required = Required.DisallowNull)]
-            public string Type { get; } = "problem";
+            public string Type { set; get; }
             [JsonProperty("problem", Required = Required.DisallowNull)]
-            public string Url { get; }
+            public string Url { set; get; }
             [JsonProperty("command", Required = Required.DisallowNull)]
-            public string Command { get; }
+            public string Command { set; get; }
             [JsonProperty("error", Required = Required.AllowNull, DefaultValueHandling = DefaultValueHandling.Ignore)]
-            public double? Error { get; }
-
-            public JsonDataContract(ProblemSolver solver)
-            {
-                Type = "problem";
-                Url = solver.Url;
-                Command = $"dotnet {System.Reflection.Assembly.GetEntryAssembly().Location} {solver.GetType().FullName}";
-                Error = solver.Error;
-            }
+            public double? Error { set; get; }
         }
     }
 }

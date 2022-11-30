@@ -1,9 +1,18 @@
 {
   "profiles": {
-    "Sln": {
+    "All": {
+      "commandName": "Project",
+      "commandLineArgs": "$(ProjectDir)/../../Examples/Examples.sln -u $(ProjectDir)/Properties/unittest.csv -p $(ProjectDir)/Properties/problems.json --include Examples",
+      "workingDirectory": "$(ProjectDir)/../.."
+    },
+    "Empty": {
       "commandName": "Project",
       "commandLineArgs": "$(ProjectDir)/../../Examples/Examples.sln",
       "workingDirectory": "$(ProjectDir)/../.."
+    },
+    "Help": {
+      "commandName": "Project",
+      "commandLineArgs": ""
     }
   }
 }

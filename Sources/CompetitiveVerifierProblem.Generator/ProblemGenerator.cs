@@ -1,4 +1,5 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using CompetitiveVerifierProblem.Diagnostics;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Collections.Immutable;
 using System.Linq;
@@ -7,11 +8,18 @@ using System.Text;
 namespace CompetitiveVerifierProblem;
 
 [Generator]
-public partial class Generator : IIncrementalGenerator
+public partial class ProblemGenerator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         context.RegisterPostInitializationOutput(PostInitialization);
+        context.RegisterSourceOutput(context.CompilationProvider, (ctx, compilation) =>
+        {
+            if (compilation.Options.OutputKind != OutputKind.ConsoleApplication)
+            {
+                ctx.ReportDiagnostic(DiagnosticDescriptors.VERIFY0001_ShouldBeConsoleApp());
+            }
+        });
 
         var baseSolver = context.CompilationProvider
             .Select(static (compilation, token) =>
@@ -46,7 +54,6 @@ public partial class Generator : IIncrementalGenerator
                 return builder.ToImmutable();
             });
 
-
         context.RegisterImplementationSourceOutput(classess, ImplementationSource);
     }
 
@@ -78,7 +85,9 @@ public partial class Generator : IIncrementalGenerator
                         System.Console.Write(c.GetType().FullName);
                         System.Console.Write('"');
                         System.Console.Write(':');
+                        System.Console.Write('[');
                         System.Console.Write(c.ToJson());
+                        System.Console.Write(']');
                     }
                     System.Console.WriteLine('}');
                 }
@@ -88,7 +97,7 @@ public partial class Generator : IIncrementalGenerator
                     CompetitiveVerifier.ProblemSolver solver;
                     switch(className)
                     {
-                        {{{runSelector}}}
+{{{runSelector}}}
                         default: throw new System.ArgumentException($"{className} is not found.", nameof(className));
                     }
                     solver.Solve();
@@ -103,7 +112,6 @@ public partial class Generator : IIncrementalGenerator
         token.ThrowIfCancellationRequested();
 
         context.AddSource("ProblemSolver.cs", """
-            #nullable disable
             namespace CompetitiveVerifier
             {
                 using Newtonsoft.Json;
@@ -116,27 +124,25 @@ public partial class Generator : IIncrementalGenerator
                     public abstract void Solve();
                     public string ToJson()
                     {
-                        return JsonConvert.SerializeObject(new JsonDataContract(this), Formatting.None);
+                        return JsonConvert.SerializeObject(new JsonDataContract
+                        {
+                            Type = "problem",
+                            Url = Url,
+                            Command = $"dotnet {System.Reflection.Assembly.GetEntryAssembly().Location} {GetType().FullName}",
+                            Error = Error,
+                        }, Formatting.None);
                     }
                     [JsonObject]
                     private struct JsonDataContract
                     {
                         [JsonProperty("type", Required = Required.DisallowNull)]
-                        public string Type { get; } = "problem";
+                        public string Type { set; get; }
                         [JsonProperty("problem", Required = Required.DisallowNull)]
-                        public string Url { get; }
+                        public string Url { set; get; }
                         [JsonProperty("command", Required = Required.DisallowNull)]
-                        public string Command { get; }
+                        public string Command { set; get; }
                         [JsonProperty("error", Required = Required.AllowNull, DefaultValueHandling = DefaultValueHandling.Ignore)]
-                        public double? Error { get; }
-
-                        public JsonDataContract(ProblemSolver solver)
-                        {
-                            Type = "problem";
-                            Url = solver.Url;
-                            Command = $"dotnet {System.Reflection.Assembly.GetEntryAssembly().Location} {solver.GetType().FullName}";
-                            Error = solver.Error;
-                        }
+                        public double? Error { set; get; }
                     }
                 }
             }

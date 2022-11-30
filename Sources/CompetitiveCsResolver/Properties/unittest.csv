@@ -1,3 +1,2 @@
-FullyQualifiedName,success,skipped,failure
-UnitTest.CircleTest.Area,2,0,0
-UnitTest.CircleTest.Circumference,2,0,0
+Class,success,skipped,failure
+UnitTest.CircleTest,4,0,0
