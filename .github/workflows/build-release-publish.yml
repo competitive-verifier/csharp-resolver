@@ -1,0 +1,65 @@
+name: Build-Release-Publish
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+*"
+env:
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  DOTNET_NOLOGO: true
+  NUGET_XMLDOC_MODE: skip
+  WORKFLOW_VERSION_PROJ: Directory.Build.props
+  WORKFLOW_BUILD_SLN: csharp-resolver.sln
+
+jobs:
+  get-version:
+    uses: kzrnm/dotnet-actions/.github/workflows/get-version.yml@v1
+    with:
+      project-path: Directory.Build.props
+
+  format:
+    uses: kzrnm/dotnet-actions/.github/workflows/format.yml@v1
+    with:
+      target: csharp-resolver.sln
+      dotnet-version: 7.0.x
+
+  build:
+    runs-on: windows-latest
+    needs: [get-version]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: |
+            7.0.x
+            6.0.x
+      - uses: actions/cache@v2
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+      - name: Build
+        run: dotnet build ${{ env.WORKFLOW_BUILD_SLN }} -c Release
+      - name: Test
+        run: dotnet test ${{ env.WORKFLOW_BUILD_SLN }} --no-build --logger GitHubActions -c Release
+      - uses: actions/upload-artifact@v3
+        if: ${{ needs.get-version.outputs.is-new == 'true' }}
+        with:
+          name: dist
+          path: bin/Packages/Release
+
+  publish:
+    needs: [get-version, build, format]
+    if: ${{ needs.get-version.outputs.is-new == 'true' }}
+    uses: kzrnm/dotnet-actions/.github/workflows/publish.yml@v1
+    with:
+      artifact-name: dist
+      version: ${{ needs.get-version.outputs.version }}
+      is-prerelease: ${{ needs.get-version.outputs.is-prerelease == 'true' }}
+    secrets:
+      NUGET_KEY: ${{ secrets.NUGET_KEY }}
