@@ -1,4 +1,4 @@
-﻿#pragma warning disable IDE0161
+﻿#pragma warning disable IDE0161,CS8602
 // Example of ProblemSolver
 
 namespace CompetitiveVerifier

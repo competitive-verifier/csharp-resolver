@@ -38,6 +38,7 @@ internal class HelloWorldAoj2 : CompetitiveVerifier.ProblemSolver
     private static (Type sourceGeneratorType, string filename, string content)[] GeneratedSources = new[]
     {
                         (typeof(ProblemGenerator), "ProblemSolver.cs", """
+                        #pragma warning disable IDE0161,CS8602
                         namespace CompetitiveVerifier
                         {
                             using Newtonsoft.Json;

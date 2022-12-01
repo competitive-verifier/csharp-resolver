@@ -112,6 +112,7 @@ public partial class ProblemGenerator : IIncrementalGenerator
         token.ThrowIfCancellationRequested();
 
         context.AddSource("ProblemSolver.cs", """
+            #pragma warning disable IDE0161,CS8602
             namespace CompetitiveVerifier
             {
                 using Newtonsoft.Json;
