@@ -16,13 +16,37 @@ Use in GitHub Actions.
 
 TODO: 書く
 
+### Local
+
+```sh
+# Install
+dotnet tool install -g CompetitiveCsResolver
+dotnet add {{YourUnittest.csproj}} package CompetitiveVerifierResolverTestLogger
+dotnet add {{YourProblemApp.csproj}} package CompetitiveVerifierProblem
+
+# Run
+dotnet test {{YourUnittest.csproj}} --logger "CompetitiveVerifier;OutFile=$pwd/unittest.csv"
+dotnet run --project {{YourProblemApp.csproj}} > problems.json
+CompetitiveCsResolver YourSolution.sln -u unittest.csv -p problems.json
+```
+
 ## Projects
 ### CompetitiveCsResolver
 Resolve solution dependency and verifications.
 
+```sh
+dotnet tool install -g CompetitiveCsResolver
+```
+
 ### CompetitiveVerifierProblem
 
 Subclasses of `CompetitiveVerifier.ProblemSolver` are treated as verification.
+
+The library assume for console application.
+
+See [Examples/VerifyApp](Examples/VerifyApp).
+
+#### Example: Problem
 
 ```cs
 using ClassLibrary;
