@@ -1,6 +1,6 @@
 ﻿using System.Collections.Immutable;
 using System.Text.Json.Serialization;
 
-namespace CompetitiveCsResolver.Verifier;
+namespace CompetitiveVerifierCsResolver.Verifier;
 public record VerificationInput(
         [property: JsonPropertyName("files"), JsonRequired] ImmutableDictionary<string, VerificationFile> Files);

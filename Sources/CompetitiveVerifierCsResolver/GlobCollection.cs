@@ -1,6 +1,6 @@
 ﻿using DotNet.Globbing;
 
-namespace CompetitiveCsResolver;
+namespace CompetitiveVerifierCsResolver;
 internal class GlobCollection : List<Glob>
 {
     public GlobCollection(IEnumerable<Glob> globs) : base(globs) { }

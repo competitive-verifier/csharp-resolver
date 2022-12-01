@@ -1,4 +1,4 @@
-﻿using CompetitiveCsResolver;
+﻿using CompetitiveVerifierCsResolver;
 using Microsoft.Build.Locator;
 using System.Runtime.Loader;
 
@@ -16,4 +16,4 @@ AssemblyLoadContext.Default.Resolving += (assemblyLoadContext, assemblyName) =>
 
     return null;
 };
-ConsoleApp.Run<CompetitiveCsResolverCommand>(args);
+ConsoleApp.Run<CsResolverCommand>(args);

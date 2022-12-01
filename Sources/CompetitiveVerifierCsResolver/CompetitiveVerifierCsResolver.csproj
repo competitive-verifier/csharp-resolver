@@ -11,6 +11,8 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <Description>C# resolver for https://github.com/competitive-verifier/competitive-verifier</Description>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>competitive-verifier-cs-resolver</ToolCommandName>
   </PropertyGroup>
 
   <ItemGroup>

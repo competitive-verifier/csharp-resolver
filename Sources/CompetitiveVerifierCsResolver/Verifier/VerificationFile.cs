@@ -1,7 +1,7 @@
 ﻿using System.Collections.Immutable;
 using System.Text.Json.Serialization;
 
-namespace CompetitiveCsResolver.Verifier;
+namespace CompetitiveVerifierCsResolver.Verifier;
 public record VerificationFile(
         [property: JsonPropertyName("dependencies"), JsonRequired] ImmutableHashSet<string> Dependencies,
         [property: JsonPropertyName("document_attributes"), JsonRequired] ImmutableDictionary<string, string> DocumentAttributes,

@@ -1,6 +1,6 @@
-﻿using CompetitiveCsResolver.Verifier;
+﻿using CompetitiveVerifierCsResolver.Verifier;
 
-namespace CompetitiveCsResolver;
+namespace CompetitiveVerifierCsResolver;
 internal record UnitTestResult(string Name, int Success, int Skipped, int Failure)
 {
     public UnitTestResult Add(UnitTestResult other)

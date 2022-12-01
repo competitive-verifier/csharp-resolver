@@ -2,7 +2,7 @@
 
 |Library|NuGet|
 |:---|:---|
-|CompetitiveCsResolver|[![NuGet version (CompetitiveCsResolver)](https://img.shields.io/nuget/v/CompetitiveCsResolver.svg?style=flat-square)](https://www.nuget.org/packages/CompetitiveCsResolver/)|
+|CompetitiveVerifierCsResolver|[![NuGet version (CompetitiveVerifierCsResolver)](https://img.shields.io/nuget/v/CompetitiveVerifierCsResolver.svg?style=flat-square)](https://www.nuget.org/packages/CompetitiveVerifierCsResolver/)|
 |CompetitiveVerifierProblem|[![NuGet version (CompetitiveVerifierProblem)](https://img.shields.io/nuget/v/CompetitiveVerifierProblem.svg?style=flat-square)](https://www.nuget.org/packages/CompetitiveVerifierProblem/)|
 |CompetitiveVerifierProblem.Generator|[![NuGet version (CompetitiveVerifierProblem.Generator)](https://img.shields.io/nuget/v/CompetitiveVerifierProblem.Generator.svg?style=flat-square)](https://www.nuget.org/packages/CompetitiveVerifierProblem.Generator/)|
 |CompetitiveVerifierResolverTestLogger|[![NuGet version (CompetitiveVerifierResolverTestLogger)](https://img.shields.io/nuget/v/CompetitiveVerifierResolverTestLogger.svg?style=flat-square)](https://www.nuget.org/packages/CompetitiveVerifierResolverTestLogger/)|
@@ -20,22 +20,22 @@ TODO: 書く
 
 ```sh
 # Install
-dotnet tool install -g CompetitiveCsResolver
+dotnet tool install -g CompetitiveVerifierCsResolver
 dotnet add {{YourUnittest.csproj}} package CompetitiveVerifierResolverTestLogger
 dotnet add {{YourProblemApp.csproj}} package CompetitiveVerifierProblem
 
 # Run
 dotnet test {{YourUnittest.csproj}} --logger "CompetitiveVerifier;OutFile=$pwd/unittest.csv"
 dotnet run --project {{YourProblemApp.csproj}} > problems.json
-CompetitiveCsResolver YourSolution.sln -u unittest.csv -p problems.json
+CompetitiveVerifierCsResolver YourSolution.sln -u unittest.csv -p problems.json
 ```
 
 ## Projects
-### CompetitiveCsResolver
+### CompetitiveVerifierCsResolver
 Resolve solution dependency and verifications.
 
 ```sh
-dotnet tool install -g CompetitiveCsResolver
+dotnet tool install -g CompetitiveVerifierCsResolver
 ```
 
 ### CompetitiveVerifierProblem

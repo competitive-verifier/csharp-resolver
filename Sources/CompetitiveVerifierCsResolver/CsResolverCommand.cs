@@ -1,4 +1,4 @@
-﻿using CompetitiveCsResolver.Verifier;
+﻿using CompetitiveVerifierCsResolver.Verifier;
 using DotNet.Globbing;
 using Microsoft.CodeAnalysis.MSBuild;
 using System.Collections.Immutable;
@@ -6,8 +6,8 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
-namespace CompetitiveCsResolver;
-public partial class CompetitiveCsResolverCommand : ConsoleAppBase
+namespace CompetitiveVerifierCsResolver;
+public partial class CsResolverCommand : ConsoleAppBase
 {
     [RootCommand]
     public async Task Resolve(

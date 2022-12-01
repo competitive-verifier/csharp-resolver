@@ -22,7 +22,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTest", "Examples\UnitTe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VerifyApp", "Examples\VerifyApp\VerifyApp.csproj", "{8B205E05-239B-4995-A1FB-0233442E9B5A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CompetitiveCsResolver", "Sources\CompetitiveCsResolver\CompetitiveCsResolver.csproj", "{E534EBDC-4706-4CE2-BE1C-CE0C426D889D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CompetitiveVerifierCsResolver", "Sources\CompetitiveVerifierCsResolver\CompetitiveVerifierCsResolver.csproj", "{E534EBDC-4706-4CE2-BE1C-CE0C426D889D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CompetitiveVerifierProblem.Generator", "Sources\CompetitiveVerifierProblem.Generator\CompetitiveVerifierProblem.Generator.csproj", "{02185794-D170-48F6-AF4A-D38F7B7E1A3F}"
 EndProject

@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace CompetitiveCsResolver;
+namespace CompetitiveVerifierCsResolver;
 internal record Matcher
 (
     GlobCollection Include,

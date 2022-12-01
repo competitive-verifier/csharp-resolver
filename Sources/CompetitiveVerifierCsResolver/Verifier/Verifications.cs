@@ -2,7 +2,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace CompetitiveCsResolver.Verifier;
+namespace CompetitiveVerifierCsResolver.Verifier;
 
 [JsonConverter(typeof(VerificationConverter))]
 public abstract record Verification

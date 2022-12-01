@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Collections.Immutable;
 
 
-namespace CompetitiveCsResolver;
+namespace CompetitiveVerifierCsResolver;
 internal class TypeFinder : CSharpSyntaxWalker
 {
     private bool visited;
