@@ -1,7 +1,9 @@
 # CompetitiveVerifierCsResolver
+Resolve solution dependency and verifications.
 
 ## Get started
 
+
 ```sh
-dotnet add package CompetitiveVerifierCsResolver
+dotnet tool install -g CompetitiveVerifierCsResolver
 ```
