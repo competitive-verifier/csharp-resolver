@@ -1,5 +1,13 @@
 # csharp-resolver
 
+|Library|NuGet|
+|:---|:---|
+|CompetitiveCsResolver|[![NuGet version (CompetitiveCsResolver)](https://img.shields.io/nuget/v/CompetitiveCsResolver.svg?style=flat-square)](https://www.nuget.org/packages/CompetitiveCsResolver/)|
+|CompetitiveVerifierProblem|[![NuGet version (CompetitiveVerifierProblem)](https://img.shields.io/nuget/v/CompetitiveVerifierProblem.svg?style=flat-square)](https://www.nuget.org/packages/CompetitiveVerifierProblem/)|
+|CompetitiveVerifierProblem.Generator|[![NuGet version (CompetitiveVerifierProblem.Generator)](https://img.shields.io/nuget/v/CompetitiveVerifierProblem.Generator.svg?style=flat-square)](https://www.nuget.org/packages/CompetitiveVerifierProblem.Generator/)|
+|CompetitiveVerifierResolverTestLogger|[![NuGet version (CompetitiveVerifierResolverTestLogger)](https://img.shields.io/nuget/v/CompetitiveVerifierResolverTestLogger.svg?style=flat-square)](https://www.nuget.org/packages/CompetitiveVerifierResolverTestLogger/)|
+
+
 See [Examples](Examples).
 
 ## Usage
