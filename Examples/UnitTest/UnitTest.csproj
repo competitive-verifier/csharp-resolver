@@ -20,7 +20,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ClassLibrary\ClassLibrary.csproj" />
-    <ProjectReference Include="..\..\Sources\CompetitiveVerifierResolverTestLogger\CompetitiveVerifierResolverTestLogger.csproj" />
+    <PackageReference Include="CompetitiveVerifierResolverTestLogger" Version="0.9.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
 </Project>
