@@ -107,7 +107,7 @@ public partial class CompetitiveCsResolverCommand : ConsoleAppBase
 
     [GeneratedRegex(@"\b(?:competitive-verifier):\s*(\S+)(?:\s(.*))?$")]
     private static partial Regex ListSpecialCommentsRegex();
-    ImmutableDictionary<string, string> ListSpecialComments(string[] lines)
+    static ImmutableDictionary<string, string> ListSpecialComments(string[] lines)
     {
         var builder = ImmutableDictionary.CreateBuilder<string, string>();
         var regex = ListSpecialCommentsRegex();
@@ -123,8 +123,11 @@ public partial class CompetitiveCsResolverCommand : ConsoleAppBase
         return builder.ToImmutable();
     }
 
+    [GeneratedRegex(@"^\s*Class\s*,\s*success\s*,\s*skipped\s*,\s*failure\s*")]
+    private static partial Regex UnitTestResultHeader();
     static Dictionary<string, UnitTestResult> ParseUnitTestResults(Stream stream)
     {
+        var headerRegex = UnitTestResultHeader();
         using var sr = new StreamReader(stream);
         var firstLine = sr.ReadLine();
         if (firstLine == null) throw new ArgumentException("Failed to parse UnitTestResult csv.");
@@ -134,30 +137,30 @@ public partial class CompetitiveCsResolverCommand : ConsoleAppBase
 
         while (sr.ReadLine() is string line)
         {
+            if (headerRegex.IsMatch(line)) continue;
             var values = line.Split(',');
-            var b = new Builder();
-            for (int i = 0; i < values.Length; i++)
+            if (values.Length == 0) continue;
+
+            var b = new Builder(values[0]);
+            for (int i = 1; i < values.Length; i++)
             {
-                switch (names[i])
+                switch (i)
                 {
-                    case "Class":
-                        b.Name = values[i];
-                        break;
-                    case "success":
+                    case 1:
                         b.Success = ParseLax(values[i]);
                         break;
-                    case "skipped":
+                    case 2:
                         b.Skipped = ParseLax(values[i]);
                         break;
-                    case "failure":
+                    case 3:
                         b.Failure = ParseLax(values[i]);
                         break;
                 }
             }
-            if (b.Name != null)
-            {
-                d[b.Name] = new(b.Name, b.Success, b.Skipped, b.Failure);
-            }
+            var res = new UnitTestResult(b.Name, b.Success, b.Skipped, b.Failure);
+            if (d.TryGetValue(b.Name, out var prev))
+                res = res.Add(prev);
+            d[b.Name] = res;
         }
         return d;
         static int ParseLax(string v)
@@ -168,7 +171,11 @@ public partial class CompetitiveCsResolverCommand : ConsoleAppBase
     }
     private class Builder
     {
-        public string? Name;
+        public Builder(string name)
+        {
+            Name = name;
+        }
+        public string Name;
         public int Success;
         public int Skipped;
         public int Failure;

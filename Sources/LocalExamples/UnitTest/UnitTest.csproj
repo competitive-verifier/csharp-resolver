@@ -20,7 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ClassLibrary\ClassLibrary.csproj" />
-    <ProjectReference Include="..\..\Sources\CompetitiveVerifierResolverTestLogger\CompetitiveVerifierResolverTestLogger.csproj" />
+    <ProjectReference Include="..\..\CompetitiveVerifierResolverTestLogger\CompetitiveVerifierResolverTestLogger.csproj" />
   </ItemGroup>
 
 </Project>
