@@ -8,7 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased] - 2022-12-04
 ### Added
 - Add location to WithoutDefaultConstructor diagnostic
-- Change CompetitiveVerifierResolverTestLogger parameter
+### Changed
+- Change CompetitiveVerifierResolverTestLogger parameter: OutFile → OutDirectory
+- Allow unittest, problems multiple argument
 
 ## [0.10.2] - 2022-12-04
 ### Changed

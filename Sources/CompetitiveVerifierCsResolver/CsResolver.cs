@@ -31,15 +31,17 @@ public partial class CsResolver
             AllowMultipleArgumentsPerToken = true,
         };
 
-        var unittestOption = new Option<FileInfo?>(
+        var unittestOption = new Option<FileInfo[]?>(
             aliases: new[] { "--unittest", "-u" },
-            description: "Specify unittest result csv path.")
+            description: "Specify unittest result csv paths.")
         {
+            AllowMultipleArgumentsPerToken = true,
         };
-        var problemsOption = new Option<FileInfo?>(
+        var problemsOption = new Option<FileInfo[]?>(
             aliases: new[] { "--problems", "-p" },
-            description: "Specify output of CompetitiveVerifierProblem.")
+            description: "Specify outputs of CompetitiveVerifierProblem.")
         {
+            AllowMultipleArgumentsPerToken = true,
         };
         var propertiesOption = new Option<ImmutableDictionary<string, string>?>(
             name: "properties",
@@ -70,16 +72,16 @@ public partial class CsResolver
             var solutionPath = ctx.ParseResult.GetValueForArgument(solutionArgument)!;
             var include = ctx.ParseResult.GetValueForOption(includeOption)!;
             var exclude = ctx.ParseResult.GetValueForOption(excludeOption)!;
-            var unittest = ctx.ParseResult.GetValueForOption(unittestOption);
-            var problems = ctx.ParseResult.GetValueForOption(problemsOption);
+            var unittest = ctx.ParseResult.GetValueForOption(unittestOption) ?? Array.Empty<FileInfo>();
+            var problems = ctx.ParseResult.GetValueForOption(problemsOption) ?? Array.Empty<FileInfo>();
             var properties = ctx.ParseResult.GetValueForOption(propertiesOption);
 
             await new CsResolver(ctx.Console).Resolve(
                 solutionPath,
                 include,
                 exclude,
-                unittest,
-                problems,
+                unittest.ToImmutableArray(),
+                problems.ToImmutableArray(),
                 properties ?? ImmutableDictionary<string, string>.Empty,
                 ctx.GetCancellationToken());
         });
@@ -97,18 +99,18 @@ public partial class CsResolver
             string solutionPath,
             string[] include,
             string[] exclude,
-            FileInfo? unittest,
-            FileInfo? problems,
+            ImmutableArray<FileInfo> unittest,
+            ImmutableArray<FileInfo> problems,
             ImmutableDictionary<string, string> properties,
             CancellationToken cancellationToken = default
         )
     {
         WriteDebug("Arguments");
         WriteDebug($"solutionPath={solutionPath}");
-        WriteDebug($"include={string.Join(' ', include)}");
-        WriteDebug($"exclude={string.Join(' ', exclude)}");
-        WriteDebug($"unittest={unittest?.FullName ?? null}");
-        WriteDebug($"problems={problems?.FullName ?? null}");
+        WriteDebug($"include={string.Join(",", include)}");
+        WriteDebug($"exclude={string.Join(",", exclude)}");
+        WriteDebug($"unittest={string.Join(",", unittest.Select(f => f.FullName))}");
+        WriteDebug($"problems={string.Join(",", problems.Select(f => f.FullName))}");
         WriteDebug($"MS build properties={string.Join(' ', properties.Select(p => $"{p.Key}={p.Value}"))}");
 
         var includeGlob = new GlobCollection(include.Select(s => Glob.Parse(s.Trim())));
@@ -117,19 +119,20 @@ public partial class CsResolver
         var matcher = new Matcher(includeGlob, excludeGlob);
 
         properties ??= ImmutableDictionary<string, string>.Empty;
-        if (unittest is null && problems is null)
+        if (unittest.IsDefaultOrEmpty && problems.IsDefaultOrEmpty)
         {
-            WriteWarning($"Both {nameof(unittest)} and {nameof(problems)} are null.");
+            WriteWarning($"Both {nameof(unittest)} and {nameof(problems)} are empty.");
             return;
         }
 
-        Dictionary<string, UnitTestResult> testResults;
-        if (unittest is null)
-            testResults = new();
-        else
+        Dictionary<string, UnitTestResult> testResults = new();
+        if (!unittest.IsDefaultOrEmpty)
         {
-            using (var fs = unittest.OpenRead())
-                testResults = ParseUnitTestResults(fs);
+            foreach (var p in unittest)
+            {
+                using var fs = p.OpenRead();
+                testResults.Add(Parse.ParseUnitTestResults(fs));
+            }
             if (testResults.Count == 0)
             {
                 WriteWarning($"{nameof(unittest)} is empty.");
@@ -137,13 +140,15 @@ public partial class CsResolver
         }
 
 
-        Dictionary<string, ProblemVerification[]> problemVerifications;
-        if (problems is null)
-            problemVerifications = new();
-        else
+        Dictionary<string, ProblemVerification[]> problemVerifications = new();
+        if (!problems.IsDefaultOrEmpty)
         {
-            using (var fs = problems.OpenRead())
-                problemVerifications = ParseProblemVerifications(fs) ?? new();
+            foreach (var p in problems)
+            {
+                using var fs = p.OpenRead();
+                if (Parse.ParseProblemVerifications(fs) is { } dd)
+                    problemVerifications.Add(dd);
+            }
             if (problemVerifications.Count == 0)
             {
                 WriteWarning($"{nameof(problems)} is empty.");
@@ -225,74 +230,6 @@ public partial class CsResolver
         return builder.ToImmutable();
     }
 
-    [GeneratedRegex(@"^\s*Class\s*,\s*success\s*,\s*skipped\s*,\s*failure\s*")]
-    private static partial Regex UnitTestResultHeader();
-    static Dictionary<string, UnitTestResult> ParseUnitTestResults(Stream stream)
-    {
-        var headerRegex = UnitTestResultHeader();
-        using var sr = new StreamReader(stream);
-        var firstLine = sr.ReadLine();
-        if (firstLine == null) throw new ArgumentException("Failed to parse UnitTestResult csv.");
-
-        var names = firstLine.Split(',');
-        var d = new Dictionary<string, UnitTestResult>();
-
-        while (sr.ReadLine() is string line)
-        {
-            if (headerRegex.IsMatch(line)) continue;
-            var values = line.Split(',');
-            if (values.Length == 0) continue;
-
-            var b = new Builder(values[0]);
-            for (int i = 1; i < values.Length; i++)
-            {
-                switch (i)
-                {
-                    case 1:
-                        b.Success = ParseLax(values[i]);
-                        break;
-                    case 2:
-                        b.Skipped = ParseLax(values[i]);
-                        break;
-                    case 3:
-                        b.Failure = ParseLax(values[i]);
-                        break;
-                }
-            }
-            var res = new UnitTestResult(b.Name, b.Success, b.Skipped, b.Failure);
-            if (d.TryGetValue(b.Name, out var prev))
-                res = res.Add(prev);
-            d[b.Name] = res;
-        }
-        return d;
-        static int ParseLax(string v)
-        {
-            _ = int.TryParse(v, out var result);
-            return result;
-        }
-    }
-    private class Builder
-    {
-        public Builder(string name)
-        {
-            Name = name;
-        }
-        public string Name;
-        public int Success;
-        public int Skipped;
-        public int Failure;
-    }
-    static Dictionary<string, ProblemVerification[]>? ParseProblemVerifications(Stream stream)
-    {
-        return JsonSerializer.Deserialize<Dictionary<string, ProblemVerification[]>>(stream, new JsonSerializerOptions
-        {
-#if NET5_0_OR_GREATER
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-#else
-            IgnoreNullValues = true,
-#endif
-        });
-    }
     record class Progress(IConsole Console) : IProgress<ProjectLoadProgress>
     {
         public void Report(ProjectLoadProgress p)
@@ -318,5 +255,31 @@ public partial class CsResolver
         {
             console.Error.WriteLine($"::debug ::{message}");
         }
+    }
+}
+
+internal static class MergeExtension
+{
+    public static Dictionary<string, UnitTestResult> Add(this Dictionary<string, UnitTestResult> orig, Dictionary<string, UnitTestResult> other)
+    {
+        foreach (var (k, v) in other)
+        {
+            if (orig.TryGetValue(k, out var prev))
+                orig[k] = prev.Add(v);
+            else
+                orig[k] = v;
+        }
+        return orig;
+    }
+    public static Dictionary<string, ProblemVerification[]> Add(this Dictionary<string, ProblemVerification[]> orig, Dictionary<string, ProblemVerification[]> other)
+    {
+        foreach (var (k, v) in other)
+        {
+            if (orig.TryGetValue(k, out var prev))
+                orig[k] = prev.Concat(v).ToArray();
+            else
+                orig[k] = v;
+        }
+        return orig;
     }
 }
