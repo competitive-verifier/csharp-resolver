@@ -16,4 +16,4 @@ AssemblyLoadContext.Default.Resolving += (assemblyLoadContext, assemblyName) =>
 
     return null;
 };
-ConsoleApp.Run<CsResolverCommand>(args);
+return await CsResolver.RunAsync(args);
