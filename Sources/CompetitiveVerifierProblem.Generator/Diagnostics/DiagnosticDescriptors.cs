@@ -18,4 +18,20 @@ public static class DiagnosticDescriptors
         "Error",
         DiagnosticSeverity.Warning,
         true);
+
+    public static Diagnostic VERIFY0002_DefaultConstructor(string className)
+        => Diagnostic.Create(VERIFY0002_DefaultConstructor_Descriptor, Location.None, className);
+    private static readonly DiagnosticDescriptor VERIFY0002_DefaultConstructor_Descriptor = new(
+        "VERIFY0002",
+        new LocalizableResourceString(
+            nameof(DiagnosticsResources.VERIFY0002_Title),
+            DiagnosticsResources.ResourceManager,
+            typeof(DiagnosticsResources)),
+        new LocalizableResourceString(
+            nameof(DiagnosticsResources.VERIFY0002_Body),
+            DiagnosticsResources.ResourceManager,
+            typeof(DiagnosticsResources)),
+        "Error",
+        DiagnosticSeverity.Warning,
+        true);
 }

@@ -1,6 +1,7 @@
 ﻿using CompetitiveVerifierProblem.Diagnostics;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
@@ -29,7 +30,7 @@ public partial class ProblemGenerator : IIncrementalGenerator
             })
             .WithComparer(SymbolEqualityComparer.Default);
 
-        var classess = context.SyntaxProvider
+        var classessAndDiagnostics = context.SyntaxProvider
             .CreateSyntaxProvider(
                 static (node, token) => node is ClassDeclarationSyntax classDec && classDec.BaseList is not null,
                 static (context, token) =>
@@ -45,33 +46,57 @@ public partial class ProblemGenerator : IIncrementalGenerator
             {
                 token.ThrowIfCancellationRequested();
                 var (decs, baseSolver) = tup;
-                var builder = ImmutableArray.CreateBuilder<string>();
+                var builder = ImmutableArray.CreateBuilder<INamedTypeSymbol>();
                 foreach (var symbol in decs)
-                    if (symbol is not null && SymbolEqualityComparer.Default.Equals(baseSolver, symbol.BaseType))
+                {
+                    if (symbol is null) continue;
+                    if (GetBaseTypes(symbol).Contains(baseSolver, SymbolEqualityComparer.Default))
                     {
-                        builder.Add(symbol.ToDisplayString());
+                        builder.Add(symbol);
                     }
+                }
                 return builder.ToImmutable();
             });
 
-        context.RegisterImplementationSourceOutput(classess, ImplementationSource);
+        context.RegisterImplementationSourceOutput(classessAndDiagnostics, ImplementationSource);
+
+        static IEnumerable<ITypeSymbol> GetBaseTypes(ITypeSymbol type)
+        {
+            for (var current = type?.BaseType; current is not null; current = current.BaseType)
+            {
+                yield return current;
+            }
+        }
     }
 
-    private void ImplementationSource(SourceProductionContext context, ImmutableArray<string> classes)
+    private void ImplementationSource(SourceProductionContext context, ImmutableArray<INamedTypeSymbol> classes)
     {
-        var runSelector = new StringBuilder();
-
-        var classesCallToJson = "new CompetitiveVerifier.ProblemSolver[]{" + string.Join(",", classes.Select(c => $"new {c}()")) + "}";
-        foreach (var c in classes)
+        var classesCallToJson = new StringBuilder();
+        var solverSelector = new StringBuilder();
+        foreach (var s in classes)
         {
-            runSelector.Append("case \"").Append(c).Append("\":solver = new ").Append(c).AppendLine("();break;");
+            var c = s.ToDisplayString();
+
+            if (s.IsAbstract) continue;
+            if (!s.Constructors.Select(c => c.Parameters.Length).Contains(0))
+            {
+                context.ReportDiagnostic(DiagnosticDescriptors.VERIFY0002_DefaultConstructor(c));
+                continue;
+            }
+
+            solverSelector.Append("case \"").Append(c).Append("\":return new ").Append(c).AppendLine("();");
+            classesCallToJson.AppendLine($"new {c}(),");
         }
+
         context.AddSource("Main.impl.cs", $$$"""
             internal partial class Program
             {
                 static partial void Enumerate()
                 {
-                    var classes = {{{classesCallToJson}}};
+                    var classes = new CompetitiveVerifier.ProblemSolver[]
+                    {
+            {{{classesCallToJson}}}
+                    };
 
                     bool isFirst = true;
                     System.Console.Write('{');
@@ -94,13 +119,16 @@ public partial class ProblemGenerator : IIncrementalGenerator
 
                 static partial void Run(string className)
                 {
-                    CompetitiveVerifier.ProblemSolver solver;
+                    GetSolver(className).Solve();
+                }
+            
+                static CompetitiveVerifier.ProblemSolver GetSolver(string className)
+                {
                     switch(className)
                     {
-{{{runSelector}}}
+            {{{solverSelector}}}
                         default: throw new System.ArgumentException($"{className} is not found.", nameof(className));
                     }
-                    solver.Solve();
                 }
             }
             """);

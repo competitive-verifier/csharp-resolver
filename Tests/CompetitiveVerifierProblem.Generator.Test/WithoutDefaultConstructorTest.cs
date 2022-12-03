@@ -2,7 +2,8 @@
 using Microsoft.CodeAnalysis.Testing;
 
 namespace CompetitiveVerifierProblem.Generator.Test;
-public class DefaultGenerateTest : TestBase
+
+public class WithoutDefaultConstructorTest : TestBase
 {
     static readonly (string filename, string content)[] Sources = new[]{
                         (
@@ -24,6 +25,7 @@ internal class HelloWorldAoj : CompetitiveVerifier.ProblemSolver
 namespace Space{
 internal class HelloWorldAoj2 : CompetitiveVerifier.ProblemSolver
 {
+    public HelloWorldAoj2(int num){}
     public override string Url => "https://onlinejudge.u-aizu.ac.jp/courses/lesson/2/ITP1/1/ITP1_1_A";
     public override void Solve()
     {
@@ -100,10 +102,9 @@ internal class HelloWorldAoj2 : CompetitiveVerifier.ProblemSolver
                                 var classes = new CompetitiveVerifier.ProblemSolver[]
                                 {
                         new HelloWorldAoj(),
-                        new Space.HelloWorldAoj2(),
 
                                 };
-                        
+
                                 bool isFirst = true;
                                 System.Console.Write('{');
                                 foreach(var c in classes)
@@ -127,13 +128,12 @@ internal class HelloWorldAoj2 : CompetitiveVerifier.ProblemSolver
                             {
                                 GetSolver(className).Solve();
                             }
-
+                        
                             static CompetitiveVerifier.ProblemSolver GetSolver(string className)
                             {
                                 switch(className)
                                 {
                         case "HelloWorldAoj":return new HelloWorldAoj();
-                        case "Space.HelloWorldAoj2":return new Space.HelloWorldAoj2();
                         
                                     default: throw new System.ArgumentException($"{className} is not found.", nameof(className));
                                 }
@@ -151,27 +151,9 @@ internal class HelloWorldAoj2 : CompetitiveVerifier.ProblemSolver
                 {
                     ExpectedDiagnostics =
                     {
+                        DiagnosticResult.CompilerWarning("VERIFY0002").WithArguments("Space.HelloWorldAoj2"),
                     },
                     OutputKind = OutputKind.ConsoleApplication,
-                }
-        };
-        foreach (var tup in Sources) test.TestState.Sources.Add(tup);
-        foreach (var tup in GeneratedSources) test.TestState.GeneratedSources.Add(tup);
-
-        await test.RunAsync();
-    }
-    [Fact]
-    public async Task DynamicallyLinkedLibrary()
-    {
-        var test = new Test
-        {
-            TestState =
-                {
-                    ExpectedDiagnostics =
-                    {
-                        DiagnosticResult.CompilerWarning("VERIFY0001"),
-                    },
-                    OutputKind = OutputKind.DynamicallyLinkedLibrary,
                 }
         };
         foreach (var tup in Sources) test.TestState.Sources.Add(tup);

@@ -123,4 +123,10 @@
   <data name="VERIFY0001_Title" xml:space="preserve">
     <value>Problem verification project should be Console app.</value>
   </data>
+  <data name="VERIFY0002_Body" xml:space="preserve">
+    <value>A subclass of ProblemSolver needs default constructor.  {0}</value>
+  </data>
+  <data name="VERIFY0002_Title" xml:space="preserve">
+    <value>A subclass of ProblemSolver needs default constructor.</value>
+  </data>
 </root>

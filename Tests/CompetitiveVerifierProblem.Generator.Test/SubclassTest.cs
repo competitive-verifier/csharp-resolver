@@ -1,14 +1,21 @@
 ﻿using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Testing;
 
 namespace CompetitiveVerifierProblem.Generator.Test;
-public class DefaultGenerateTest : TestBase
+public class SubclassTest : TestBase
 {
     static readonly (string filename, string content)[] Sources = new[]{
                         (
                             @"/home/mine/HelloWorldAoj.cs",
                             """
-internal class HelloWorldAoj : CompetitiveVerifier.ProblemSolver
+internal abstract class AbstractSolver3 : CompetitiveVerifier.ProblemSolver { }
+internal abstract class AbstractSolver2 : AbstractSolver3 { }
+internal abstract class AbstractSolver : AbstractSolver2 { }
+"""
+                        ),
+                        (
+                            @"/home/mine/HelloWorldAoj.cs",
+                            """
+internal class HelloWorldAoj : AbstractSolver
 {
     public override string Url => "https://onlinejudge.u-aizu.ac.jp/courses/lesson/2/ITP1/1/ITP1_1_A";
     public override void Solve()
@@ -22,7 +29,7 @@ internal class HelloWorldAoj : CompetitiveVerifier.ProblemSolver
                             @"/home/mine/HelloWorldAoj2.cs",
                             """
 namespace Space{
-internal class HelloWorldAoj2 : CompetitiveVerifier.ProblemSolver
+internal class HelloWorldAoj2 : AbstractSolver3
 {
     public override string Url => "https://onlinejudge.u-aizu.ac.jp/courses/lesson/2/ITP1/1/ITP1_1_A";
     public override void Solve()
@@ -103,7 +110,7 @@ internal class HelloWorldAoj2 : CompetitiveVerifier.ProblemSolver
                         new Space.HelloWorldAoj2(),
 
                                 };
-                        
+
                                 bool isFirst = true;
                                 System.Console.Write('{');
                                 foreach(var c in classes)
@@ -127,7 +134,7 @@ internal class HelloWorldAoj2 : CompetitiveVerifier.ProblemSolver
                             {
                                 GetSolver(className).Solve();
                             }
-
+                        
                             static CompetitiveVerifier.ProblemSolver GetSolver(string className)
                             {
                                 switch(className)
@@ -153,25 +160,6 @@ internal class HelloWorldAoj2 : CompetitiveVerifier.ProblemSolver
                     {
                     },
                     OutputKind = OutputKind.ConsoleApplication,
-                }
-        };
-        foreach (var tup in Sources) test.TestState.Sources.Add(tup);
-        foreach (var tup in GeneratedSources) test.TestState.GeneratedSources.Add(tup);
-
-        await test.RunAsync();
-    }
-    [Fact]
-    public async Task DynamicallyLinkedLibrary()
-    {
-        var test = new Test
-        {
-            TestState =
-                {
-                    ExpectedDiagnostics =
-                    {
-                        DiagnosticResult.CompilerWarning("VERIFY0001"),
-                    },
-                    OutputKind = OutputKind.DynamicallyLinkedLibrary,
                 }
         };
         foreach (var tup in Sources) test.TestState.Sources.Add(tup);

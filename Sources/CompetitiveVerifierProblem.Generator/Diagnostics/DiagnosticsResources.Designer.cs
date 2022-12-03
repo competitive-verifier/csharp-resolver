@@ -77,5 +77,23 @@ namespace CompetitiveVerifierProblem.Diagnostics {
                 return ResourceManager.GetString("VERIFY0001_Title", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   A subclass of ProblemSolver needs default constructor.  {0} に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string VERIFY0002_Body {
+            get {
+                return ResourceManager.GetString("VERIFY0002_Body", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   A subclass of ProblemSolver needs default constructor. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string VERIFY0002_Title {
+            get {
+                return ResourceManager.GetString("VERIFY0002_Title", resourceCulture);
+            }
+        }
     }
 }
