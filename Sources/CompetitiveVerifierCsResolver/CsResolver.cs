@@ -183,6 +183,10 @@ public partial class CsResolver
                 }
 
                 var attrs = ListSpecialComments(tree.ToString().Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries));
+                if (attrs.GetValueOrDefault("UNITTEST") is string unittestEnv)
+                {
+                    WriteWarning($"{relative}: competitive-verifier-cs-resolver doesn't support UNITTEST attribute. Use --unittest option.");
+                }
 
                 var vf = new VerificationFile(dependencies, attrs, verificationBuilder.ToImmutable());
 

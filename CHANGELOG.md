@@ -7,11 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
-WriteDebug
+- WriteDebug
+- "competitive-verifier-cs-resolver doesn't support UNITTEST attribute" message
 
 ## [0.10.0] - 2022-12-03
 ### Changed
-ConsoleAppFramework → System.CommandLine
+- ConsoleAppFramework → System.CommandLine
 
 ## [0.9.3] - 2022-12-01
 ### Changed
