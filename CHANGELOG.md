@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.10.0] - 2022-12-03
 ### Changed
-ConsoleAppFramework Å® System.CommandLine
+ConsoleAppFramework ‚Üí System.CommandLine
 
 ## [0.9.3] - 2022-12-01
 ### Changed
