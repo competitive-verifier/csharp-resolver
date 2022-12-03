@@ -30,12 +30,12 @@ public partial class CsResolver
             AllowMultipleArgumentsPerToken = true,
         };
 
-        var unittestOption = new Option<string?>(
+        var unittestOption = new Option<FileInfo?>(
             aliases: new[] { "--unittest", "-u" },
             description: "Specify unittest result csv path.")
         {
         };
-        var problemsOption = new Option<string?>(
+        var problemsOption = new Option<FileInfo?>(
             aliases: new[] { "--problems", "-p" },
             description: "Specify output of CompetitiveVerifierProblem.")
         {
@@ -83,8 +83,8 @@ public partial class CsResolver
             string solutionPath,
             string[] include,
             string[] exclude,
-            string? unittest = null,
-            string? problems = null,
+            FileInfo? unittest = null,
+            FileInfo? problems = null,
             ImmutableDictionary<string, string>? properties = null,
             CancellationToken cancellationToken = default
         )
@@ -106,7 +106,7 @@ public partial class CsResolver
             testResults = new();
         else
         {
-            using (var fs = new FileStream(unittest, FileMode.Open, FileAccess.Read))
+            using (var fs = unittest.OpenRead())
                 testResults = ParseUnitTestResults(fs);
             if (testResults.Count == 0)
             {
@@ -120,7 +120,7 @@ public partial class CsResolver
             problemVerifications = new();
         else
         {
-            using (var fs = new FileStream(problems, FileMode.Open, FileAccess.Read))
+            using (var fs = problems.OpenRead())
                 problemVerifications = ParseProblemVerifications(fs) ?? new();
             if (problemVerifications.Count == 0)
             {
