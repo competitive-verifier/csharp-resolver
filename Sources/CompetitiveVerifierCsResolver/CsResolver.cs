@@ -4,6 +4,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.MSBuild;
 using System.Collections.Immutable;
 using System.CommandLine;
+using System.CommandLine.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
@@ -73,22 +74,43 @@ public partial class CsResolver
             var problems = ctx.ParseResult.GetValueForOption(problemsOption);
             var properties = ctx.ParseResult.GetValueForOption(propertiesOption);
 
-            await Resolve(solutionPath, include, exclude, unittest, problems, properties, ctx.GetCancellationToken());
+            await new CsResolver(ctx.Console).Resolve(
+                solutionPath,
+                include,
+                exclude,
+                unittest,
+                problems,
+                properties ?? ImmutableDictionary<string, string>.Empty,
+                ctx.GetCancellationToken());
         });
 
         return await rootCommand.InvokeAsync(args);
     }
 
-    public static async Task Resolve(
+    private readonly IConsole console;
+    public CsResolver(IConsole console)
+    {
+        this.console = console;
+    }
+
+    public async Task Resolve(
             string solutionPath,
             string[] include,
             string[] exclude,
-            FileInfo? unittest = null,
-            FileInfo? problems = null,
-            ImmutableDictionary<string, string>? properties = null,
+            FileInfo? unittest,
+            FileInfo? problems,
+            ImmutableDictionary<string, string> properties,
             CancellationToken cancellationToken = default
         )
     {
+        WriteDebug("Arguments");
+        WriteDebug($"solutionPath={solutionPath}");
+        WriteDebug($"include={string.Join(' ', include)}");
+        WriteDebug($"exclude={string.Join(' ', exclude)}");
+        WriteDebug($"unittest={unittest?.FullName ?? null}");
+        WriteDebug($"problems={problems?.FullName ?? null}");
+        WriteDebug($"MS build properties={string.Join(' ', properties.Select(p => $"{p.Key}={p.Value}"))}");
+
         var includeGlob = new GlobCollection(include.Select(s => Glob.Parse(s.Trim())));
         var excludeGlob = new GlobCollection(exclude.Select(s => Glob.Parse(s.Trim())));
 
@@ -130,7 +152,7 @@ public partial class CsResolver
 
         var files = ImmutableDictionary.CreateBuilder<string, VerificationFile>();
         var workspace = MSBuildWorkspace.Create(properties);
-        var solution = await workspace.OpenSolutionAsync(solutionPath, progress: new Progress(), cancellationToken: cancellationToken);
+        var solution = await workspace.OpenSolutionAsync(solutionPath, progress: new Progress(console), cancellationToken: cancellationToken);
 
         foreach (var project in solution.Projects)
         {
@@ -160,7 +182,9 @@ public partial class CsResolver
                     }
                 }
 
-                var vf = new VerificationFile(dependencies, ListSpecialComments(tree.ToString().Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)), verificationBuilder.ToImmutable());
+                var attrs = ListSpecialComments(tree.ToString().Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries));
+
+                var vf = new VerificationFile(dependencies, attrs, verificationBuilder.ToImmutable());
 
                 if (files.TryGetValue(relative, out var prev))
                     vf = vf.Merge(prev);
@@ -169,7 +193,7 @@ public partial class CsResolver
         }
 
         var result = new VerificationInput(files.ToImmutable());
-        Console.WriteLine(JsonSerializer.Serialize(result, new JsonSerializerOptions
+        console.WriteLine(JsonSerializer.Serialize(result, new JsonSerializerOptions
         {
 #if NET5_0_OR_GREATER
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
@@ -265,7 +289,7 @@ public partial class CsResolver
 #endif
         });
     }
-    class Progress : IProgress<ProjectLoadProgress>
+    record class Progress(IConsole Console) : IProgress<ProjectLoadProgress>
     {
         public void Report(ProjectLoadProgress p)
         {
@@ -273,14 +297,22 @@ public partial class CsResolver
         }
     }
 
-    static void WriteWarning(string message)
+    void WriteWarning(string message)
     {
         Console.ForegroundColor = ConsoleColor.DarkYellow;
-        Console.Error.WriteLine($"Warning: {message}");
+        console.Error.WriteLine($"Warning: {message}");
         Console.ResetColor();
         if (Environment.GetEnvironmentVariable("GITHUB_ACTIONS") is not null)
         {
-            Console.Error.WriteLine($"::warning ::{message}");
+            console.Error.WriteLine($"::warning ::{message}");
+        }
+    }
+    void WriteDebug(string message)
+    {
+        System.Diagnostics.Debug.WriteLine($"{message}");
+        if (Environment.GetEnvironmentVariable("GITHUB_ACTIONS") is not null)
+        {
+            console.Error.WriteLine($"::debug ::{message}");
         }
     }
 }
