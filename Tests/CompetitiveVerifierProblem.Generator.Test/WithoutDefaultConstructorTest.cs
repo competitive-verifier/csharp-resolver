@@ -151,7 +151,7 @@ internal class HelloWorldAoj2 : CompetitiveVerifier.ProblemSolver
                 {
                     ExpectedDiagnostics =
                     {
-                        DiagnosticResult.CompilerWarning("VERIFY0002").WithArguments("Space.HelloWorldAoj2"),
+                        DiagnosticResult.CompilerWarning("VERIFY0002").WithSpan("/home/mine/HelloWorldAoj2.cs", 2, 1, 10, 2).WithArguments("Space.HelloWorldAoj2"),
                     },
                     OutputKind = OutputKind.ConsoleApplication,
                 }

@@ -80,7 +80,10 @@ public partial class ProblemGenerator : IIncrementalGenerator
             if (s.IsAbstract) continue;
             if (!s.Constructors.Select(c => c.Parameters.Length).Contains(0))
             {
-                context.ReportDiagnostic(DiagnosticDescriptors.VERIFY0002_DefaultConstructor(c));
+                foreach (var location in s.DeclaringSyntaxReferences.Select(r => Location.Create(r.SyntaxTree, r.Span)))
+                {
+                    context.ReportDiagnostic(DiagnosticDescriptors.VERIFY0002_WithoutDefaultConstructor(c, location));
+                }
                 continue;
             }
 
