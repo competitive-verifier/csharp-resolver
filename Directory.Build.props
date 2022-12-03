@@ -1,8 +1,8 @@
 <Project>
 
   <PropertyGroup>
-    <Version>0.10.2</Version>
-    <AssemblyVersion>0.10.2.100</AssemblyVersion>
+    <Version>0.11.0</Version>
+    <AssemblyVersion>0.11.0.100</AssemblyVersion>
     <Authors>kzrnm</Authors>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <Company>competitive-verifier</Company>
