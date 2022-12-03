@@ -14,7 +14,29 @@ See [Examples](Examples).
 
 Use in GitHub Actions.
 
-TODO: 書く
+**Sample**
+
+```yaml
+      - name: Build
+        run: dotnet build ${{ env.WORKFLOW_BUILD_SLN }} -c Release
+      - name: setup CompetitiveVerifierCsResolver
+        run: dotnet tool install -g CompetitiveVerifierCsResolver
+      - name: Unit test
+        run: dotnet test ${{ env.UNITTEST_CSPROJ }} --logger "CompetitiveVerifier;OutFile=${{runner.temp}}/unittest.csv" --no-build  -c Release
+      - name: Resolve
+        run: dotnet run --project ${{ env.VERIFY_CSPROJ }} --no-build -c Release | tee ${{runner.temp}}/problems.json
+      - name: cs-resolve
+        uses: competitive-verifier/actions/cs-resolve@v1
+        with:
+          solution: ${{ env.WORKFLOW_BUILD_SLN }}
+          output-path: verify_files.json
+          # Specify patterns
+          include: |
+                Examples/**
+          # exclude: your-own-exclude/
+          unittest-result: ${{runner.temp}}/unittest.csv
+          problems: ${{runner.temp}}/problems.json
+```
 
 ### Local
 
