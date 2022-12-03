@@ -18,34 +18,24 @@ public class TestLogger : ITestLoggerWithParameters
 
     public void Initialize(TestLoggerEvents events, Dictionary<string, string?> parameters)
     {
-        if (parameters.TryGetValue("OutFile", out var outFile) && outFile is not null)
+        if (parameters.TryGetValue("OutDirectory", out var outDir) && outDir is not null)
         {
-            outFile = outFile.Replace('\\', '/');
-            var fullPath = Path.GetFullPath(outFile).Replace('\\', '/');
+            outDir = outDir.Replace('\\', '/');
+            var fullPath = Path.GetFullPath(outDir).Replace('\\', '/');
 
-            if (outFile != fullPath)
+            if (outDir != fullPath)
             {
-                WriteWarning("OutFile parameter requires full path.");
+                WriteWarning("OutDirectory parameter requires full path.");
             }
         }
         else
         {
-            WriteWarning("specify OutFile. e.g. dotnet test --logger \"CompetitiveVerifier;OutFile=$PWD/out.csv\"");
+            WriteWarning("specify OutDirectory. e.g. dotnet test --logger \"CompetitiveVerifier;OutDirectory=$PWD/VerifierUnitTest\"");
         }
 
-        _context = new ResolveContext(outFile);
+        _context = new ResolveContext(outDir);
+        events.TestRunStart += (_, e) => _context.OnTestRunStart(e);
         events.TestResult += (_, e) => _context.OnTestResult(e);
         events.TestRunComplete += (_, e) => _context.OnTestRunComplete(e);
-    }
-
-    static void WriteWarning(string message)
-    {
-        Console.ForegroundColor = ConsoleColor.DarkYellow;
-        Console.WriteLine($"Warning: {message}");
-        Console.ResetColor();
-        if (Environment.GetEnvironmentVariable("GITHUB_ACTIONS") is not null)
-        {
-            Console.WriteLine($"::warning ::{message}");
-        }
     }
 }

@@ -9,5 +9,5 @@ dotnet add package CompetitiveVerifierResolverTestLogger
 ## Usage
 
 ```sh
-dotnet test  --logger "CompetitiveVerifier;OutFile=$pwd/out.csv"
+dotnet test  --logger "CompetitiveVerifier;OutDirectory=$PWD/VerifierUnitTest"
 ```

@@ -22,7 +22,7 @@ Use in GitHub Actions.
       - name: setup CompetitiveVerifierCsResolver
         run: dotnet tool install -g CompetitiveVerifierCsResolver
       - name: Unit test
-        run: dotnet test ${{ env.UNITTEST_CSPROJ }} --logger "CompetitiveVerifier;OutFile=${{runner.temp}}/unittest.csv" --no-build  -c Release
+        run: dotnet test ${{ env.UNITTEST_CSPROJ }} --logger "CompetitiveVerifier;OutDirectory=${{runner.temp}}/VerifierUnitTest" --no-build  -c Release
       - name: Resolve
         run: dotnet run --project ${{ env.VERIFY_CSPROJ }} --no-build -c Release | tee ${{runner.temp}}/problems.json
       - name: cs-resolve
@@ -34,7 +34,7 @@ Use in GitHub Actions.
           include: |
                 Examples/**
           # exclude: your-own-exclude/
-          unittest-result: ${{runner.temp}}/unittest.csv
+          unittest-result: ${{runner.temp}}/VerifierUnitTest/*.csv
           problems: ${{runner.temp}}/problems.json
 ```
 
@@ -47,9 +47,9 @@ dotnet add {{YourUnittest.csproj}} package CompetitiveVerifierResolverTestLogger
 dotnet add {{YourProblemApp.csproj}} package CompetitiveVerifierProblem
 
 # Run
-dotnet test {{YourUnittest.csproj}} --logger "CompetitiveVerifier;OutFile=$pwd/unittest.csv"
+dotnet test {{YourUnittest.csproj}} --logger "CompetitiveVerifier;OutFile=$pwd/VerifierUnitTest"
 dotnet run --project {{YourProblemApp.csproj}} > problems.json
-CompetitiveVerifierCsResolver YourSolution.sln -u unittest.csv -p problems.json
+CompetitiveVerifierCsResolver YourSolution.sln -u VerifierUnitTest/*.csv -p problems.json
 ```
 
 ## Projects

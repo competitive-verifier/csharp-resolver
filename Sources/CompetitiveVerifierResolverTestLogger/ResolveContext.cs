@@ -8,10 +8,16 @@ using System.Linq;
 using System.Text;
 
 namespace CompetitiveVerifierResolverTestLogger;
-internal record ResolveContext(string? OutFile)
+internal record ResolveContext(string? OutDirectory)
 {
     private readonly object _lock = new();
     private readonly List<TestResult> _testResults = new();
+    private TestRunCriteria? _testRunCriteria;
+
+    internal void OnTestRunStart(TestRunStartEventArgs e)
+    {
+        _testRunCriteria = e.TestRunCriteria;
+    }
 
     public void OnTestResult(TestResultEventArgs e)
     {
@@ -20,22 +26,38 @@ internal record ResolveContext(string? OutFile)
             _testResults.Add(e.Result);
         }
     }
-    public void OnTestRunComplete(TestRunCompleteEventArgs e)
+
+    public void OnTestRunComplete(TestRunCompleteEventArgs _)
     {
         lock (_lock)
         {
-            var sw = OutFile switch
+            try
             {
-                null => null,
-                var s => new StreamWriter(new FileStream(s, FileMode.Create), new UTF8Encoding(false)),
-            };
+                var testSuiteName =
+                    _testRunCriteria?.Sources.FirstOrDefault()?.Pipe(Path.GetFileNameWithoutExtension) ??
+                    "UnknownTestSuite";
 
-            using var tee = new TeeStream(sw);
-            tee.WriteLine("Class,success,skipped,failure");
-            foreach (var gr in _testResults.GroupBy(r => GetClassNameFromFullyQualifiedName(r.TestCase.FullyQualifiedName), r => r.Outcome))
+                var targetFrameworkName =
+                    _testRunCriteria?.TryGetTargetFramework() ??
+                    "UnknownTargetFramework";
+
+                OutDirectory?.Pipe(s => new DirectoryInfo(s))?.Create();
+                var filePath = OutDirectory?.Pipe(s => Path.Combine(s, $"CompetitiveVerifier-{testSuiteName}-{targetFrameworkName}.csv"));
+
+                var sw = filePath?.Pipe(s => new StreamWriter(new FileStream(s, FileMode.Create), new UTF8Encoding(false)));
+                if (filePath is not null) Console.WriteLine($"CompetitiveVerifierResolverTestLogger: write to {filePath}.");
+
+                using var tee = new TeeStream(sw);
+                tee.WriteLine("Class,success,skipped,failure");
+                foreach (var gr in _testResults.GroupBy(r => GetClassNameFromFullyQualifiedName(r.TestCase.FullyQualifiedName), r => r.Outcome))
+                {
+                    (int success, int skipped, int failure) = OutcomeCount(gr);
+                    tee.WriteLine($"{gr.Key},{success},{skipped},{failure}");
+                }
+            }
+            catch (Exception ex)
             {
-                (int success, int skipped, int failure) = OutcomeCount(gr);
-                tee.WriteLine($"{gr.Key},{success},{skipped},{failure}");
+                WriteError(ex.ToString());
             }
         }
     }
