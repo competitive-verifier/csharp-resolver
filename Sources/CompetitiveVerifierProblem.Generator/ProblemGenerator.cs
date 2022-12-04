@@ -152,6 +152,7 @@ public partial class ProblemGenerator : IIncrementalGenerator
                 {
                     public abstract string Url { get; }
                     public virtual double? Error => null;
+                    public virtual double? Tle => null;
 
                     public abstract void Solve();
                     public string ToJson()
@@ -162,6 +163,7 @@ public partial class ProblemGenerator : IIncrementalGenerator
                             Url = Url,
                             Command = $"dotnet {System.Reflection.Assembly.GetEntryAssembly().Location} {GetType().FullName}",
                             Error = Error,
+                            Tle = Tle,
                         }, Formatting.None);
                     }
                     [JsonObject]
@@ -175,6 +177,8 @@ public partial class ProblemGenerator : IIncrementalGenerator
                         public string Command { set; get; }
                         [JsonProperty("error", Required = Required.AllowNull, DefaultValueHandling = DefaultValueHandling.Ignore)]
                         public double? Error { set; get; }
+                        [JsonProperty("tle", Required = Required.AllowNull, DefaultValueHandling = DefaultValueHandling.Ignore)]
+                        public double? Tle { set; get; }
                     }
                 }
             }

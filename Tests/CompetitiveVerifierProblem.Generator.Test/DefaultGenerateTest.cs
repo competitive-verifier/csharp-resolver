@@ -35,63 +35,7 @@ internal class HelloWorldAoj2 : CompetitiveVerifier.ProblemSolver
                         ),
                     };
 
-    static readonly (Type sourceGeneratorType, string filename, string content)[] GeneratedSources = new[]
-    {
-                        (typeof(ProblemGenerator), "ProblemSolver.cs", """
-                        #pragma warning disable IDE0161,CS8602
-                        namespace CompetitiveVerifier
-                        {
-                            using Newtonsoft.Json;
-
-                            internal abstract class ProblemSolver
-                            {
-                                public abstract string Url { get; }
-                                public virtual double? Error => null;
-
-                                public abstract void Solve();
-                                public string ToJson()
-                                {
-                                    return JsonConvert.SerializeObject(new JsonDataContract
-                                    {
-                                        Type = "problem",
-                                        Url = Url,
-                                        Command = $"dotnet {System.Reflection.Assembly.GetEntryAssembly().Location} {GetType().FullName}",
-                                        Error = Error,
-                                    }, Formatting.None);
-                                }
-                                [JsonObject]
-                                private struct JsonDataContract
-                                {
-                                    [JsonProperty("type", Required = Required.DisallowNull)]
-                                    public string Type { set; get; }
-                                    [JsonProperty("problem", Required = Required.DisallowNull)]
-                                    public string Url { set; get; }
-                                    [JsonProperty("command", Required = Required.DisallowNull)]
-                                    public string Command { set; get; }
-                                    [JsonProperty("error", Required = Required.AllowNull, DefaultValueHandling = DefaultValueHandling.Ignore)]
-                                    public double? Error { set; get; }
-                                }
-                            }
-                        }
-                        """.ReplaceLineEndings()),
-                        (typeof(ProblemGenerator), "Main.cs", """
-                        internal partial class Program
-                        {
-                            static void Main(string[] args)
-                            {
-                                if (args.Length > 0)
-                                {
-                                    Run(args[0]);
-                                }
-                                else
-                                {
-                                    Enumerate();
-                                }
-                            }
-                            static partial void Run(string className);
-                            static partial void Enumerate();
-                        }
-                        """.ReplaceLineEndings()),
+    static readonly (Type sourceGeneratorType, string filename, string content)[] GeneratedSources = ConstantGeneratedSources.Append(
                         (typeof(ProblemGenerator), "Main.impl.cs", """
                         internal partial class Program
                         {
@@ -127,7 +71,7 @@ internal class HelloWorldAoj2 : CompetitiveVerifier.ProblemSolver
                             {
                                 GetSolver(className).Solve();
                             }
-
+                        
                             static CompetitiveVerifier.ProblemSolver GetSolver(string className)
                             {
                                 switch(className)
@@ -139,8 +83,8 @@ internal class HelloWorldAoj2 : CompetitiveVerifier.ProblemSolver
                                 }
                             }
                         }
-                        """.ReplaceLineEndings()),
-    };
+                        """.ReplaceLineEndings()
+        )).ToArray();
 
     [Fact]
     public async Task Default()
