@@ -62,8 +62,8 @@ internal class TypeFinder : CSharpSyntaxWalker
         //{
         //    FindDeclaredType(delegateDeclaration);
         //}
-        else if (node is UsingDirectiveSyntax or IdentifierNameSyntax) return;
-        else if (model.GetSymbolInfo(node, cancellationToken).Symbol is { } nodeSymbol)
+        else if (node is UsingDirectiveSyntax) return;
+        else if (model.GetSymbolInfo(node, cancellationToken).Symbol is ITypeSymbol nodeSymbol)
         {
             usedFilesBuilder.UnionWith(nodeSymbol.Locations
                     .Where(l => l.Kind == LocationKind.SourceFile)
