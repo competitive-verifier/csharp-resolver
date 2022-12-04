@@ -156,6 +156,7 @@ public partial class CsResolver
         }
 
         var files = ImmutableDictionary.CreateBuilder<string, VerificationFile>();
+        var types = ImmutableDictionary.CreateBuilder<string, ImmutableHashSet<string>>();
         var workspace = MSBuildWorkspace.Create(properties);
         var solution = await workspace.OpenSolutionAsync(solutionPath, progress: new Progress(console), cancellationToken: cancellationToken);
 
@@ -174,18 +175,6 @@ public partial class CsResolver
                 finder.Visit(await tree.GetRootAsync(cancellationToken));
 
                 var dependencies = finder.UsedFiles.Select(matcher.RelativePath).OfType<string>().ToImmutableHashSet();
-                var verificationBuilder = ImmutableArray.CreateBuilder<Verification>();
-                foreach (var typeName in finder.DefinedTypeNames)
-                {
-                    if (testResults.TryGetValue(typeName, out var unitTestResult))
-                    {
-                        verificationBuilder.AddRange(unitTestResult.EnumerateVerifications());
-                    }
-                    if (problemVerifications.TryGetValue(typeName, out var vs))
-                    {
-                        verificationBuilder.AddRange(vs);
-                    }
-                }
 
                 var attrs = ListSpecialComments(tree.ToString().Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries));
                 if (attrs.GetValueOrDefault("UNITTEST") is string unittestEnv)
@@ -193,11 +182,33 @@ public partial class CsResolver
                     WriteWarning($"{relative}: competitive-verifier-cs-resolver doesn't support UNITTEST attribute. Use --unittest option.");
                 }
 
-                var vf = new VerificationFile(dependencies, attrs, verificationBuilder.ToImmutable());
+                var vf = new VerificationFile(dependencies, attrs, ImmutableArray<Verification>.Empty);
 
                 if (files.TryGetValue(relative, out var prev))
                     vf = vf.Merge(prev);
                 files[relative] = vf;
+                types[relative] = types.GetValueOrDefault(relative, ImmutableHashSet<string>.Empty).Union(finder.DefinedTypeNames);
+            }
+        }
+
+
+        foreach (var (relative, typeNames) in types)
+        {
+            var verificationBuilder = ImmutableArray.CreateBuilder<Verification>();
+            foreach (var typeName in typeNames)
+            {
+                if (testResults.TryGetValue(typeName, out var unitTestResult))
+                {
+                    verificationBuilder.AddRange(unitTestResult.EnumerateVerifications());
+                }
+                if (problemVerifications.TryGetValue(typeName, out var vs))
+                {
+                    verificationBuilder.AddRange(vs);
+                }
+            }
+            if (files.TryGetValue(relative, out var vf))
+            {
+                files[relative] = vf with { Verification = verificationBuilder.ToImmutable() };
             }
         }
 
