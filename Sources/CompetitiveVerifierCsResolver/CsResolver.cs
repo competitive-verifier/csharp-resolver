@@ -44,17 +44,18 @@ public partial class CsResolver
             AllowMultipleArgumentsPerToken = true,
         };
         var propertiesOption = new Option<ImmutableDictionary<string, string>?>(
-            name: "properties",
+            name: "--properties",
             parseArgument: (res) => res.Tokens
             .SelectMany(t => t.Value.Split(';'))
             .Select(s =>
             {
                 var sp = s.Split('=');
-                return (sp[0], sp[1]);
+                return (sp[0].Trim(), sp[1].Trim());
             })
             .ToImmutableDictionary(t => t.Item1, t => t.Item2),
-            description: "MSBuild properties separated by semicolon. e.g. WarningLevel=2;OutDir=bin\\Debug")
+            description: "MSBuild properties separated by semicolon. e.g. WarningLevel=2;Configuration=Release")
         {
+            AllowMultipleArgumentsPerToken = true,
         };
 
         var rootCommand = new RootCommand("C# resolver for competitive-verifier")
