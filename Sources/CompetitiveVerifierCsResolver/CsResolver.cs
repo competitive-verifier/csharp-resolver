@@ -123,7 +123,6 @@ public partial class CsResolver
         if (unittest.IsDefaultOrEmpty && problems.IsDefaultOrEmpty)
         {
             WriteWarning($"Both {nameof(unittest)} and {nameof(problems)} are empty.");
-            return;
         }
 
         Dictionary<string, UnitTestResult> testResults = new();
