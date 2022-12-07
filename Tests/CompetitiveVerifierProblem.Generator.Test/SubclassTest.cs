@@ -45,6 +45,7 @@ internal class HelloWorldAoj2 : AbstractSolver3
 
     static readonly (Type sourceGeneratorType, string filename, string content)[] GeneratedSources = ConstantGeneratedSources.Append(
                         (typeof(ProblemGenerator), "Main.impl.cs", """
+                        #pragma warning disable IDE0161,CS8602
                         internal partial class Program
                         {
                             static partial void Enumerate()

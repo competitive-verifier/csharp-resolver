@@ -93,6 +93,7 @@ public partial class ProblemGenerator : IIncrementalGenerator
         }
 
         context.AddSource("Main.impl.cs", $$$"""
+            #pragma warning disable IDE0161,CS8602
             internal partial class Program
             {
                 static partial void Enumerate()
@@ -193,7 +194,9 @@ public partial class ProblemGenerator : IIncrementalGenerator
                             }
                         }
                         """),
+
                         ("Main.cs", """
+                        #pragma warning disable IDE0161,CS8602
                         internal partial class Program
                         {
                             static void Main(string[] args)
