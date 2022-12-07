@@ -87,7 +87,7 @@ internal class HelloWorldAoj2 : AbstractSolver3
                         case "HelloWorldAoj":return new HelloWorldAoj();
                         case "Space.HelloWorldAoj2":return new Space.HelloWorldAoj2();
 
-                                    default: throw new System.ArgumentException($"{className} is not found.", nameof(className));
+                                    default: throw new System.ArgumentException($"{className} is not found. notice: CompetitiveVerifier require FullName as argument.", nameof(className));
                                 }
                             }
                         }
