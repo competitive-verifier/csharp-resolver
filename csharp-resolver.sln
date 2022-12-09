@@ -42,10 +42,13 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.MSTest", "Sources\LocalExamples\Test.MSTest\Test.MSTest.csproj", "{3C1D92E6-FF41-4674-88BD-63073EA3E3BB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{638F2D82-DA2C-46C5-9CE1-48378BD7D73A}"
+	ProjectSection(SolutionItems) = preProject
+		Tests\Directory.Build.props = Tests\Directory.Build.props
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CompetitiveVerifierProblem.Generator.Test", "Tests\CompetitiveVerifierProblem.Generator.Test\CompetitiveVerifierProblem.Generator.Test.csproj", "{C98BF0DF-D8C5-4D69-9AB8-D327EF83CE66}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompetitiveVerifierCsResolver.Test", "Tests\CompetitiveVerifierCsResolver.Test\CompetitiveVerifierCsResolver.Test.csproj", "{43FAD6F9-D234-4755-B008-CF8FD6629B7C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CompetitiveVerifierCsResolver.Test", "Tests\CompetitiveVerifierCsResolver.Test\CompetitiveVerifierCsResolver.Test.csproj", "{43FAD6F9-D234-4755-B008-CF8FD6629B7C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
