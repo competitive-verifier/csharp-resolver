@@ -7,27 +7,39 @@ namespace CompetitiveVerifierCsResolver.Verifier;
 [JsonConverter(typeof(VerificationConverter))]
 public abstract record Verification
 {
-    [JsonPropertyName("type")]
+    [JsonPropertyName("type"), JsonPropertyOrder(0)]
     public abstract string Type { get; }
 }
 
 public record ProblemVerification(
-    [property: JsonPropertyName("problem"), JsonRequired] string Url,
-    [property: JsonPropertyName("command"), JsonRequired] string Command,
-    [property: JsonPropertyName("error")] double? Error = null) : Verification
+    [property: JsonPropertyOrder(1), JsonPropertyName("problem"), JsonRequired] string Url,
+    [property: JsonPropertyOrder(2), JsonPropertyName("command"), JsonRequired] string Command,
+    [property: JsonPropertyOrder(3), JsonPropertyName("error")] double? Error = null) : Verification
 {
     internal const string TypeVal = "problem";
 
-    [JsonPropertyName("type")]
+    [JsonPropertyName("type"), JsonPropertyOrder(0)]
     public override string Type => TypeVal;
+
+    public static Dictionary<string, ProblemVerification[]>? Parse(Stream stream)
+    {
+        return JsonSerializer.Deserialize<Dictionary<string, ProblemVerification[]>>(stream, new JsonSerializerOptions
+        {
+#if NET5_0_OR_GREATER
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+#else
+            IgnoreNullValues = true,
+#endif
+        });
+    }
 }
 
 public record ConstVerification(
-    [property: JsonPropertyName("status"), JsonRequired] ConstVerificationStatus Status) : Verification
+    [property: JsonPropertyOrder(1), JsonPropertyName("status"), JsonRequired] ConstVerificationStatus Status) : Verification
 {
     internal const string TypeVal = "const";
 
-    [JsonPropertyName("type")]
+    [JsonPropertyName("type"), JsonPropertyOrder(0)]
     public override string Type => TypeVal;
 }
 

@@ -1,5 +1,6 @@
 ﻿namespace ClassLibrary;
 
+// for http://example.com
 public readonly struct Circle
 {
     public readonly double R;

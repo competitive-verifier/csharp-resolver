@@ -1,7 +1,7 @@
 ﻿using DotNet.Globbing;
 
-namespace CompetitiveVerifierCsResolver;
-internal class GlobCollection : List<Glob>
+namespace CompetitiveVerifierCsResolver.Models;
+public class GlobCollection : List<Glob>
 {
     public GlobCollection(IEnumerable<Glob> globs) : base(globs) { }
 

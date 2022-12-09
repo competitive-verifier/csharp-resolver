@@ -1,14 +1,26 @@
 ﻿using CompetitiveVerifierCsResolver.Verifier;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
-namespace CompetitiveVerifierCsResolver;
-internal static partial class Parse
+namespace CompetitiveVerifierCsResolver.Models;
+public partial record UnitTestResult(string Name, int Success, int Skipped, int Failure)
 {
+    public UnitTestResult Add(UnitTestResult other)
+        => this with
+        {
+            Success = Success + other.Success,
+            Skipped = Skipped + other.Skipped,
+            Failure = Failure + other.Failure,
+        };
+
+    public IEnumerable<ConstVerification> EnumerateVerifications()
+        => Enumerable.Repeat(new ConstVerification(ConstVerificationStatus.Success), Success)
+        .Concat(Enumerable.Repeat(new ConstVerification(ConstVerificationStatus.Skipped), Skipped))
+        .Concat(Enumerable.Repeat(new ConstVerification(ConstVerificationStatus.Failure), Failure));
+
+
     [GeneratedRegex(@"^\s*Class\s*,\s*success\s*,\s*skipped\s*,\s*failure\s*")]
     private static partial Regex UnitTestResultHeader();
-    public static Dictionary<string, UnitTestResult> ParseUnitTestResults(Stream stream)
+    public static Dictionary<string, UnitTestResult> Parse(Stream stream)
     {
         var headerRegex = UnitTestResultHeader();
         using var sr = new StreamReader(stream);
@@ -62,16 +74,5 @@ internal static partial class Parse
         public int Success;
         public int Skipped;
         public int Failure;
-    }
-    public static Dictionary<string, ProblemVerification[]>? ParseProblemVerifications(Stream stream)
-    {
-        return JsonSerializer.Deserialize<Dictionary<string, ProblemVerification[]>>(stream, new JsonSerializerOptions
-        {
-#if NET5_0_OR_GREATER
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-#else
-            IgnoreNullValues = true,
-#endif
-        });
     }
 }

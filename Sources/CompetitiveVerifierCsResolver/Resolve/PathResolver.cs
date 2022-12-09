@@ -1,27 +1,37 @@
-﻿using System.Runtime.InteropServices;
+﻿using CompetitiveVerifierCsResolver.Models;
+using System.Runtime.InteropServices;
 
-namespace CompetitiveVerifierCsResolver;
-internal record Matcher
-(
-    GlobCollection Include,
-    GlobCollection Exclude
-    )
+namespace CompetitiveVerifierCsResolver.Resolve;
+public interface IPathResolver
 {
+    string? RelativePath(string path);
+}
+internal class PathResolver : IPathResolver
+{
+    public PathResolver(string baseDir, GlobCollection include, GlobCollection enclude)
+    {
+        BaseDir = baseDir;
+        Include = include;
+        Exclude = enclude;
+    }
+    private string BaseDir { get; }
+    private GlobCollection Include { get; }
+    private GlobCollection Exclude { get; }
     private readonly Dictionary<string, string?> targetCache = new();
 
-    static IEnumerable<string> GetParents(string path, bool includeSelf = true)
+    IEnumerable<string> GetParents(string path, bool includeSelf = true)
     {
         if (includeSelf)
             yield return path;
 
         for (var di = Directory.GetParent(path); di is not null; di = di.Parent)
-            yield return Path.GetRelativePath(Environment.CurrentDirectory, di.FullName);
+            yield return Path.GetRelativePath(BaseDir, di.FullName);
     }
 
     string? RelativePathImpl(string path)
     {
         if (!Path.IsPathFullyQualified(path)) return null;
-        path = Path.GetRelativePath(Environment.CurrentDirectory, path);
+        path = Path.GetRelativePath(BaseDir, path);
         if (path.StartsWith('.') || Path.IsPathFullyQualified(path)) return null;
 
         string? result = null;
@@ -43,5 +53,4 @@ internal record Matcher
         }
         return result;
     }
-    public bool IsTargetPath(string path) => RelativePath(path) is not null;
 }

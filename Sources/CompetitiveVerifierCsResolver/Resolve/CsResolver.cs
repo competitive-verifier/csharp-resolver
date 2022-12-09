@@ -1,102 +1,24 @@
-﻿using CompetitiveVerifierCsResolver.Verifier;
+﻿using CompetitiveVerifierCsResolver.Models;
+using CompetitiveVerifierCsResolver.Resolve;
+using CompetitiveVerifierCsResolver.Verifier;
 using DotNet.Globbing;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.MSBuild;
 using System.Collections.Immutable;
 using System.CommandLine;
 using System.CommandLine.IO;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
 namespace CompetitiveVerifierCsResolver;
 public partial class CsResolver
 {
-    public static async Task<int> RunAsync(string[] args)
-    {
-        var solutionArgument = new Argument<string>("solutionPath", "Specify solution path");
-
-        var includeOption = new Option<string[]>(
-            name: "--include",
-            getDefaultValue: () => new[] { "**" },
-            description: "Include glob patterns.")
-        {
-            AllowMultipleArgumentsPerToken = true,
-        };
-        var excludeOption = new Option<string[]>(
-            name: "--exclude",
-            getDefaultValue: () => new[] { "**/obj", "**/bin" },
-            description: "Exclude glob patterns.")
-        {
-            AllowMultipleArgumentsPerToken = true,
-        };
-
-        var unittestOption = new Option<FileInfo[]?>(
-            aliases: new[] { "--unittest", "-u" },
-            description: "Specify unittest result csv paths.")
-        {
-            AllowMultipleArgumentsPerToken = true,
-        };
-        var problemsOption = new Option<FileInfo[]?>(
-            aliases: new[] { "--problems", "-p" },
-            description: "Specify outputs of CompetitiveVerifierProblem.")
-        {
-            AllowMultipleArgumentsPerToken = true,
-        };
-        var propertiesOption = new Option<ImmutableDictionary<string, string>?>(
-            name: "--properties",
-            parseArgument: (res) => res.Tokens
-            .SelectMany(t => t.Value.Split(';'))
-            .Select(s =>
-            {
-                var sp = s.Split('=');
-                return (sp[0].Trim(), sp[1].Trim());
-            })
-            .ToImmutableDictionary(t => t.Item1, t => t.Item2),
-            description: "MSBuild properties separated by semicolon. e.g. WarningLevel=2;Configuration=Release")
-        {
-            AllowMultipleArgumentsPerToken = true,
-        };
-
-        var rootCommand = new RootCommand("C# resolver for competitive-verifier")
-        {
-            solutionArgument,
-            includeOption,
-            excludeOption,
-            unittestOption,
-            problemsOption,
-            propertiesOption,
-    };
-
-        rootCommand.SetHandler(async ctx =>
-        {
-            var solutionPath = ctx.ParseResult.GetValueForArgument(solutionArgument)!;
-            var include = ctx.ParseResult.GetValueForOption(includeOption)!;
-            var exclude = ctx.ParseResult.GetValueForOption(excludeOption)!;
-            var unittest = ctx.ParseResult.GetValueForOption(unittestOption) ?? Array.Empty<FileInfo>();
-            var problems = ctx.ParseResult.GetValueForOption(problemsOption) ?? Array.Empty<FileInfo>();
-            var properties = ctx.ParseResult.GetValueForOption(propertiesOption);
-
-            await new CsResolver(ctx.Console).Resolve(
-                solutionPath,
-                include,
-                exclude,
-                unittest.ToImmutableArray(),
-                problems.ToImmutableArray(),
-                properties ?? ImmutableDictionary<string, string>.Empty,
-                ctx.GetCancellationToken());
-        });
-
-        return await rootCommand.InvokeAsync(args);
-    }
-
     private readonly IConsole console;
     public CsResolver(IConsole console)
     {
         this.console = console;
     }
 
-    public async Task Resolve(
+    public async Task ResolveAsync(
             string solutionPath,
             string[] include,
             string[] exclude,
@@ -114,10 +36,6 @@ public partial class CsResolver
         WriteDebug($"problems={string.Join(",", problems.Select(f => f.FullName))}");
         WriteDebug($"MS build properties={string.Join(' ', properties.Select(p => $"{p.Key}={p.Value}"))}");
 
-        var includeGlob = new GlobCollection(include.Select(s => Glob.Parse(s.Trim())));
-        var excludeGlob = new GlobCollection(exclude.Select(s => Glob.Parse(s.Trim())));
-
-        var matcher = new Matcher(includeGlob, excludeGlob);
 
         properties ??= ImmutableDictionary<string, string>.Empty;
         if (unittest.IsDefaultOrEmpty && problems.IsDefaultOrEmpty)
@@ -131,7 +49,7 @@ public partial class CsResolver
             foreach (var p in unittest)
             {
                 using var fs = p.OpenRead();
-                testResults.Add(Parse.ParseUnitTestResults(fs));
+                testResults.Add(UnitTestResult.Parse(fs));
             }
             if (testResults.Count == 0)
             {
@@ -146,7 +64,7 @@ public partial class CsResolver
             foreach (var p in problems)
             {
                 using var fs = p.OpenRead();
-                if (Parse.ParseProblemVerifications(fs) is { } dd)
+                if (ProblemVerification.Parse(fs) is { } dd)
                     problemVerifications.Add(dd);
             }
             if (problemVerifications.Count == 0)
@@ -155,10 +73,25 @@ public partial class CsResolver
             }
         }
 
-        var files = ImmutableDictionary.CreateBuilder<string, VerificationFile>();
-        var types = ImmutableDictionary.CreateBuilder<string, ImmutableHashSet<string>>();
         var workspace = MSBuildWorkspace.Create(properties);
         var solution = await workspace.OpenSolutionAsync(solutionPath, progress: new Progress(console), cancellationToken: cancellationToken);
+
+        var includeGlob = new GlobCollection(include.Select(s => Glob.Parse(s.Trim())));
+        var excludeGlob = new GlobCollection(exclude.Select(s => Glob.Parse(s.Trim())));
+
+        var result = await ResolveImplAsync(solution, new PathResolver(Environment.CurrentDirectory, includeGlob, excludeGlob), testResults, problemVerifications, cancellationToken);
+        console.WriteLine(result.ToJson());
+    }
+    internal async Task<VerificationInput> ResolveImplAsync(
+            Solution solution,
+            IPathResolver pathResolver,
+            IDictionary<string, UnitTestResult> testResults,
+            IDictionary<string, ProblemVerification[]> problemVerifications,
+            CancellationToken cancellationToken = default
+        )
+    {
+        var files = ImmutableSortedDictionary.CreateBuilder<string, VerificationFile>();
+        var types = ImmutableSortedDictionary.CreateBuilder<string, ImmutableHashSet<string>>();
 
         foreach (var project in solution.Projects)
         {
@@ -168,26 +101,36 @@ public partial class CsResolver
             foreach (var tree in compilation.SyntaxTrees)
             {
                 var path = tree.FilePath;
-                if (matcher.RelativePath(path) is not string relative) continue;
+                if (pathResolver.RelativePath(path) is not string relative) continue;
 
+                var root = await tree.GetRootAsync(cancellationToken);
                 var semanticModel = compilation.GetSemanticModel(tree, ignoreAccessibility: true);
-                var finder = new TypeFinder(semanticModel, cancellationToken);
-                finder.Visit(await tree.GetRootAsync(cancellationToken));
+                var typeFinder = new TypeFinder(semanticModel, cancellationToken);
+                typeFinder.Visit(root);
 
-                var dependencies = finder.UsedFiles.Select(matcher.RelativePath).OfType<string>().ToImmutableHashSet();
+                var dependencies = typeFinder.UsedFiles.Select(pathResolver.RelativePath).OfType<string>().ToImmutableHashSet();
 
-                var attrs = ListSpecialComments(tree.ToString().Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries));
-                if (attrs.GetValueOrDefault("UNITTEST") is string unittestEnv)
+                var treeString = tree.ToString();
+                var treeLines = treeString.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                var attrBuilder = ImmutableSortedDictionary.CreateBuilder<string, object>();
+                ListSpecialComments(attrBuilder, treeLines);
+
+                if (attrBuilder.GetValueOrDefault("UNITTEST") is string unittestEnv)
                 {
                     WriteWarning($"{relative}: competitive-verifier-cs-resolver doesn't support UNITTEST attribute. Use --unittest option.");
                 }
 
-                var vf = new VerificationFile(dependencies, attrs, ImmutableArray<Verification>.Empty);
+                var urlsFinder = new UrlFinder(cancellationToken);
+                urlsFinder.Visit(root);
+                if (!urlsFinder.Urls.IsEmpty)
+                    attrBuilder["links"] = urlsFinder.Urls;
+
+                var vf = new VerificationFile(dependencies, attrBuilder.ToImmutable(), ImmutableArray<Verification>.Empty);
 
                 if (files.TryGetValue(relative, out var prev))
                     vf = vf.Merge(prev);
                 files[relative] = vf;
-                types[relative] = types.GetValueOrDefault(relative, ImmutableHashSet<string>.Empty).Union(finder.DefinedTypeNames);
+                types[relative] = types.GetValueOrDefault(relative, ImmutableHashSet<string>.Empty).Union(typeFinder.DefinedTypeNames);
             }
         }
 
@@ -212,22 +155,14 @@ public partial class CsResolver
             }
         }
 
-        var result = new VerificationInput(files.ToImmutable());
-        console.WriteLine(JsonSerializer.Serialize(result, new JsonSerializerOptions
-        {
-#if NET5_0_OR_GREATER
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-#else
-            IgnoreNullValues = true,
-#endif
-        }));
+        return new(files.ToImmutable());
     }
+
 
     [GeneratedRegex(@"\b(?:competitive-verifier):\s*(\S+)(?:\s(.*))?$")]
     private static partial Regex ListSpecialCommentsRegex();
-    static ImmutableDictionary<string, string> ListSpecialComments(string[] lines)
+    static void ListSpecialComments(ImmutableSortedDictionary<string, object>.Builder builder, string[] lines)
     {
-        var builder = ImmutableDictionary.CreateBuilder<string, string>();
         var regex = ListSpecialCommentsRegex();
         foreach (var line in lines)
         {
@@ -237,8 +172,6 @@ public partial class CsResolver
                 builder[m.Groups[1].Value] = m.Groups[2].Value;
             }
         }
-
-        return builder.ToImmutable();
     }
 
     record class Progress(IConsole Console) : IProgress<ProjectLoadProgress>

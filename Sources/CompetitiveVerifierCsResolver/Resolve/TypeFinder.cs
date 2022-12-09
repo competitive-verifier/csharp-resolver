@@ -4,10 +4,9 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Collections.Immutable;
 
 
-namespace CompetitiveVerifierCsResolver;
+namespace CompetitiveVerifierCsResolver.Resolve;
 internal class TypeFinder : CSharpSyntaxWalker
 {
-    private bool visited;
     private readonly SemanticModel model;
     private readonly CancellationToken cancellationToken;
 
@@ -16,11 +15,6 @@ internal class TypeFinder : CSharpSyntaxWalker
     public ImmutableHashSet<string> UsedFiles => usedFilesBuilder.ToImmutable();
     public ImmutableHashSet<string> DefinedTypeNames => definedTypesBuilder.ToImmutable();
 
-    private void ThrowIfNotVisited()
-    {
-        if (!visited)
-            throw new InvalidOperationException("Not Visited");
-    }
     public TypeFinder(SemanticModel model, CancellationToken cancellationToken)
     {
         this.model = model;
@@ -43,11 +37,6 @@ internal class TypeFinder : CSharpSyntaxWalker
             return true;
         }
         return false;
-    }
-    public override void VisitCompilationUnit(CompilationUnitSyntax node)
-    {
-        base.VisitCompilationUnit(node);
-        visited = true;
     }
 
     public override void Visit(SyntaxNode? node)
