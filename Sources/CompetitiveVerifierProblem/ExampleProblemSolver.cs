@@ -1,10 +1,8 @@
-﻿#pragma warning disable IDE0161,CS8602
+﻿#pragma warning disable IDE0001, IDE0161, CS8602
 // Example of ProblemSolver
 
 namespace CompetitiveVerifier
 {
-    using Newtonsoft.Json;
-
     internal abstract class ProblemSolver
     {
         public abstract string Url { get; }
@@ -14,27 +12,28 @@ namespace CompetitiveVerifier
         public abstract void Solve();
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(new JsonDataContract
+            var thisLocation = global::System.Reflection.Assembly.GetEntryAssembly().Location;
+            return global::Newtonsoft.Json.JsonConvert.SerializeObject(new JsonDataContract
             {
                 Type = "problem",
                 Url = Url,
-                Command = $"dotnet {System.Reflection.Assembly.GetEntryAssembly().Location} {GetType().FullName}",
+                Command = $"dotnet {thisLocation} {GetType().Name}",
                 Error = Error,
                 Tle = Tle,
-            }, Formatting.None);
+            }, global::Newtonsoft.Json.Formatting.None);
         }
-        [JsonObject]
+        [global::Newtonsoft.Json.JsonObject]
         private struct JsonDataContract
         {
-            [JsonProperty("type", Required = Required.DisallowNull)]
+            [global::Newtonsoft.Json.JsonProperty("type", Required = global::Newtonsoft.Json.Required.DisallowNull)]
             public string Type { set; get; }
-            [JsonProperty("problem", Required = Required.DisallowNull)]
+            [global::Newtonsoft.Json.JsonProperty("problem", Required = global::Newtonsoft.Json.Required.DisallowNull)]
             public string Url { set; get; }
-            [JsonProperty("command", Required = Required.DisallowNull)]
+            [global::Newtonsoft.Json.JsonProperty("command", Required = global::Newtonsoft.Json.Required.DisallowNull)]
             public string Command { set; get; }
-            [JsonProperty("error", Required = Required.AllowNull, DefaultValueHandling = DefaultValueHandling.Ignore)]
+            [global::Newtonsoft.Json.JsonProperty("error", Required = global::Newtonsoft.Json.Required.AllowNull, DefaultValueHandling = global::Newtonsoft.Json.DefaultValueHandling.Ignore)]
             public double? Error { set; get; }
-            [JsonProperty("tle", Required = Required.AllowNull, DefaultValueHandling = DefaultValueHandling.Ignore)]
+            [global::Newtonsoft.Json.JsonProperty("tle", Required = global::Newtonsoft.Json.Required.AllowNull, DefaultValueHandling = global::Newtonsoft.Json.DefaultValueHandling.Ignore)]
             public double? Tle { set; get; }
         }
     }

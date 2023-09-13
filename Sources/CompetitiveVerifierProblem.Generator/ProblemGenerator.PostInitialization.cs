@@ -21,41 +21,40 @@ public partial class ProblemGenerator : IIncrementalGenerator
     public static (string filename, string content)[] ConstantSources => new[]
         {
                         ("ProblemSolver.cs", """
-                        #pragma warning disable IDE0161,CS8602
+                        #pragma warning disable IDE0001, IDE0161, CS8602
                         namespace CompetitiveVerifier
                         {
-                            using Newtonsoft.Json;
-                        
                             internal abstract class ProblemSolver
                             {
                                 public abstract string Url { get; }
                                 public virtual double? Error => null;
                                 public virtual double? Tle => null;
-                        
+
                                 public abstract void Solve();
                                 public string ToJson()
                                 {
-                                    return JsonConvert.SerializeObject(new JsonDataContract
+                                    var thisLocation = global::System.Reflection.Assembly.GetEntryAssembly().Location;
+                                    return global::Newtonsoft.Json.JsonConvert.SerializeObject(new JsonDataContract
                                     {
                                         Type = "problem",
                                         Url = Url,
-                                        Command = $"dotnet {System.Reflection.Assembly.GetEntryAssembly().Location} {GetType().FullName}",
+                                        Command = $"dotnet {thisLocation} {GetType().FullName}",
                                         Error = Error,
                                         Tle = Tle,
-                                    }, Formatting.None);
+                                    }, global::Newtonsoft.Json.Formatting.None);
                                 }
-                                [JsonObject]
+                                [global::Newtonsoft.Json.JsonObject]
                                 private struct JsonDataContract
                                 {
-                                    [JsonProperty("type", Required = Required.DisallowNull)]
+                                    [global::Newtonsoft.Json.JsonProperty("type", Required = global::Newtonsoft.Json.Required.DisallowNull)]
                                     public string Type { set; get; }
-                                    [JsonProperty("problem", Required = Required.DisallowNull)]
+                                    [global::Newtonsoft.Json.JsonProperty("problem", Required = global::Newtonsoft.Json.Required.DisallowNull)]
                                     public string Url { set; get; }
-                                    [JsonProperty("command", Required = Required.DisallowNull)]
+                                    [global::Newtonsoft.Json.JsonProperty("command", Required = global::Newtonsoft.Json.Required.DisallowNull)]
                                     public string Command { set; get; }
-                                    [JsonProperty("error", Required = Required.AllowNull, DefaultValueHandling = DefaultValueHandling.Ignore)]
+                                    [global::Newtonsoft.Json.JsonProperty("error", Required = global::Newtonsoft.Json.Required.AllowNull, DefaultValueHandling = global::Newtonsoft.Json.DefaultValueHandling.Ignore)]
                                     public double? Error { set; get; }
-                                    [JsonProperty("tle", Required = Required.AllowNull, DefaultValueHandling = DefaultValueHandling.Ignore)]
+                                    [global::Newtonsoft.Json.JsonProperty("tle", Required = global::Newtonsoft.Json.Required.AllowNull, DefaultValueHandling = global::Newtonsoft.Json.DefaultValueHandling.Ignore)]
                                     public double? Tle { set; get; }
                                 }
                             }
@@ -63,7 +62,7 @@ public partial class ProblemGenerator : IIncrementalGenerator
                         """),
 
                         ("Main.cs", """
-                        #pragma warning disable IDE0161,CS8602
+                        #pragma warning disable IDE0001, IDE0161, CS8602
                         internal partial class Program
                         {
                             static void Main(string[] args)
@@ -73,22 +72,22 @@ public partial class ProblemGenerator : IIncrementalGenerator
                                     var a = args[0];
                                     if (a == "-h" || a == "--help")
                                     {
-                                        System.Console.WriteLine(System.Reflection.Assembly.GetExecutingAssembly().GetName().Name);
-                                        System.Console.WriteLine();
-                                        System.Console.WriteLine(@"Options:
-                        -i, --interactive   Run interactive mode.
-                        -h, --help          Show this help.");
+                                        global::System.Console.WriteLine(global::System.Reflection.Assembly.GetExecutingAssembly().GetName().Name);
+                                        global::System.Console.WriteLine();
+                                        global::System.Console.WriteLine(@"Options:
+                                                -i, --interactive   Run interactive mode.
+                                                -h, --help          Show this help.");
                                         return;
                                     }
                                     if (a == "-i" || a == "--interactive")
                                     {
-                                        System.Console.WriteLine(@"Input class name");
+                                        global::System.Console.WriteLine(@"Input class name");
                                         string line;
                                         do
                                         {
-                                            line = System.Console.ReadLine().Trim();
+                                            line = global::System.Console.ReadLine().Trim();
                                         }
-                                        while(line == "");
+                                        while (line == "");
                                         a = line;
                                     }
                                     Run(a);

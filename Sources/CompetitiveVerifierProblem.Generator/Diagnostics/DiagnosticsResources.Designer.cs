@@ -95,5 +95,23 @@ namespace CompetitiveVerifierProblem.Diagnostics {
                 return ResourceManager.GetString("VERIFY0002_Title", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Unable to determine the type arguments of generic subclass of ProblemSolver. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string VERIFY0003_Body {
+            get {
+                return ResourceManager.GetString("VERIFY0003_Body", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Unable to determine the type arguments of generic subclass of ProblemSolver. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string VERIFY0003_Title {
+            get {
+                return ResourceManager.GetString("VERIFY0003_Title", resourceCulture);
+            }
+        }
     }
 }

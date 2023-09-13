@@ -6,10 +6,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
-using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using System.Linq;
 using System.Text;
-using System.Collections;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace CompetitiveVerifierProblem;
 
@@ -17,6 +16,9 @@ namespace CompetitiveVerifierProblem;
 [Generator]
 public partial class ProblemGenerator : IIncrementalGenerator
 {
+    static readonly SymbolDisplayFormat NameAndContainingTypesAndNamespacesFormat = new(
+                globalNamespaceStyle: SymbolDisplayGlobalNamespaceStyle.Omitted,
+                typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces);
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         context.RegisterPostInitializationOutput(PostInitialization);
@@ -61,7 +63,7 @@ public partial class ProblemGenerator : IIncrementalGenerator
                         builder.Add(symbol);
                     }
                 }
-                return builder.ToImmutable();
+                return new GenerateParameters(builder.ToImmutable());
             });
 
         context.RegisterImplementationSourceOutput(classessAndDiagnostics, ImplementationSource);
@@ -74,27 +76,28 @@ public partial class ProblemGenerator : IIncrementalGenerator
             }
         }
     }
-
-
-    private void ImplementationSource(SourceProductionContext context, ImmutableArray<INamedTypeSymbol> classes)
+    record GenerateParameters(ImmutableArray<INamedTypeSymbol> Classes);
+    private void ImplementationSource(SourceProductionContext context, GenerateParameters parameters)
     {
-        static ((string FullName, IEnumerable<string> Names)? Names, IEnumerable<Diagnostic> Diagnostics) GetNames(INamedTypeSymbol s)
+        ((string FullName, IEnumerable<string> Names)? Names, IEnumerable<Diagnostic> Diagnostics) GetNames(INamedTypeSymbol s)
         {
             if (s.IsAbstract) return (null, Array.Empty<Diagnostic>());
 
-            var names = new List<string>();
-            var fullName = s.ToDisplayString(new SymbolDisplayFormat(
-                globalNamespaceStyle: SymbolDisplayGlobalNamespaceStyle.Omitted,
-                typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces));
-            names.Add(fullName);
+            var fullName = s.ToDisplayString(NameAndContainingTypesAndNamespacesFormat);
 
             if (!s.Constructors.Select(c => c.Parameters.Length).Contains(0))
             {
                 return (
                             null,
-                            s.DeclaringSyntaxReferences
-                             .Select(r => Location.Create(r.SyntaxTree, r.Span))
-                             .Select(loc => DiagnosticDescriptors.VERIFY0002_WithoutDefaultConstructor(fullName, loc))
+                            s.Locations.Select(loc => DiagnosticDescriptors.VERIFY0002_WithoutDefaultConstructor(fullName, loc))
+                       );
+            }
+
+            if (s.IsGenericType)
+            {
+                return (
+                            null,
+                            s.Locations.Select(DiagnosticDescriptors.VERIFY0003_GenericTypeArguments)
                        );
             }
 
@@ -106,8 +109,9 @@ public partial class ProblemGenerator : IIncrementalGenerator
 
         var classesCallToJson = new StringBuilder();
         var solverSelector = new StringBuilder();
-        foreach (var (namesTup, diags) in classes.Select(GetNames).OrderBy(t => t.Names?.FullName, StringComparer.Ordinal))
+        foreach (var (namesTup, diags) in parameters.Classes.Select(GetNames).OrderBy(t => t.Names?.FullName, StringComparer.Ordinal))
         {
+            context.CancellationToken.ThrowIfCancellationRequested();
             foreach (var diag in diags)
                 context.ReportDiagnostic(diag);
             if (namesTup is (string fullName, IEnumerable<string> names))
@@ -126,6 +130,7 @@ public partial class ProblemGenerator : IIncrementalGenerator
 
         foreach (var fullName in fullNames)
         {
+            context.CancellationToken.ThrowIfCancellationRequested();
             namesDic.Remove(fullName);
             classesCallToJson.AppendLine($"new {fullName}(),");
             solverSelector.Append("case ").Append(Literal(fullName)).Append(":return new ").Append(fullName).AppendLine("();");
@@ -133,6 +138,7 @@ public partial class ProblemGenerator : IIncrementalGenerator
 
         foreach (var (name, full) in namesDic)
         {
+            context.CancellationToken.ThrowIfCancellationRequested();
             Debug.Assert(full.Count > 0);
             if (fullNames.Contains(name))
             {

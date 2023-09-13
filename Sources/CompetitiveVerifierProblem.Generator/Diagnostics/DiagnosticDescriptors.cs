@@ -34,4 +34,20 @@ public static class DiagnosticDescriptors
         "Error",
         DiagnosticSeverity.Warning,
         true);
+
+    public static Diagnostic VERIFY0003_GenericTypeArguments(Location location)
+        => Diagnostic.Create(VERIFY0003_GenericTypeArguments_Descriptor, location);
+    private static readonly DiagnosticDescriptor VERIFY0003_GenericTypeArguments_Descriptor = new(
+        "VERIFY0003",
+        new LocalizableResourceString(
+            nameof(DiagnosticsResources.VERIFY0003_Title),
+            DiagnosticsResources.ResourceManager,
+            typeof(DiagnosticsResources)),
+        new LocalizableResourceString(
+            nameof(DiagnosticsResources.VERIFY0003_Body),
+            DiagnosticsResources.ResourceManager,
+            typeof(DiagnosticsResources)),
+        "Error",
+        DiagnosticSeverity.Warning,
+        true);
 }
