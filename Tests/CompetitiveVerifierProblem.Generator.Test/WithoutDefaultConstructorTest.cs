@@ -80,7 +80,7 @@ internal class HelloWorldAoj2 : CompetitiveVerifier.ProblemSolver
                                 {
                         case "HelloWorldAoj":return new HelloWorldAoj();
                         
-                                    default: throw new System.ArgumentException($"{className} is not found. notice: CompetitiveVerifier require FullName as argument.", nameof(className));
+                                    default: throw new System.ArgumentException($"{className} is not found.", nameof(className));
                                 }
                             }
                         }

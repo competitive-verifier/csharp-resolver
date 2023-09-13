@@ -1,13 +1,18 @@
 ﻿using CompetitiveVerifierProblem.Diagnostics;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using System.Linq;
 using System.Text;
+using System.Collections;
 
 namespace CompetitiveVerifierProblem;
+
 
 [Generator]
 public partial class ProblemGenerator : IIncrementalGenerator
@@ -38,7 +43,7 @@ public partial class ProblemGenerator : IIncrementalGenerator
                 {
                     token.ThrowIfCancellationRequested();
                     var syntax = (ClassDeclarationSyntax)context.Node;
-                    return context.SemanticModel.GetDeclaredSymbol(syntax, token) as INamedTypeSymbol;
+                    return context.SemanticModel.GetDeclaredSymbol(syntax, token);
                 }
             )
             .Collect()
@@ -70,26 +75,87 @@ public partial class ProblemGenerator : IIncrementalGenerator
         }
     }
 
+
     private void ImplementationSource(SourceProductionContext context, ImmutableArray<INamedTypeSymbol> classes)
     {
-        var classesCallToJson = new StringBuilder();
-        var solverSelector = new StringBuilder();
-        foreach (var s in classes)
+        static ((string FullName, IEnumerable<string> Names)? Names, IEnumerable<Diagnostic> Diagnostics) GetNames(INamedTypeSymbol s)
         {
-            var c = s.ToDisplayString();
+            if (s.IsAbstract) return (null, Array.Empty<Diagnostic>());
 
-            if (s.IsAbstract) continue;
+            var names = new List<string>();
+            var fullName = s.ToDisplayString(new SymbolDisplayFormat(
+                globalNamespaceStyle: SymbolDisplayGlobalNamespaceStyle.Omitted,
+                typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces));
+            names.Add(fullName);
+
             if (!s.Constructors.Select(c => c.Parameters.Length).Contains(0))
             {
-                foreach (var location in s.DeclaringSyntaxReferences.Select(r => Location.Create(r.SyntaxTree, r.Span)))
-                {
-                    context.ReportDiagnostic(DiagnosticDescriptors.VERIFY0002_WithoutDefaultConstructor(c, location));
-                }
-                continue;
+                return (
+                            null,
+                            s.DeclaringSyntaxReferences
+                             .Select(r => Location.Create(r.SyntaxTree, r.Span))
+                             .Select(loc => DiagnosticDescriptors.VERIFY0002_WithoutDefaultConstructor(fullName, loc))
+                       );
             }
 
-            solverSelector.Append("case \"").Append(c).Append("\":return new ").Append(c).AppendLine("();");
-            classesCallToJson.AppendLine($"new {c}(),");
+            return ((fullName, new HashSet<string> { fullName, s.Name }), Array.Empty<Diagnostic>());
+        }
+
+        var fullNames = new HashSet<string>();
+        var namesDic = new Dictionary<string, List<string>>(); // Key: name, Value: FullName
+
+        var classesCallToJson = new StringBuilder();
+        var solverSelector = new StringBuilder();
+        foreach (var (namesTup, diags) in classes.Select(GetNames).OrderBy(t => t.Names?.FullName, StringComparer.Ordinal))
+        {
+            foreach (var diag in diags)
+                context.ReportDiagnostic(diag);
+            if (namesTup is (string fullName, IEnumerable<string> names))
+            {
+                foreach (var name in names)
+                {
+                    if (!namesDic.TryGetValue(name, out var lst))
+                        namesDic[name] = lst = new List<string>();
+                    lst.Add(fullName);
+                }
+
+                Debug.Assert(!fullNames.Contains(fullName));
+                fullNames.Add(fullName);
+            }
+        }
+
+        foreach (var fullName in fullNames)
+        {
+            namesDic.Remove(fullName);
+            classesCallToJson.AppendLine($"new {fullName}(),");
+            solverSelector.Append("case ").Append(Literal(fullName)).Append(":return new ").Append(fullName).AppendLine("();");
+        }
+
+        foreach (var (name, full) in namesDic)
+        {
+            Debug.Assert(full.Count > 0);
+            if (fullNames.Contains(name))
+            {
+                Debug.Assert(fullNames.IsSupersetOf(full));
+            }
+            else if (full.Count == 1)
+            {
+                var fullName = full[0];
+                solverSelector.Append("case ").Append(Literal(name)).Append(":return new ").Append(fullName).AppendLine("();");
+            }
+            else
+            {
+                solverSelector
+                    .Append("case ").Append(Literal(name)).Append($":throw new System.ArgumentException(\"")
+                    .Append(name).Append(" is ambiguous");
+
+                full.Sort(StringComparer.Ordinal);
+                foreach (var fullName in full)
+                {
+                    solverSelector.Append(", ").Append(fullName);
+                }
+                solverSelector.AppendLine(".\", nameof(className));");
+            }
         }
 
         context.AddSource("Main.impl.cs", $$$"""
@@ -132,108 +198,10 @@ public partial class ProblemGenerator : IIncrementalGenerator
                     switch(className)
                     {
             {{{solverSelector}}}
-                        default: throw new System.ArgumentException($"{className} is not found. notice: CompetitiveVerifier require FullName as argument.", nameof(className));
+                        default: throw new System.ArgumentException($"{className} is not found.", nameof(className));
                     }
                 }
             }
             """);
     }
-
-    private void PostInitialization(IncrementalGeneratorPostInitializationContext context)
-    {
-        var token = context.CancellationToken;
-        token.ThrowIfCancellationRequested();
-
-        foreach (var (name, source) in ConstantSources)
-        {
-            context.AddSource(name, source);
-        }
-    }
-
-
-    public static (string filename, string content)[] ConstantSources => new[]
-        {
-                        ("ProblemSolver.cs", """
-                        #pragma warning disable IDE0161,CS8602
-                        namespace CompetitiveVerifier
-                        {
-                            using Newtonsoft.Json;
-                        
-                            internal abstract class ProblemSolver
-                            {
-                                public abstract string Url { get; }
-                                public virtual double? Error => null;
-                                public virtual double? Tle => null;
-                        
-                                public abstract void Solve();
-                                public string ToJson()
-                                {
-                                    return JsonConvert.SerializeObject(new JsonDataContract
-                                    {
-                                        Type = "problem",
-                                        Url = Url,
-                                        Command = $"dotnet {System.Reflection.Assembly.GetEntryAssembly().Location} {GetType().FullName}",
-                                        Error = Error,
-                                        Tle = Tle,
-                                    }, Formatting.None);
-                                }
-                                [JsonObject]
-                                private struct JsonDataContract
-                                {
-                                    [JsonProperty("type", Required = Required.DisallowNull)]
-                                    public string Type { set; get; }
-                                    [JsonProperty("problem", Required = Required.DisallowNull)]
-                                    public string Url { set; get; }
-                                    [JsonProperty("command", Required = Required.DisallowNull)]
-                                    public string Command { set; get; }
-                                    [JsonProperty("error", Required = Required.AllowNull, DefaultValueHandling = DefaultValueHandling.Ignore)]
-                                    public double? Error { set; get; }
-                                    [JsonProperty("tle", Required = Required.AllowNull, DefaultValueHandling = DefaultValueHandling.Ignore)]
-                                    public double? Tle { set; get; }
-                                }
-                            }
-                        }
-                        """),
-
-                        ("Main.cs", """
-                        #pragma warning disable IDE0161,CS8602
-                        internal partial class Program
-                        {
-                            static void Main(string[] args)
-                            {
-                                if (args.Length > 0)
-                                {
-                                    var a = args[0];
-                                    if (a == "-h" || a == "--help")
-                                    {
-                                        System.Console.WriteLine(System.Reflection.Assembly.GetExecutingAssembly().GetName().Name);
-                                        System.Console.WriteLine();
-                                        System.Console.WriteLine(@"Options:
-                        -i, --interactive   Run interactive mode.
-                        -h, --help          Show this help.");
-                                        return;
-                                    }
-                                    if (a == "-i" || a == "--interactive")
-                                    {
-                                        System.Console.WriteLine(@"Input class name");
-                                        string line;
-                                        do
-                                        {
-                                            line = System.Console.ReadLine().Trim();
-                                        }
-                                        while(line == "");
-                                        a = line;
-                                    }
-                                    Run(a);
-                                }
-                                else
-                                {
-                                    Enumerate();
-                                }
-                            }
-                            static partial void Run(string className);
-                            static partial void Enumerate();
-                        }
-                        """),
-    };
 }

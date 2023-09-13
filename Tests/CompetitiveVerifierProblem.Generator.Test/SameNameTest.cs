@@ -2,7 +2,7 @@
 using Microsoft.CodeAnalysis.Testing;
 
 namespace CompetitiveVerifierProblem.Generator.Test;
-public class DefaultGenerateTest : TestBase
+public class SameNameTest : TestBase
 {
     static readonly (string filename, string content)[] Sources = new[]{
                         (
@@ -33,6 +33,59 @@ internal class HelloWorldAoj2 : CompetitiveVerifier.ProblemSolver
 }
 """
                         ),
+                        (
+                            @"/home/mine/Space/HelloWorldAoj.cs",
+                            """
+namespace Space{
+internal class HelloWorldAoj : CompetitiveVerifier.ProblemSolver
+{
+    public override string Url => "https://onlinejudge.u-aizu.ac.jp/courses/lesson/2/ITP1/1/ITP1_1_A";
+    public override void Solve()
+    {
+        System.Console.WriteLine("Hello World");
+    }
+}
+}
+"""
+                        ),
+                        (
+                            @"/home/mine/Space2/HelloWorldAoj2.cs",
+                            """
+namespace Space2{
+internal class HelloWorldAoj : CompetitiveVerifier.ProblemSolver
+{
+    public override string Url => "https://onlinejudge.u-aizu.ac.jp/courses/lesson/2/ITP1/1/ITP1_1_A";
+    public override void Solve()
+    {
+        System.Console.WriteLine("Hello World");
+    }
+}
+internal class HelloWorldAoj2 : CompetitiveVerifier.ProblemSolver
+{
+    public override string Url => "https://onlinejudge.u-aizu.ac.jp/courses/lesson/2/ITP1/1/ITP1_1_A";
+    public override void Solve()
+    {
+        System.Console.WriteLine("Hello World");
+    }
+}
+}
+"""
+                        ),
+                        (
+                            @"/home/mine/Space2/HelloWorldAoj3.cs",
+                            """
+namespace Space2{
+internal class HelloWorldAoj3 : CompetitiveVerifier.ProblemSolver
+{
+    public override string Url => "https://onlinejudge.u-aizu.ac.jp/courses/lesson/2/ITP1/1/ITP1_1_A";
+    public override void Solve()
+    {
+        System.Console.WriteLine("Hello World");
+    }
+}
+}
+"""
+                        ),
                     };
 
     static readonly (Type sourceGeneratorType, string filename, string content)[] GeneratedSources = ConstantGeneratedSources.Append(
@@ -45,7 +98,11 @@ internal class HelloWorldAoj2 : CompetitiveVerifier.ProblemSolver
                                 var classes = new CompetitiveVerifier.ProblemSolver[]
                                 {
                         new HelloWorldAoj(),
+                        new Space.HelloWorldAoj(),
                         new Space.HelloWorldAoj2(),
+                        new Space2.HelloWorldAoj(),
+                        new Space2.HelloWorldAoj2(),
+                        new Space2.HelloWorldAoj3(),
 
                                 };
                         
@@ -78,8 +135,13 @@ internal class HelloWorldAoj2 : CompetitiveVerifier.ProblemSolver
                                 switch(className)
                                 {
                         case "HelloWorldAoj":return new HelloWorldAoj();
+                        case "Space.HelloWorldAoj":return new Space.HelloWorldAoj();
                         case "Space.HelloWorldAoj2":return new Space.HelloWorldAoj2();
-                        case "HelloWorldAoj2":return new Space.HelloWorldAoj2();
+                        case "Space2.HelloWorldAoj":return new Space2.HelloWorldAoj();
+                        case "Space2.HelloWorldAoj2":return new Space2.HelloWorldAoj2();
+                        case "Space2.HelloWorldAoj3":return new Space2.HelloWorldAoj3();
+                        case "HelloWorldAoj2":throw new System.ArgumentException("HelloWorldAoj2 is ambiguous, Space.HelloWorldAoj2, Space2.HelloWorldAoj2.", nameof(className));
+                        case "HelloWorldAoj3":return new Space2.HelloWorldAoj3();
                         
                                     default: throw new System.ArgumentException($"{className} is not found.", nameof(className));
                                 }
@@ -99,25 +161,6 @@ internal class HelloWorldAoj2 : CompetitiveVerifier.ProblemSolver
                     {
                     },
                     OutputKind = OutputKind.ConsoleApplication,
-                }
-        };
-        foreach (var tup in Sources) test.TestState.Sources.Add(tup);
-        foreach (var tup in GeneratedSources) test.TestState.GeneratedSources.Add(tup);
-
-        await test.RunAsync();
-    }
-    [Fact]
-    public async Task DynamicallyLinkedLibrary()
-    {
-        var test = new Test
-        {
-            TestState =
-                {
-                    ExpectedDiagnostics =
-                    {
-                        DiagnosticResult.CompilerWarning("VERIFY0001"),
-                    },
-                    OutputKind = OutputKind.DynamicallyLinkedLibrary,
                 }
         };
         foreach (var tup in Sources) test.TestState.Sources.Add(tup);
