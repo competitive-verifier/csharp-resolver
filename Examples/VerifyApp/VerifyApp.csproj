@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CompetitiveVerifierProblem" Version="1.5.0" />
+    <PackageReference Include="CompetitiveVerifierProblem" Version="1.6.0" />
     <ProjectReference Include="..\ClassLibrary\ClassLibrary.csproj" />
   </ItemGroup>
 
