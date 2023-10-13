@@ -37,6 +37,7 @@ public partial class ProblemGenerator : IIncrementalGenerator
                                     return global::Newtonsoft.Json.JsonConvert.SerializeObject(new JsonDataContract
                                     {
                                         Type = "problem",
+                                        Name = $"C#({System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription})",
                                         Url = Url,
                                         Command = $"dotnet {thisLocation} {GetType().FullName}",
                                         Error = Error,
@@ -48,6 +49,8 @@ public partial class ProblemGenerator : IIncrementalGenerator
                                 {
                                     [global::Newtonsoft.Json.JsonProperty("type", Required = global::Newtonsoft.Json.Required.DisallowNull)]
                                     public string Type { set; get; }
+                                    [global::Newtonsoft.Json.JsonProperty("name", Required = global::Newtonsoft.Json.Required.AllowNull)]
+                                    public string Name { set; get; }
                                     [global::Newtonsoft.Json.JsonProperty("problem", Required = global::Newtonsoft.Json.Required.DisallowNull)]
                                     public string Url { set; get; }
                                     [global::Newtonsoft.Json.JsonProperty("command", Required = global::Newtonsoft.Json.Required.DisallowNull)]
