@@ -15,7 +15,7 @@ public class VerificationTest
                     "Foo",
                     new ProblemVerification[]
                     {
-                        new ProblemVerification("http://example.com/foo","dotnet Foo"),
+                        new ProblemVerification("http://example.com/foo","dotnet Foo",Name:"C#(test)"),
                     }
                 },
                 {
@@ -26,7 +26,7 @@ public class VerificationTest
                     }
                 },
             },
-            """{"Bar":[{"type":"problem","problem":"http://example.com/bar","command":"dotnet Bar"}],"Foo":[{"type":"problem","problem":"http://example.com/foo","command":"dotnet Foo"}]}"""
+            """{"Bar":[{"type":"problem","problem":"http://example.com/bar","command":"dotnet Bar"}],"Foo":[{"type":"problem","name":"C#(test)","problem":"http://example.com/foo","command":"dotnet Foo"}]}"""
         }
     };
 

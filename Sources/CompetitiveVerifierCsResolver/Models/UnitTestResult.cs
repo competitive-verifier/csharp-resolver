@@ -24,9 +24,7 @@ public partial record UnitTestResult(string Name, int Success, int Skipped, int 
     {
         var headerRegex = UnitTestResultHeader();
         using var sr = new StreamReader(stream);
-        var firstLine = sr.ReadLine();
-        if (firstLine == null) throw new ArgumentException("Failed to parse UnitTestResult csv.");
-
+        var firstLine = sr.ReadLine() ?? throw new ArgumentException("Failed to parse UnitTestResult csv.");
         var names = firstLine.Split(',');
         var d = new Dictionary<string, UnitTestResult>();
 

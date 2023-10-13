@@ -130,13 +130,13 @@ public class CsResolverTest
                     new ProblemVerification[]
                     {
                         new(Url:"http://example.com/solve",Command:"dontet sol"),
-                        new(Url:"http://example.com/solve",Command:"dontet sol err", Error:1e-8),
+                        new(Url:"http://example.com/solve",Command:"dontet sol err", Error:1e-8,Name:"C#(sol-err)"),
                     }
                 },
             }
         );
         var expected = """
-            {"files":{"P1/P.cs":{"dependencies":["P1/R.cs"],"document_attributes":{},"verification":[]},"P1/R.cs":{"dependencies":[],"document_attributes":{"document_title":"RN"},"verification":[]},"P2/Solve.cs":{"dependencies":["P1/P.cs"],"document_attributes":{"links":["http://example.com/comment"]},"verification":[{"type":"problem","problem":"http://example.com/solve","command":"dontet sol"},{"type":"problem","problem":"http://example.com/solve","command":"dontet sol err","error":1E-08}]}}}
+            {"files":{"P1/P.cs":{"dependencies":["P1/R.cs"],"document_attributes":{},"verification":[]},"P1/R.cs":{"dependencies":[],"document_attributes":{"document_title":"RN"},"verification":[]},"P2/Solve.cs":{"dependencies":["P1/P.cs"],"document_attributes":{"links":["http://example.com/comment"]},"verification":[{"type":"problem","problem":"http://example.com/solve","command":"dontet sol"},{"type":"problem","name":"C#(sol-err)","problem":"http://example.com/solve","command":"dontet sol err","error":1E-08}]}}}
             """;
         Assert.Equivalent(expected, verifications.ToJson());
     }
