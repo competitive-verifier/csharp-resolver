@@ -27,6 +27,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Sources\CompetitiveVerifierProblem.Generator\CompetitiveVerifierProblem.Generator.csproj" />
+    <ProjectReference Include="..\CompetitiveVerifierProblem.Generator.Generated\CompetitiveVerifierProblem.Generator.Generated.csproj" />
   </ItemGroup>
 
 </Project>

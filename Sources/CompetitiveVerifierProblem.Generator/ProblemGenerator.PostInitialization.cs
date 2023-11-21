@@ -68,7 +68,7 @@ public partial class ProblemGenerator : IIncrementalGenerator
                         #pragma warning disable IDE0001, IDE0161, CS8602
                         internal partial class Program
                         {
-                            static void Main(string[] args)
+                            public static void Main(string[] args)
                             {
                                 if (args.Length > 0)
                                 {
