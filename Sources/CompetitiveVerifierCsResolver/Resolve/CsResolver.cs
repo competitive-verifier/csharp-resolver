@@ -28,13 +28,13 @@ public partial class CsResolver
             CancellationToken cancellationToken = default
         )
     {
-        WriteDebug("Arguments");
-        WriteDebug($"solutionPath={solutionPath}");
-        WriteDebug($"include={string.Join(",", include)}");
-        WriteDebug($"exclude={string.Join(",", exclude)}");
-        WriteDebug($"unittest={string.Join(",", unittest.Select(f => f.FullName))}");
-        WriteDebug($"problems={string.Join(",", problems.Select(f => f.FullName))}");
-        WriteDebug($"MS build properties={string.Join(' ', properties.Select(p => $"{p.Key}={p.Value}"))}");
+        WriteMessage("Arguments");
+        WriteMessage($"solutionPath={solutionPath}");
+        WriteMessage($"include={string.Join(",", include)}");
+        WriteMessage($"exclude={string.Join(",", exclude)}");
+        WriteMessage($"unittest={string.Join(",", unittest.Select(f => f.FullName))}");
+        WriteMessage($"problems={string.Join(",", problems.Select(f => f.FullName))}");
+        WriteMessage($"MS build properties={string.Join(' ', properties.Select(p => $"{p.Key}={p.Value}"))}");
 
 
         properties ??= ImmutableDictionary<string, string>.Empty;
@@ -199,6 +199,10 @@ public partial class CsResolver
         {
             console.Error.WriteLine($"::debug ::{message}");
         }
+    }
+    void WriteMessage(string message)
+    {
+        console.Error.WriteLine($"{message}");
     }
 }
 
