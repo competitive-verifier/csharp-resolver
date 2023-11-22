@@ -15,7 +15,9 @@ public record ProblemVerification(
     [property: JsonPropertyOrder(2), JsonPropertyName("problem"), JsonRequired] string Url,
     [property: JsonPropertyOrder(3), JsonPropertyName("command"), JsonRequired] string Command,
     [property: JsonPropertyOrder(1), JsonPropertyName("name")] string? Name = null,
-    [property: JsonPropertyOrder(4), JsonPropertyName("error")] double? Error = null) : Verification
+    [property: JsonPropertyOrder(4), JsonPropertyName("error")] double? Error = null,
+    [property: JsonPropertyOrder(4), JsonPropertyName("tle")] double? Tle = null
+) : Verification
 {
     internal const string TypeVal = "problem";
 
