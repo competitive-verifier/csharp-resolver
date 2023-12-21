@@ -41,17 +41,13 @@ internal class TypeFinder : CSharpSyntaxWalker
 
     public override void Visit(SyntaxNode? node)
     {
-        if (node == null)
+        if (node is null or UsingDirectiveSyntax)
             return;
+
         if (node is BaseTypeDeclarationSyntax typeDeclaration)
         {
             FindDeclaredType(typeDeclaration);
         }
-        //else if (node is DelegateDeclarationSyntax delegateDeclaration)
-        //{
-        //    FindDeclaredType(delegateDeclaration);
-        //}
-        else if (node is UsingDirectiveSyntax) return;
         else if (model.GetSymbolInfo(node, cancellationToken).Symbol is { } symbol and not INamespaceSymbol)
         {
             usedFilesBuilder.UnionWith(symbol.Locations

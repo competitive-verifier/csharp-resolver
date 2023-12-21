@@ -43,7 +43,7 @@ public partial class CsResolver
             WriteWarning($"Both {nameof(unittest)} and {nameof(problems)} are empty.");
         }
 
-        Dictionary<string, UnitTestResult> testResults = new();
+        Dictionary<string, UnitTestResult> testResults = [];
         if (!unittest.IsDefaultOrEmpty)
         {
             foreach (var p in unittest)
@@ -58,7 +58,7 @@ public partial class CsResolver
         }
 
 
-        Dictionary<string, ProblemVerification[]> problemVerifications = new();
+        Dictionary<string, ProblemVerification[]> problemVerifications = [];
         if (!problems.IsDefaultOrEmpty)
         {
             foreach (var p in problems)
@@ -125,12 +125,12 @@ public partial class CsResolver
                 if (!urlsFinder.Urls.IsEmpty)
                     attrBuilder["links"] = urlsFinder.Urls;
 
-                var vf = new VerificationFile(dependencies, attrBuilder.ToImmutable(), ImmutableArray<Verification>.Empty);
+                var vf = new VerificationFile(dependencies, attrBuilder.ToImmutable(), []);
 
                 if (files.TryGetValue(relative, out var prev))
                     vf = vf.Merge(prev);
                 files[relative] = vf;
-                types[relative] = types.GetValueOrDefault(relative, ImmutableHashSet<string>.Empty).Union(typeFinder.DefinedTypeNames);
+                types[relative] = types.GetValueOrDefault(relative, []).Union(typeFinder.DefinedTypeNames);
             }
         }
 

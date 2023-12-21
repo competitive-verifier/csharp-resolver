@@ -17,7 +17,7 @@ internal class PathResolver : IPathResolver
     private string BaseDir { get; }
     private GlobCollection Include { get; }
     private GlobCollection Exclude { get; }
-    private readonly Dictionary<string, string?> targetCache = new();
+    private readonly Dictionary<string, string?> targetCache = [];
 
     IEnumerable<string> GetParents(string path, bool includeSelf = true)
     {
