@@ -125,12 +125,12 @@ public partial class CsResolver
                 if (!urlsFinder.Urls.IsEmpty)
                     attrBuilder["links"] = urlsFinder.Urls;
 
-                var vf = new VerificationFile(dependencies, attrBuilder.ToImmutable(), []);
+                var vf = new VerificationFile(dependencies, attrBuilder.ToImmutable(), ImmutableArray<Verification>.Empty);
 
                 if (files.TryGetValue(relative, out var prev))
                     vf = vf.Merge(prev);
                 files[relative] = vf;
-                types[relative] = types.GetValueOrDefault(relative, []).Union(typeFinder.DefinedTypeNames);
+                types[relative] = types.GetValueOrDefault(relative, ImmutableHashSet<string>.Empty).Union(typeFinder.DefinedTypeNames);
             }
         }
 

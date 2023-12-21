@@ -11,10 +11,12 @@
 
   <ItemGroup>
     <None Include="README.md" Pack="true" PackagePath="" />
+    <None Include="3rd-party-license.txt" Pack="true" PackagePath="" />
+    <None Include="$(OutputPath)\CompetitiveVerifierProblem.Generator.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <ProjectReference Include="../CompetitiveVerifierProblem.Generator/CompetitiveVerifierProblem.Generator.csproj" />
+    <ProjectReference Include="../CompetitiveVerifierProblem.Generator/CompetitiveVerifierProblem.Generator.csproj" PrivateAssets="all" />
   </ItemGroup>
 </Project>

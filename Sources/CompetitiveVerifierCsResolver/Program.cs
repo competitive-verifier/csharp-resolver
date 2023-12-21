@@ -41,13 +41,13 @@ static async Task<int> RunAsync(string[] args)
     };
 
     var unittestOption = new Option<FileInfo[]?>(
-        aliases: new[] { "--unittest", "-u" },
+        aliases: ["--unittest", "-u"],
         description: "Specify unittest result csv paths.")
     {
         AllowMultipleArgumentsPerToken = true,
     };
     var problemsOption = new Option<FileInfo[]?>(
-        aliases: new[] { "--problems", "-p" },
+        aliases: ["--problems", "-p"],
         description: "Specify outputs of CompetitiveVerifierProblem.")
     {
         AllowMultipleArgumentsPerToken = true,
@@ -82,8 +82,8 @@ static async Task<int> RunAsync(string[] args)
         var solutionPath = ctx.ParseResult.GetValueForArgument(solutionArgument)!;
         var include = ctx.ParseResult.GetValueForOption(includeOption)!;
         var exclude = ctx.ParseResult.GetValueForOption(excludeOption)!;
-        var unittest = ctx.ParseResult.GetValueForOption(unittestOption) ?? Array.Empty<FileInfo>();
-        var problems = ctx.ParseResult.GetValueForOption(problemsOption) ?? Array.Empty<FileInfo>();
+        var unittest = ctx.ParseResult.GetValueForOption(unittestOption) ?? [];
+        var problems = ctx.ParseResult.GetValueForOption(problemsOption) ?? [];
         var properties = ctx.ParseResult.GetValueForOption(propertiesOption);
 
         await new CsResolver(ctx.Console).ResolveAsync(
