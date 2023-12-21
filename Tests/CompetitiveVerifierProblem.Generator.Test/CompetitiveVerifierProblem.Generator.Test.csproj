@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -28,6 +28,13 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Sources\CompetitiveVerifierProblem.Generator\CompetitiveVerifierProblem.Generator.csproj" />
     <ProjectReference Include="..\CompetitiveVerifierProblem.Generator.Generated\CompetitiveVerifierProblem.Generator.Generated.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="GitHubActionsTestLogger" Version="2.3.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
 </Project>

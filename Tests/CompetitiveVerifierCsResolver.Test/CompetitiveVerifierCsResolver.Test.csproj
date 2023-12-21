@@ -27,4 +27,11 @@
     <ProjectReference Include="..\..\Sources\CompetitiveVerifierCsResolver\CompetitiveVerifierCsResolver.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Update="GitHubActionsTestLogger" Version="2.3.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
 </Project>
