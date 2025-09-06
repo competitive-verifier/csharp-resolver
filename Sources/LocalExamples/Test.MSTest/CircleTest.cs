@@ -11,7 +11,7 @@ public class CircleTest
         new object[] { 2, 2*2*Math.PI },
     };
 
-    [DataTestMethod]
+    [TestMethod]
     [DynamicData(nameof(AreaData), DynamicDataSourceType.Method)]
     public void Area(int r, double expected)
     {
@@ -24,7 +24,7 @@ public class CircleTest
         new object[] { 2, 2*2*Math.PI },
     };
 
-    [DataTestMethod]
+    [TestMethod]
     [DynamicData(nameof(CircumferenceData), DynamicDataSourceType.Method)]
     public void Circumference(int r, double expected)
     {

@@ -1,8 +1,7 @@
-﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Testing;
-using Microsoft.CodeAnalysis.Testing.Verifiers;
 using System.Collections.Immutable;
 
 namespace CompetitiveVerifierProblem.Generator.Test;
@@ -12,7 +11,7 @@ public abstract class TestBase
     public static readonly (Type sourceGeneratorType, string filename, string content)[] ConstantGeneratedSources
         = ProblemGenerator.ConstantSources.Select(t => (typeof(ProblemGenerator), t.filename, t.content.ReplaceLineEndings())).ToArray();
 
-    public class CSharpIncrementalGeneratorTest<TIncrementalGenerator> : SourceGeneratorTest<XUnitVerifier>
+    public class CSharpIncrementalGeneratorTest<TIncrementalGenerator> : SourceGeneratorTest<DefaultVerifier>
         where TIncrementalGenerator : IIncrementalGenerator, new()
     {
         public CSharpCompilationOptions CompilationOptions { get; set; } = new(OutputKind.ConsoleApplication);
@@ -23,19 +22,13 @@ public abstract class TestBase
 
         protected override string DefaultFileExt => "cs";
         public override string Language => LanguageNames.CSharp;
-        protected override IEnumerable<ISourceGenerator> GetSourceGenerators() => new[] { new TIncrementalGenerator().AsSourceGenerator() };
-        protected override GeneratorDriver CreateGeneratorDriver(Project project, ImmutableArray<ISourceGenerator> sourceGenerators)
-            => CSharpGeneratorDriver.Create(
-                sourceGenerators,
-                project.AnalyzerOptions.AdditionalFiles,
-                (CSharpParseOptions)project.ParseOptions!,
-                AnalyzerConfigOptionsProvider ?? project.AnalyzerOptions.AnalyzerConfigOptionsProvider);
+        protected override IEnumerable<Type> GetSourceGenerators() => [typeof(TIncrementalGenerator)];
     }
     public class Test : CSharpIncrementalGeneratorTest<ProblemGenerator>
     {
         public Test()
         {
-            ReferenceAssemblies = ReferenceAssemblies.Net.Net60.AddPackages(ImmutableArray.Create(new PackageIdentity("Newtonsoft.Json", "13.0.2")));
+            ReferenceAssemblies = ReferenceAssemblies.Net.Net80.AddPackages(ImmutableArray.Create(new PackageIdentity("Newtonsoft.Json", "13.0.2")));
         }
     }
 }

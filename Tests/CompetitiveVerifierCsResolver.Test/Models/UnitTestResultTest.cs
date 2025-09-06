@@ -1,10 +1,10 @@
-﻿using CompetitiveVerifierCsResolver.Verifier;
+using CompetitiveVerifierCsResolver.Verifier;
 using System.Text;
 
 namespace CompetitiveVerifierCsResolver.Models;
 public class UnitTestResultTest
 {
-    public static readonly TheoryData Add_Data = new TheoryData<UnitTestResult, UnitTestResult, UnitTestResult>
+    public static readonly TheoryData<UnitTestResult, UnitTestResult, UnitTestResult> Add_Data = new()
     {
         { new("Foo", 1, 2, 3), new("Foo", 10, 10, 10),new("Foo", 11, 12, 13) },
         { new("Foo", 1, 2, 3), new("Foo", 0, 0, 0),new("Foo", 1, 2, 3) },
@@ -17,7 +17,7 @@ public class UnitTestResultTest
         Assert.Equal(expected, a.Add(b));
     }
 
-    public static readonly TheoryData EnumerateVerifications_Data = new TheoryData<UnitTestResult, ConstVerification[]>
+    public static readonly TheoryData<UnitTestResult, ConstVerification[]> EnumerateVerifications_Data = new()
     {
         { new("Foo", 1, 2, 3), new ConstVerification[]{
             new(ConstVerificationStatus.Success),
@@ -36,7 +36,7 @@ public class UnitTestResultTest
         Assert.Equal(expected, a.EnumerateVerifications());
     }
 
-    public static readonly TheoryData Parse_Data = new TheoryData<string, Dictionary<string, UnitTestResult>>
+    public static readonly TheoryData<string, Dictionary<string, UnitTestResult>> Parse_Data = new()
     {
         { """
             Class, success , skipped ,failure

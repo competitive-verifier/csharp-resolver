@@ -1,9 +1,9 @@
-﻿using DotNet.Globbing;
+using DotNet.Globbing;
 
 namespace CompetitiveVerifierCsResolver.Models;
 public class GlobCollectionTest
 {
-    public static TheoryData IsMatch_Data()
+    public static TheoryData<GlobCollection, string, bool> IsMatch_Data()
     {
         var td = new TheoryData<GlobCollection, string, bool>();
         {

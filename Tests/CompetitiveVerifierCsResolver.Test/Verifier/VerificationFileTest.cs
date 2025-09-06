@@ -1,9 +1,9 @@
-﻿using System.Collections.Immutable;
+using System.Collections.Immutable;
 
 namespace CompetitiveVerifierCsResolver.Verifier;
 public class VerificationFileTest
 {
-    public static readonly TheoryData Merge_Data = new TheoryData<VerificationFile, VerificationFile, VerificationFile>
+    public static readonly TheoryData<VerificationFile, VerificationFile, VerificationFile> Merge_Data = new()
     {
         {
             new(

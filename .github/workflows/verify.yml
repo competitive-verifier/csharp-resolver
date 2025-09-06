@@ -39,8 +39,7 @@ jobs:
         with:
           dotnet-version: |
             8.0.x
-            7.0.x
-            3.1.x
+            9.0.x
       - uses: actions/cache@v4
         with:
           path: ~/.nuget/packages
@@ -113,8 +112,7 @@ jobs:
         with:
           dotnet-version: |
             8.0.x
-            7.0.x
-            3.1.x
+            9.0.x
       - uses: actions/cache@v4
         with:
           path: ~/.nuget/packages

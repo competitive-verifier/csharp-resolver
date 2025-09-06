@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -6,7 +6,7 @@ namespace CompetitiveVerifierCsResolver.Verifier;
 
 public class VerificationTest
 {
-    public readonly static TheoryData Json_Data = new TheoryData<SortedDictionary<string, ProblemVerification[]>, string>
+    public readonly static TheoryData<SortedDictionary<string, ProblemVerification[]>, string> Json_Data = new()
     {
         {
             new SortedDictionary<string, ProblemVerification[]>
