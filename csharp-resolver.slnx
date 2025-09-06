@@ -1,0 +1,32 @@
+<Solution>
+  <Folder Name="/Examples/">
+    <Project Path="Examples/ClassLibrary/ClassLibrary.csproj" />
+    <Project Path="Examples/UnitTest/UnitTest.csproj" />
+    <Project Path="Examples/VerifyApp/VerifyApp.csproj" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path="CHANGELOG.md" />
+    <File Path="Directory.Build.props" />
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/Sources/">
+    <Project Path="Sources/CompetitiveVerifierCsResolver/CompetitiveVerifierCsResolver.csproj" />
+    <Project Path="Sources/CompetitiveVerifierProblem.Generator/CompetitiveVerifierProblem.Generator.csproj" />
+    <Project Path="Sources/CompetitiveVerifierProblem/CompetitiveVerifierProblem.csproj" />
+    <Project Path="Sources/CompetitiveVerifierResolverTestLogger/CompetitiveVerifierResolverTestLogger.csproj" />
+  </Folder>
+  <Folder Name="/Sources/LocalExamples/">
+    <Project Path="Sources/LocalExamples/ClassLibrary/ClassLibrary.csproj" />
+    <Project Path="Sources/LocalExamples/Test.MSTest/Test.MSTest.csproj" />
+    <Project Path="Sources/LocalExamples/Test.NUnit/Test.NUnit.csproj" />
+    <Project Path="Sources/LocalExamples/Test.XUnit/Test.XUnit.csproj" />
+    <Project Path="Sources/LocalExamples/VerifyApp/VerifyApp.csproj" />
+  </Folder>
+  <Folder Name="/Tests/">
+    <File Path="Tests/Directory.Build.props" />
+    <Project Path="Tests/CompetitiveVerifierCsResolver.Test/CompetitiveVerifierCsResolver.Test.csproj" />
+    <Project Path="Tests/CompetitiveVerifierProblem.Generator.Generated/CompetitiveVerifierProblem.Generator.Generated.csproj" />
+    <Project Path="Tests/CompetitiveVerifierProblem.Generator.Test/CompetitiveVerifierProblem.Generator.Test.csproj" />
+  </Folder>
+</Solution>
