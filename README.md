@@ -26,7 +26,7 @@ Use in GitHub Actions.
       - name: Resolve
         run: dotnet run --project ${{ env.VERIFY_CSPROJ }} --no-build -c Release | tee ${{runner.temp}}/problems.json
       - name: cs-resolve
-        uses: competitive-verifier/actions/cs-resolve@v1
+        uses: competitive-verifier/actions/cs-resolve@v2
         with:
           solution: ${{ env.WORKFLOW_BUILD_SLN }}
           output-path: verify_files.json
