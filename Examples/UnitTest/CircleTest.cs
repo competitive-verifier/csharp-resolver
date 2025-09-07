@@ -1,10 +1,34 @@
 using ClassLibrary;
+using System.Diagnostics.CodeAnalysis;
+using Xunit.Sdk;
+
+[assembly: RegisterXunitSerializer(typeof(UnitTest.CircleSerializer), typeof(Circle))]
 
 namespace UnitTest;
 
+public class CircleSerializer : IXunitSerializer
+{
+    public object Deserialize(Type type, string serializedValue)
+        => new Circle(double.Parse(serializedValue));
+
+    public bool IsSerializable(Type type, object? value, [NotNullWhen(false)] out string? failureReason)
+    {
+        if (type != typeof(Circle))
+        {
+            failureReason = "Invalid type";
+            return false;
+        }
+        failureReason = null;
+        return true;
+    }
+
+    public string Serialize(object value) => ((Circle)value).R.ToString();
+
+}
+
 public class CircleTest
 {
-    public static TheoryData<Circle, double> AreaData = new TheoryData<Circle, double>
+    public static TheoryData<Circle, double> AreaData => new()
     {
         { new (5), 5*5*Math.PI },
         { new (2), 2*2*Math.PI },
@@ -16,7 +40,7 @@ public class CircleTest
     {
         Assert.True(Math.Abs(c.Area - expected) < 1e-5);
     }
-    public static TheoryData<Circle, double> CircumferenceData = new TheoryData<Circle, double>
+    public static TheoryData<Circle, double> CircumferenceData => new()
     {
         { new (5), 2*5*Math.PI },
         { new (2), 2*2*Math.PI },

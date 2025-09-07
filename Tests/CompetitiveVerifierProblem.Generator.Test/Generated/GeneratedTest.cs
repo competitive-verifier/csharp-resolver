@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,7 +14,7 @@ public class GeneratedTest
         using (var sw = new StringWriter(sb))
         {
             Console.SetOut(sw);
-            Program.Main(Array.Empty<string>());
+            Program.Main([]);
         }
         var writtern = sb.ToString();
         var obj = JsonConvert.DeserializeObject<Dictionary<string, ProblemJson[]>>(writtern)!;

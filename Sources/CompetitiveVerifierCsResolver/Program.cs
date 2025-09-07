@@ -1,8 +1,9 @@
-﻿using CompetitiveVerifierCsResolver;
+using CompetitiveVerifierCsResolver;
 using Microsoft.Build.Locator;
 using System.Collections.Immutable;
 using System.CommandLine;
 using System.Runtime.Loader;
+using System.Text.Json;
 
 System.Globalization.CultureInfo.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
 System.Globalization.CultureInfo.CurrentUICulture = System.Globalization.CultureInfo.InvariantCulture;
@@ -27,14 +28,14 @@ static async Task<int> RunAsync(string[] args)
 
     var includeOption = new Option<string[]>(
         name: "--include",
-        getDefaultValue: () => new[] { "**" },
+        getDefaultValue: () => ["**"],
         description: "Include glob patterns.")
     {
         AllowMultipleArgumentsPerToken = true,
     };
     var excludeOption = new Option<string[]>(
         name: "--exclude",
-        getDefaultValue: () => new[] { "**/obj", "**/bin" },
+        getDefaultValue: () => ["**/obj", "**/bin"],
         description: "Exclude glob patterns.")
     {
         AllowMultipleArgumentsPerToken = true,
@@ -90,8 +91,10 @@ static async Task<int> RunAsync(string[] args)
             solutionPath,
             include,
             exclude,
+#pragma warning disable IDE0305
             unittest.ToImmutableArray(),
             problems.ToImmutableArray(),
+#pragma warning restore IDE0305
             properties ?? ImmutableDictionary<string, string>.Empty,
             ctx.GetCancellationToken());
     });

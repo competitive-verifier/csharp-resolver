@@ -1,10 +1,8 @@
-﻿using DotNet.Globbing;
+using DotNet.Globbing;
 
 namespace CompetitiveVerifierCsResolver.Models;
-public class GlobCollection : List<Glob>
+public class GlobCollection(IEnumerable<Glob> globs) : List<Glob>(globs)
 {
-    public GlobCollection(IEnumerable<Glob> globs) : base(globs) { }
-
     public bool IsMatch(string path)
     {
         foreach (var glob in this)

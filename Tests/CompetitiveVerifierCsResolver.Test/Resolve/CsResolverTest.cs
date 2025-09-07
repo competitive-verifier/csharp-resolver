@@ -1,4 +1,4 @@
-﻿using CompetitiveVerifierCsResolver.Models;
+using CompetitiveVerifierCsResolver.Models;
 using CompetitiveVerifierCsResolver.Resolve;
 using CompetitiveVerifierCsResolver.Verifier;
 using Microsoft.CodeAnalysis;
@@ -72,16 +72,10 @@ public class CsResolverTest
         Assert.Equal("P1/a.cs", pathResolver.Object.RelativePath("/foo/bar/P1/a.cs"));
 
         var solution = CreateSolution();
-        var verifications = await new CsResolver(logger.Object).ResolveImplAsync(
-            solution,
-            pathResolver.Object,
-            new Dictionary<string, UnitTestResult>
-            {
-            },
-            new Dictionary<string, ProblemVerification[]>
-            {
-            }
-        );
+        var verifications = await new CsResolver(logger.Object).ResolveImplAsync(solution, pathResolver.Object
+            , new Dictionary<string, UnitTestResult>()
+            , new Dictionary<string, ProblemVerification[]>()
+            , TestContext.Current.CancellationToken);
         var expected = """
             {"files":{"P1/P.cs":{"dependencies":["P1/R.cs"],"document_attributes":{},"verification":[]},"P1/R.cs":{"dependencies":[],"document_attributes":{"document_title":"RN"},"verification":[]},"P2/Solve.cs":{"dependencies":["P1/P.cs"],"document_attributes":{"links":["http://example.com/comment"]},"verification":[]}}}
             """;
@@ -104,7 +98,7 @@ public class CsResolverTest
             new Dictionary<string, ProblemVerification[]>
             {
             }
-        );
+            , TestContext.Current.CancellationToken);
         var expected = """
             {"files":{"P1/P.cs":{"dependencies":["P1/R.cs"],"document_attributes":{},"verification":[]},"P1/R.cs":{"dependencies":[],"document_attributes":{"document_title":"RN"},"verification":[]},"P2/Solve.cs":{"dependencies":["P1/P.cs"],"document_attributes":{"links":["http://example.com/comment"]},"verification":[{"type":"const","status":"success"},{"type":"const","status":"success"},{"type":"const","status":"success"},{"type":"const","status":"skipped"},{"type":"const","status":"skipped"},{"type":"const","status":"failure"}]}}}
             """;
@@ -134,7 +128,7 @@ public class CsResolverTest
                     }
                 },
             }
-        );
+            , TestContext.Current.CancellationToken);
         var expected = """
             {"files":{"P1/P.cs":{"dependencies":["P1/R.cs"],"document_attributes":{},"verification":[]},"P1/R.cs":{"dependencies":[],"document_attributes":{"document_title":"RN"},"verification":[]},"P2/Solve.cs":{"dependencies":["P1/P.cs"],"document_attributes":{"links":["http://example.com/comment"]},"verification":[{"type":"problem","problem":"http://example.com/solve","command":"dontet sol"},{"type":"problem","name":"C#(sol-err)","problem":"http://example.com/solve","command":"dontet sol err","error":1E-08}]}}}
             """;

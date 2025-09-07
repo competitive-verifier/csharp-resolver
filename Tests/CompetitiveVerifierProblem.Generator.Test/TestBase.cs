@@ -9,7 +9,7 @@ public abstract class TestBase
 {
 
     public static readonly (Type sourceGeneratorType, string filename, string content)[] ConstantGeneratedSources
-        = ProblemGenerator.ConstantSources.Select(t => (typeof(ProblemGenerator), t.filename, t.content.ReplaceLineEndings())).ToArray();
+        = [.. ProblemGenerator.ConstantSources.Select(t => (typeof(ProblemGenerator), t.filename, t.content.ReplaceLineEndings()))];
 
     public class CSharpIncrementalGeneratorTest<TIncrementalGenerator> : SourceGeneratorTest<DefaultVerifier>
         where TIncrementalGenerator : IIncrementalGenerator, new()
@@ -28,7 +28,7 @@ public abstract class TestBase
     {
         public Test()
         {
-            ReferenceAssemblies = ReferenceAssemblies.Net.Net80.AddPackages(ImmutableArray.Create(new PackageIdentity("Newtonsoft.Json", "13.0.2")));
+            ReferenceAssemblies = ReferenceAssemblies.Net.Net80.AddPackages([new PackageIdentity("Newtonsoft.Json", "13.0.2")]);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using System.Buffers;
+using System.Buffers;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -26,14 +26,7 @@ public record ProblemVerification(
 
     public static Dictionary<string, ProblemVerification[]>? Parse(Stream stream)
     {
-        return JsonSerializer.Deserialize<Dictionary<string, ProblemVerification[]>>(stream, new JsonSerializerOptions
-        {
-#if NET5_0_OR_GREATER
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-#else
-            IgnoreNullValues = true,
-#endif
-        });
+        return JsonSerializer.Deserialize(stream, VerificationJsonContext.IgnoreNull.DictionaryStringProblemVerificationArray);
     }
 }
 
@@ -63,7 +56,7 @@ public class VerificationConverter : JsonConverter<Verification>
         return document.RootElement.GetProperty("type").GetString() switch
         {
             ConstVerification.TypeVal => JsonSerializer.Deserialize<ConstVerification>(bufferWriter.WrittenSpan, options) as Verification,
-            ProblemVerification.TypeVal => JsonSerializer.Deserialize<ProblemVerification>(bufferWriter.WrittenSpan, options) as Verification,
+            ProblemVerification.TypeVal => JsonSerializer.Deserialize<ProblemVerification>(bufferWriter.WrittenSpan, options),
             _ => throw new InvalidDataException(),
         } ?? throw new InvalidDataException();
     }
@@ -83,7 +76,7 @@ public enum ConstVerificationStatus
     Skipped,
     Failure,
 }
-public class ConstVerificationStatusConverter : JsonStringEnumConverter
+public class ConstVerificationStatusConverter : JsonStringEnumConverter<ConstVerificationStatus>
 {
     public ConstVerificationStatusConverter() : base(JsonNamingPolicy.CamelCase) { }
 }

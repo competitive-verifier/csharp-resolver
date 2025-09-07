@@ -1,10 +1,10 @@
-﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Testing;
 
 namespace CompetitiveVerifierProblem.Generator.Test;
 public class GenericSolverTest : TestBase
 {
-    static readonly (string filename, string content)[] Sources = new[]{
+    static readonly (string filename, string content)[] Sources = [
                         (
                             @"/home/mine/HelloWorldAoj.cs",
                             """
@@ -79,10 +79,12 @@ internal class WithTypeArguments : WithoutTypeArguments<U>
 }
 """
                         ),
-                    };
+                    ];
 
-    static readonly (Type sourceGeneratorType, string filename, string content)[] GeneratedSources = ConstantGeneratedSources.Append(
-                        (typeof(ProblemGenerator), "Main.impl.cs", """
+    static readonly (Type sourceGeneratorType, string filename, string content)[] GeneratedSources =
+    [
+        .. ConstantGeneratedSources,
+        (typeof(ProblemGenerator), "Main.impl.cs", """
                         #pragma warning disable IDE0161,CS8602
                         internal partial class Program
                         {
@@ -135,7 +137,8 @@ internal class WithTypeArguments : WithoutTypeArguments<U>
                             }
                         }
                         """.ReplaceLineEndings()
-        )).ToArray();
+        ),
+    ];
 
     [Fact]
     public async Task Default()
@@ -158,6 +161,6 @@ internal class WithTypeArguments : WithoutTypeArguments<U>
         foreach (var tup in Sources) test.TestState.Sources.Add(tup);
         foreach (var tup in GeneratedSources) test.TestState.GeneratedSources.Add(tup);
 
-        await test.RunAsync();
+        await test.RunAsync(TestContext.Current.CancellationToken);
     }
 }

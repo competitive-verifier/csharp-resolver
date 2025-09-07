@@ -1,9 +1,9 @@
-﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis;
 
 namespace CompetitiveVerifierProblem.Generator.Test;
 public class SubclassTest : TestBase
 {
-    static readonly (string filename, string content)[] Sources = new[]{
+    static readonly (string filename, string content)[] Sources = [
                         (
                             @"/home/mine/HelloWorldAoj.cs",
                             """
@@ -40,11 +40,13 @@ internal class HelloWorldAoj2 : AbstractSolver3
 }
 """
                         ),
-                    };
+                    ];
 
 
-    static readonly (Type sourceGeneratorType, string filename, string content)[] GeneratedSources = ConstantGeneratedSources.Append(
-                        (typeof(ProblemGenerator), "Main.impl.cs", """
+    static readonly (Type sourceGeneratorType, string filename, string content)[] GeneratedSources =
+    [
+        .. ConstantGeneratedSources,
+        (typeof(ProblemGenerator), "Main.impl.cs", """
                         #pragma warning disable IDE0161,CS8602
                         internal partial class Program
                         {
@@ -94,7 +96,8 @@ internal class HelloWorldAoj2 : AbstractSolver3
                             }
                         }
                         """.ReplaceLineEndings()
-        )).ToArray();
+        ),
+    ];
 
     [Fact]
     public async Task Default()
@@ -112,6 +115,6 @@ internal class HelloWorldAoj2 : AbstractSolver3
         foreach (var tup in Sources) test.TestState.Sources.Add(tup);
         foreach (var tup in GeneratedSources) test.TestState.GeneratedSources.Add(tup);
 
-        await test.RunAsync();
+        await test.RunAsync(TestContext.Current.CancellationToken);
     }
 }

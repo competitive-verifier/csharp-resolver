@@ -7,38 +7,31 @@ public class VerificationFileTest
     {
         {
             new(
-                ImmutableHashSet.Create("Bar","Baz"),
-                ImmutableSortedDictionary.CreateRange(new[]
-                {
+                ["Bar", "Baz"],
+                ImmutableSortedDictionary.CreateRange(
+                [
                     KeyValuePair.Create<string, object>("title", "foo"),
                     KeyValuePair.Create<string, object>("links", new[]{"http://example.com/foo"}),
-                }),
-                ImmutableArray.Create<Verification>(
-                    new ProblemVerification("http://example.com/foo", "dotnet foo")
-                )
+                ]),
+                [new ProblemVerification("http://example.com/foo", "dotnet foo")]
             ),
             new(
-                ImmutableHashSet.Create("Bar","FooBar"),
-                ImmutableSortedDictionary.CreateRange(new[]
-                {
+                ["Bar", "FooBar"],
+                ImmutableSortedDictionary.CreateRange(
+                [
                     KeyValuePair.Create<string, object>("title", "foo"),
                     KeyValuePair.Create<string, object>("links", new[]{"http://example.com/foo"}),
-                }),
-                ImmutableArray.Create<Verification>(
-                    new ConstVerification(ConstVerificationStatus.Success)
-                )
+                ]),
+                [new ConstVerification(ConstVerificationStatus.Success)]
             ),
             new(
-                ImmutableHashSet.Create("Bar","Baz","FooBar"),
-                ImmutableSortedDictionary.CreateRange(new[]
-                {
+                ["Bar", "Baz", "FooBar"],
+                ImmutableSortedDictionary.CreateRange(
+                [
                     KeyValuePair.Create<string, object>("title", "foo"),
                     KeyValuePair.Create<string, object>("links", new[]{"http://example.com/foo"}),
-                }),
-                ImmutableArray.Create<Verification>(
-                    new ProblemVerification("http://example.com/foo", "dotnet foo"),
-                    new ConstVerification(ConstVerificationStatus.Success)
-                )
+                ]),
+                [new ProblemVerification("http://example.com/foo", "dotnet foo"), new ConstVerification(ConstVerificationStatus.Success)]
             )
         },
     };
@@ -52,5 +45,4 @@ public class VerificationFileTest
         Assert.Equal(expected.DocumentAttributes, merged.DocumentAttributes);
         Assert.Equal(expected.Verification.AsEnumerable(), merged.Verification.AsEnumerable());
     }
-
 }

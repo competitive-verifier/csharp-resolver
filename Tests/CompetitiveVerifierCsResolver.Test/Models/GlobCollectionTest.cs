@@ -3,18 +3,18 @@ using DotNet.Globbing;
 namespace CompetitiveVerifierCsResolver.Models;
 public class GlobCollectionTest
 {
-    public static TheoryData<GlobCollection, string, bool> IsMatch_Data()
+    public static TheoryData<string[], string, bool> IsMatch_Data()
     {
-        var td = new TheoryData<GlobCollection, string, bool>();
+        var td = new TheoryData<string[], string, bool>();
         {
-            var globs = Get("**/*foo.cs");
+            string[] globs = ["**/*foo.cs"];
             td.Add(globs, "/foo.cs", true);
             td.Add(globs, "/home/dir/foo.cs", true);
             td.Add(globs, "/home/dir/myfoo.cs", true);
             td.Add(globs, "/home/dir/myfoo.cpp", false);
         }
         {
-            var globs = Get("**/*foo.cs", "myfoo.cpp");
+            string[] globs = ["**/*foo.cs", "myfoo.cpp"];
             td.Add(globs, "/foo.cs", true);
             td.Add(globs, "/home/dir/foo.cs", true);
             td.Add(globs, "/home/dir/myfoo.cs", true);
@@ -25,9 +25,8 @@ public class GlobCollectionTest
 
     [Theory]
     [MemberData(nameof(IsMatch_Data))]
-    public void IsMatch(GlobCollection globs, string input, bool isMatch)
+    public void IsMatch(string[] globs, string input, bool isMatch)
     {
-        Assert.Equal(isMatch, globs.IsMatch(input));
+        Assert.Equal(isMatch, new GlobCollection(globs.Select(Glob.Parse)).IsMatch(input));
     }
-    static GlobCollection Get(params string[] patterns) => new(patterns.Select(Glob.Parse));
 }

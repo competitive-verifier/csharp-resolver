@@ -1,4 +1,4 @@
-﻿using CompetitiveVerifierCsResolver.Verifier;
+using CompetitiveVerifierCsResolver.Verifier;
 using System.Text.RegularExpressions;
 
 namespace CompetitiveVerifierCsResolver.Models;
@@ -62,13 +62,9 @@ public partial record UnitTestResult(string Name, int Success, int Skipped, int 
             return result;
         }
     }
-    private class Builder
+    private class Builder(string name)
     {
-        public Builder(string name)
-        {
-            Name = name;
-        }
-        public string Name;
+        public string Name = name;
         public int Success;
         public int Skipped;
         public int Failure;

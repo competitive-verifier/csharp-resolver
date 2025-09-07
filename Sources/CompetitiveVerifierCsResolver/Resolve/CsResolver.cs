@@ -1,4 +1,4 @@
-﻿using CompetitiveVerifierCsResolver.Models;
+using CompetitiveVerifierCsResolver.Models;
 using CompetitiveVerifierCsResolver.Resolve;
 using CompetitiveVerifierCsResolver.Verifier;
 using DotNet.Globbing;
