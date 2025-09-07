@@ -4,7 +4,6 @@
 |:---|:---|
 |CompetitiveVerifierCsResolver|[![NuGet version (CompetitiveVerifierCsResolver)](https://img.shields.io/nuget/v/CompetitiveVerifierCsResolver.svg?style=flat-square)](https://www.nuget.org/packages/CompetitiveVerifierCsResolver/)|
 |CompetitiveVerifierProblem|[![NuGet version (CompetitiveVerifierProblem)](https://img.shields.io/nuget/v/CompetitiveVerifierProblem.svg?style=flat-square)](https://www.nuget.org/packages/CompetitiveVerifierProblem/)|
-|CompetitiveVerifierProblem.Generator|[![NuGet version (CompetitiveVerifierProblem.Generator)](https://img.shields.io/nuget/v/CompetitiveVerifierProblem.Generator.svg?style=flat-square)](https://www.nuget.org/packages/CompetitiveVerifierProblem.Generator/)|
 |CompetitiveVerifierResolverTestLogger|[![NuGet version (CompetitiveVerifierResolverTestLogger)](https://img.shields.io/nuget/v/CompetitiveVerifierResolverTestLogger.svg?style=flat-square)](https://www.nuget.org/packages/CompetitiveVerifierResolverTestLogger/)|
 
 
