@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -118,21 +118,21 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="VERIFY0001_Body" xml:space="preserve">
-    <value>Problem verification project should be Console app.</value>
+    <value>Problem verification project should be Console app</value>
   </data>
   <data name="VERIFY0001_Title" xml:space="preserve">
-    <value>Problem verification project should be Console app.</value>
+    <value>Problem verification project should be Console app</value>
   </data>
   <data name="VERIFY0002_Body" xml:space="preserve">
-    <value>A subclass of ProblemSolver needs default constructor.  {0}</value>
+    <value>A subclass of ProblemSolver needs default constructor  {0}</value>
   </data>
   <data name="VERIFY0002_Title" xml:space="preserve">
-    <value>A subclass of ProblemSolver needs default constructor.</value>
+    <value>A subclass of ProblemSolver needs default constructor</value>
   </data>
   <data name="VERIFY0003_Body" xml:space="preserve">
-    <value>Unable to determine the type arguments of generic subclass of ProblemSolver.</value>
+    <value>Unable to determine the type arguments of generic subclass of ProblemSolver</value>
   </data>
   <data name="VERIFY0003_Title" xml:space="preserve">
-    <value>Unable to determine the type arguments of generic subclass of ProblemSolver.</value>
+    <value>Unable to determine the type arguments of generic subclass of ProblemSolver</value>
   </data>
 </root>

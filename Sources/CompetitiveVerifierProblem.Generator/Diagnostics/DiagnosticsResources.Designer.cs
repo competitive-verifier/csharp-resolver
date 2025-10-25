@@ -61,7 +61,7 @@ namespace CompetitiveVerifierProblem.Diagnostics {
         }
         
         /// <summary>
-        ///   Problem verification project should be Console app. に類似しているローカライズされた文字列を検索します。
+        ///   Problem verification project should be Console app に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string VERIFY0001_Body {
             get {
@@ -70,7 +70,7 @@ namespace CompetitiveVerifierProblem.Diagnostics {
         }
         
         /// <summary>
-        ///   Problem verification project should be Console app. に類似しているローカライズされた文字列を検索します。
+        ///   Problem verification project should be Console app に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string VERIFY0001_Title {
             get {
@@ -79,7 +79,7 @@ namespace CompetitiveVerifierProblem.Diagnostics {
         }
         
         /// <summary>
-        ///   A subclass of ProblemSolver needs default constructor.  {0} に類似しているローカライズされた文字列を検索します。
+        ///   A subclass of ProblemSolver needs default constructor  {0} に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string VERIFY0002_Body {
             get {
@@ -88,7 +88,7 @@ namespace CompetitiveVerifierProblem.Diagnostics {
         }
         
         /// <summary>
-        ///   A subclass of ProblemSolver needs default constructor. に類似しているローカライズされた文字列を検索します。
+        ///   A subclass of ProblemSolver needs default constructor に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string VERIFY0002_Title {
             get {
@@ -97,7 +97,7 @@ namespace CompetitiveVerifierProblem.Diagnostics {
         }
         
         /// <summary>
-        ///   Unable to determine the type arguments of generic subclass of ProblemSolver. に類似しているローカライズされた文字列を検索します。
+        ///   Unable to determine the type arguments of generic subclass of ProblemSolver に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string VERIFY0003_Body {
             get {
@@ -106,7 +106,7 @@ namespace CompetitiveVerifierProblem.Diagnostics {
         }
         
         /// <summary>
-        ///   Unable to determine the type arguments of generic subclass of ProblemSolver. に類似しているローカライズされた文字列を検索します。
+        ///   Unable to determine the type arguments of generic subclass of ProblemSolver に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string VERIFY0003_Title {
             get {
