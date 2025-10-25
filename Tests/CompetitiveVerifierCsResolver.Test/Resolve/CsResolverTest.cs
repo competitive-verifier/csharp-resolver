@@ -10,14 +10,15 @@ namespace CompetitiveVerifierCsResolver;
 public class CsResolverTest
 {
     private static MetadataReference? _Mscorlib;
-    private readonly Mock<IConsole> logger;
+    private readonly Mock<TextWriter> stdout, stderr;
     private readonly Mock<IPathResolver> pathResolver;
 
     private static MetadataReference Mscorlib => _Mscorlib ??= MetadataReference.CreateFromFile(typeof(object).Assembly.Location);
 
     public CsResolverTest()
     {
-        logger = new Mock<IConsole>();
+        stdout = new Mock<TextWriter>();
+        stderr = new Mock<TextWriter>();
         pathResolver = new Mock<IPathResolver>();
         pathResolver.Setup(p => p.RelativePath(It.IsAny<string>()))
                 .Returns(new Func<string, string>(s => Path.GetRelativePath("/foo/bar", s).Replace('\\', '/')));
@@ -72,7 +73,7 @@ public class CsResolverTest
         Assert.Equal("P1/a.cs", pathResolver.Object.RelativePath("/foo/bar/P1/a.cs"));
 
         var solution = CreateSolution();
-        var verifications = await new CsResolver(logger.Object).ResolveImplAsync(solution, pathResolver.Object
+        var verifications = await new CsResolver(stdout.Object, stderr.Object).ResolveImplAsync(solution, pathResolver.Object
             , new Dictionary<string, UnitTestResult>()
             , new Dictionary<string, ProblemVerification[]>()
             , TestContext.Current.CancellationToken);
@@ -88,7 +89,7 @@ public class CsResolverTest
         Assert.Equal("P1/a.cs", pathResolver.Object.RelativePath("/foo/bar/P1/a.cs"));
 
         var solution = CreateSolution();
-        var verifications = await new CsResolver(logger.Object).ResolveImplAsync(
+        var verifications = await new CsResolver(stdout.Object, stderr.Object).ResolveImplAsync(
             solution,
             pathResolver.Object,
             new Dictionary<string, UnitTestResult>
@@ -111,7 +112,7 @@ public class CsResolverTest
         Assert.Equal("P1/a.cs", pathResolver.Object.RelativePath("/foo/bar/P1/a.cs"));
 
         var solution = CreateSolution();
-        var verifications = await new CsResolver(logger.Object).ResolveImplAsync(
+        var verifications = await new CsResolver(stdout.Object, stderr.Object).ResolveImplAsync(
             solution,
             pathResolver.Object,
             new Dictionary<string, UnitTestResult>

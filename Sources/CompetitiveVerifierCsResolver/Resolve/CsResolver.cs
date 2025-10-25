@@ -5,19 +5,11 @@ using DotNet.Globbing;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.MSBuild;
 using System.Collections.Immutable;
-using System.CommandLine;
-using System.CommandLine.IO;
 using System.Text.RegularExpressions;
 
 namespace CompetitiveVerifierCsResolver;
-public partial class CsResolver
+public partial class CsResolver(TextWriter stdout, TextWriter stderr)
 {
-    private readonly IConsole console;
-    public CsResolver(IConsole console)
-    {
-        this.console = console;
-    }
-
     public async Task ResolveAsync(
             string solutionPath,
             string[] include,
@@ -74,13 +66,13 @@ public partial class CsResolver
         }
 
         var workspace = MSBuildWorkspace.Create(properties);
-        var solution = await workspace.OpenSolutionAsync(solutionPath, progress: new Progress(console), cancellationToken: cancellationToken);
+        var solution = await workspace.OpenSolutionAsync(solutionPath, progress: new Progress(stderr), cancellationToken: cancellationToken);
 
         var includeGlob = new GlobCollection(include.Select(s => Glob.Parse(s.Trim())));
         var excludeGlob = new GlobCollection(exclude.Select(s => Glob.Parse(s.Trim())));
 
         var result = await ResolveImplAsync(solution, new PathResolver(Environment.CurrentDirectory, includeGlob, excludeGlob), testResults, problemVerifications, cancellationToken);
-        console.WriteLine(result.ToJson());
+        stdout.WriteLine(result.ToJson());
     }
     internal async Task<VerificationInput> ResolveImplAsync(
             Solution solution,
@@ -174,22 +166,22 @@ public partial class CsResolver
         }
     }
 
-    record class Progress(IConsole Console) : IProgress<ProjectLoadProgress>
+    record class Progress(TextWriter Stderr) : IProgress<ProjectLoadProgress>
     {
         public void Report(ProjectLoadProgress p)
         {
-            Console.Error.WriteLine($"Project:{p.FilePath} {(p.Operation == ProjectLoadOperation.Resolve ? $"({p.TargetFramework})" : "")} {p.Operation} {p.ElapsedTime.TotalMilliseconds:.}ms");
+            Stderr.WriteLine($"Project:{p.FilePath} {(p.Operation == ProjectLoadOperation.Resolve ? $"({p.TargetFramework})" : "")} {p.Operation} {p.ElapsedTime.TotalMilliseconds:.}ms");
         }
     }
 
     void WriteWarning(string message)
     {
         Console.ForegroundColor = ConsoleColor.DarkYellow;
-        console.Error.WriteLine($"Warning: {message}");
+        stderr.WriteLine($"Warning: {message}");
         Console.ResetColor();
         if (Environment.GetEnvironmentVariable("GITHUB_ACTIONS") is not null)
         {
-            console.Error.WriteLine($"::warning ::{message}");
+            stderr.WriteLine($"::warning ::{message}");
         }
     }
     void WriteDebug(string message)
@@ -197,12 +189,12 @@ public partial class CsResolver
         System.Diagnostics.Debug.WriteLine($"{message}");
         if (Environment.GetEnvironmentVariable("GITHUB_ACTIONS") is not null)
         {
-            console.Error.WriteLine($"::debug ::{message}");
+            stderr.WriteLine($"::debug ::{message}");
         }
     }
     void WriteMessage(string message)
     {
-        console.Error.WriteLine($"{message}");
+        stderr.WriteLine($"{message}");
     }
 }
 

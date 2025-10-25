@@ -24,70 +24,80 @@ return await RunAsync(args);
 
 static async Task<int> RunAsync(string[] args)
 {
-    var solutionArgument = new Argument<string>("solutionPath", "Specify solution path");
-
-    var includeOption = new Option<string[]>(
-        name: "--include",
-        getDefaultValue: () => ["**"],
-        description: "Include glob patterns.")
+    var solutionArgument = new Argument<string>("solutionPath")
     {
-        AllowMultipleArgumentsPerToken = true,
-    };
-    var excludeOption = new Option<string[]>(
-        name: "--exclude",
-        getDefaultValue: () => ["**/obj", "**/bin"],
-        description: "Exclude glob patterns.")
-    {
-        AllowMultipleArgumentsPerToken = true,
+        Description = "Specify solution path",
     };
 
-    var unittestOption = new Option<FileInfo[]?>(
-        aliases: ["--unittest", "-u"],
-        description: "Specify unittest result csv paths.")
+    var includeOption = new Option<string[]>("--include")
     {
+        DefaultValueFactory = _ => ["**"],
+        Description = "Include glob patterns.",
         AllowMultipleArgumentsPerToken = true,
     };
-    var problemsOption = new Option<FileInfo[]?>(
-        aliases: ["--problems", "-p"],
-        description: "Specify outputs of CompetitiveVerifierProblem.")
+    var excludeOption = new Option<string[]>("--exclude")
     {
+        DefaultValueFactory = _ => ["**/obj", "**/bin"],
+        Description = "Exclude glob patterns.",
         AllowMultipleArgumentsPerToken = true,
     };
-    var propertiesOption = new Option<ImmutableDictionary<string, string>?>(
-        name: "--properties",
-        parseArgument: (res) => res.Tokens
+
+    var unittestOption = new Option<FileInfo[]?>("--unittest", "-u")
+    {
+        Description = "Specify unittest result csv paths.",
+        AllowMultipleArgumentsPerToken = true,
+    };
+    var problemsOption = new Option<FileInfo[]?>("--problems", "-p")
+    {
+        Description = "Specify outputs of CompetitiveVerifierProblem.",
+        AllowMultipleArgumentsPerToken = true,
+    };
+    var propertiesOption = new Option<ImmutableDictionary<string, string>?>("--properties")
+    {
+        CustomParser = (res) => res.Tokens
         .SelectMany(t => t.Value.Split(';'))
         .Select(s =>
         {
-            var sp = s.Split('=');
-            return (sp[0].Trim(), sp[1].Trim());
+            var ss = s.AsSpan().Trim();
+            var ix = ss.IndexOf('=');
+
+            var key = ss[..ix].ToString();
+            var val = ss[(ix + 1)..].ToString();
+
+            return (key, val);
         })
         .ToImmutableDictionary(t => t.Item1, t => t.Item2),
-        description: "MSBuild properties separated by semicolon. e.g. WarningLevel=2;Configuration=Release")
-    {
+        Description = "MSBuild properties separated by semicolon. e.g. WarningLevel=2;Configuration=Release",
         AllowMultipleArgumentsPerToken = true,
     };
 
     var rootCommand = new RootCommand("C# resolver for competitive-verifier")
-        {
-            solutionArgument,
-            includeOption,
-            excludeOption,
-            unittestOption,
-            problemsOption,
-            propertiesOption,
+    {
+        solutionArgument,
+        includeOption,
+        excludeOption,
+        unittestOption,
+        problemsOption,
+        propertiesOption,
     };
 
-    rootCommand.SetHandler(async ctx =>
-    {
-        var solutionPath = ctx.ParseResult.GetValueForArgument(solutionArgument)!;
-        var include = ctx.ParseResult.GetValueForOption(includeOption)!;
-        var exclude = ctx.ParseResult.GetValueForOption(excludeOption)!;
-        var unittest = ctx.ParseResult.GetValueForOption(unittestOption) ?? [];
-        var problems = ctx.ParseResult.GetValueForOption(problemsOption) ?? [];
-        var properties = ctx.ParseResult.GetValueForOption(propertiesOption);
 
-        await new CsResolver(ctx.Console).ResolveAsync(
+    rootCommand.SetAction(RunImpl);
+
+    return await rootCommand.Parse(args).InvokeAsync();
+
+    async Task RunImpl(ParseResult parseResult, CancellationToken cancellationToken)
+    {
+        var solutionPath = parseResult.GetRequiredValue(solutionArgument)!;
+        var include = parseResult.GetValue(includeOption)!;
+        var exclude = parseResult.GetValue(excludeOption)!;
+        var unittest = parseResult.GetRequiredValue(unittestOption) ?? [];
+        var problems = parseResult.GetRequiredValue(problemsOption) ?? [];
+        var properties = parseResult.GetValue(propertiesOption);
+
+        await new CsResolver(
+            parseResult.InvocationConfiguration.Output,
+            parseResult.InvocationConfiguration.Error).ResolveAsync(
             solutionPath,
             include,
             exclude,
@@ -96,8 +106,6 @@ static async Task<int> RunAsync(string[] args)
             problems.ToImmutableArray(),
 #pragma warning restore IDE0305
             properties ?? ImmutableDictionary<string, string>.Empty,
-            ctx.GetCancellationToken());
-    });
-
-    return await rootCommand.InvokeAsync(args);
+            cancellationToken);
+    }
 }
