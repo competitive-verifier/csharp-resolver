@@ -5,6 +5,11 @@
       "commandLineArgs": "$(ProjectDir)/../../Examples/Examples.sln -u $(ProjectDir)/Properties/unittest.csv -p $(ProjectDir)/Properties/problems.json --include Examples",
       "workingDirectory": "$(ProjectDir)/../.."
     },
+    "AllSlnx": {
+      "commandName": "Project",
+      "commandLineArgs": "$(ProjectDir)/../../Examples/Examples.slnx -u $(ProjectDir)/Properties/unittest.csv -p $(ProjectDir)/Properties/problems.json --include Examples",
+      "workingDirectory": "$(ProjectDir)/../.."
+    },
     "Empty": {
       "commandName": "Project",
       "commandLineArgs": "$(ProjectDir)/../../Examples/Examples.sln",
