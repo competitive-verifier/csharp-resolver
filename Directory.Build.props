@@ -1,7 +1,7 @@
 <Project>
 
   <PropertyGroup>
-    <VersionPrefix>2.2.0</VersionPrefix>
+    <VersionPrefix>2.2.1</VersionPrefix>
     <AssemblyVersion>$(VersionPrefix).100</AssemblyVersion>
     <Authors>kzrnm</Authors>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
