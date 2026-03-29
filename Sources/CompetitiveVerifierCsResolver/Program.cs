@@ -88,12 +88,12 @@ static async Task<int> RunAsync(string[] args)
 
     async Task RunImpl(ParseResult parseResult, CancellationToken cancellationToken)
     {
-        var solutionPath = parseResult.GetRequiredValue(solutionArgument)!;
-        var include = parseResult.GetValue(includeOption)!;
-        var exclude = parseResult.GetValue(excludeOption)!;
-        var unittest = parseResult.GetRequiredValue(unittestOption) ?? [];
-        var problems = parseResult.GetRequiredValue(problemsOption) ?? [];
-        var properties = parseResult.GetValue(propertiesOption);
+        var solutionPath = parseResult.GetRequiredValue(solutionArgument);
+        var include = parseResult.GetValue(includeOption) ?? [];
+        var exclude = parseResult.GetValue(excludeOption) ?? [];
+        var unittest = parseResult.GetValue(unittestOption) ?? [];
+        var problems = parseResult.GetValue(problemsOption) ?? [];
+        var properties = parseResult.GetValue(propertiesOption) ?? ImmutableDictionary<string, string>.Empty;
 
         await new CsResolver(
             parseResult.InvocationConfiguration.Output,
@@ -105,7 +105,7 @@ static async Task<int> RunAsync(string[] args)
             unittest.ToImmutableArray(),
             problems.ToImmutableArray(),
 #pragma warning restore IDE0305
-            properties ?? ImmutableDictionary<string, string>.Empty,
+            properties,
             cancellationToken);
     }
 }
