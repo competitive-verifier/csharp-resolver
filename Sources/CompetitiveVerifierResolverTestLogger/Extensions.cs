@@ -25,6 +25,7 @@ using System;
 using System.Xml.Linq;
 
 namespace CompetitiveVerifierResolverTestLogger;
+
 internal static class TestRunCriteriaExtensions
 {
     public static string? TryGetTargetFramework(this TestRunCriteria testRunCriteria)

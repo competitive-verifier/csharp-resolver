@@ -1,6 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
 
 namespace CompetitiveVerifierProblem.Diagnostics;
+
 public static class DiagnosticDescriptors
 {
     public static Diagnostic VERIFY0001_ShouldBeConsoleApp()

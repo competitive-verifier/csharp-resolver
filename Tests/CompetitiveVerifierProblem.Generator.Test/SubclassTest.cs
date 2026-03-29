@@ -1,6 +1,7 @@
 using Microsoft.CodeAnalysis;
 
 namespace CompetitiveVerifierProblem.Generator.Test;
+
 public class SubclassTest : TestBase
 {
     static readonly (string filename, string content)[] Sources = [

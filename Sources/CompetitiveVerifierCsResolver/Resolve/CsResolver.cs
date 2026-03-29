@@ -8,6 +8,7 @@ using System.Collections.Immutable;
 using System.Text.RegularExpressions;
 
 namespace CompetitiveVerifierCsResolver;
+
 public partial class CsResolver(TextWriter stdout, TextWriter stderr)
 {
     public async Task ResolveAsync(

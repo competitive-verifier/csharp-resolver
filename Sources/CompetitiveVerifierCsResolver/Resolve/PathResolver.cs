@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 
 namespace CompetitiveVerifierCsResolver.Resolve;
+
 public interface IPathResolver
 {
     string? RelativePath(string path);

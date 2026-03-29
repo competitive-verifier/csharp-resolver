@@ -7,6 +7,7 @@ using Moq;
 using System.CommandLine;
 
 namespace CompetitiveVerifierCsResolver;
+
 public class CsResolverTest
 {
     private static MetadataReference? _Mscorlib;

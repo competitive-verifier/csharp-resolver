@@ -2,6 +2,7 @@ using Newtonsoft.Json;
 using System.Text;
 
 namespace CompetitiveVerifierProblem.Generator.Test.Generated;
+
 public class GeneratedTest
 {
     [Fact]

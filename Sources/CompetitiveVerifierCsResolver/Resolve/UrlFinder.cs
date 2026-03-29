@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 using System.Text.RegularExpressions;
 
 namespace CompetitiveVerifierCsResolver.Resolve;
+
 internal partial class UrlFinder : CSharpSyntaxWalker
 {
     private readonly CancellationToken cancellationToken;

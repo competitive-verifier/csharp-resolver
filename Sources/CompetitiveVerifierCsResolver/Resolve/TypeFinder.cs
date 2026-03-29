@@ -5,6 +5,7 @@ using System.Collections.Immutable;
 
 
 namespace CompetitiveVerifierCsResolver.Resolve;
+
 internal class TypeFinder : CSharpSyntaxWalker
 {
     private readonly SemanticModel model;

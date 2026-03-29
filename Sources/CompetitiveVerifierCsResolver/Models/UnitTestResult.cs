@@ -2,6 +2,7 @@ using CompetitiveVerifierCsResolver.Verifier;
 using System.Text.RegularExpressions;
 
 namespace CompetitiveVerifierCsResolver.Models;
+
 public partial record UnitTestResult(string Name, int Success, int Skipped, int Failure)
 {
     public UnitTestResult Add(UnitTestResult other)

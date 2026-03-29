@@ -5,6 +5,7 @@ using Microsoft.CodeAnalysis.Testing;
 using System.Collections.Immutable;
 
 namespace CompetitiveVerifierProblem.Generator.Test;
+
 public abstract class TestBase
 {
 

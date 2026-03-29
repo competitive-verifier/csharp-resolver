@@ -2,6 +2,7 @@
 using System.IO;
 
 namespace CompetitiveVerifierResolverTestLogger;
+
 internal class TeeStream : IDisposable
 {
     private readonly StreamWriter? sw;

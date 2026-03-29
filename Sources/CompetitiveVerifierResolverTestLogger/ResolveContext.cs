@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 
 namespace CompetitiveVerifierResolverTestLogger;
+
 internal record ResolveContext(string? OutDirectory)
 {
     private readonly object _lock = new();

@@ -1,6 +1,7 @@
 using DotNet.Globbing;
 
 namespace CompetitiveVerifierCsResolver.Models;
+
 public class GlobCollectionTest
 {
     public static TheoryData<string[], string, bool> IsMatch_Data()

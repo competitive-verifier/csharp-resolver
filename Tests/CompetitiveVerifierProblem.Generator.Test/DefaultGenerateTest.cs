@@ -2,6 +2,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Testing;
 
 namespace CompetitiveVerifierProblem.Generator.Test;
+
 public class DefaultGenerateTest : TestBase
 {
     static readonly (string filename, string content)[] Sources = [

@@ -2,6 +2,7 @@
 using System.Text.Json.Serialization;
 
 namespace CompetitiveVerifierCsResolver.Verifier;
+
 public record VerificationFile(
         [property: JsonPropertyOrder(0), JsonPropertyName("dependencies"), JsonRequired]
         ImmutableHashSet<string> Dependencies,
