@@ -53,11 +53,13 @@ jobs:
       - name: Build
         run: dotnet build ${{ env.WORKFLOW_BUILD_SLN_OLD_STYLE }} -c Release
       - name: setup CompetitiveVerifierCsResolver
-        run: dotnet tool install -g CompetitiveVerifierCsResolver
+        run: |
+          dotnet pack Sources/CompetitiveVerifierCsResolver/CompetitiveVerifierCsResolver.csproj -c Release -o ./pack
+          dotnet tool install -g CompetitiveVerifierCsResolver --source ./pack
       # required only if you have unit test.
       - name: Unit test
         run: dotnet test UnitTest/UnitTest.csproj --logger "CompetitiveVerifier;OutDirectory=$RUNNER_TEMP/VerifierUnitTest" --no-build -c Release
-        working-directory: Examples/
+        working-directory: Examples
       - name: Resolve
         run: dotnet run --project $VERIFY_CSPROJ --no-build -c Release | tee "$RUNNER_TEMP/problems.json"
       - name: cs-resolve-old-style
@@ -87,9 +89,11 @@ jobs:
         id: diff-json
         uses: josephburnett/jd@v2.5.0
         with:
-          args: verify_files-new.json verify_files.json
+          args: -mset verify_files-new.json verify_files.json
       - name: Check verify_files.json
-        run: if [ "${{ steps.diff-json.outputs.exit_code }}" != "0" ]; then exit 1; fi
+        run: |
+          echo '${{ steps.diff-json.outputs.output }}'
+          if [ "${{ steps.diff-json.outputs.exit_code }}" != "0" ]; then exit 1; fi
       - name: Upload verify_files.json
         uses: competitive-verifier/actions/upload-verify-artifact@v2
         with:
