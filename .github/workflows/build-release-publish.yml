@@ -13,6 +13,7 @@ env:
   NUGET_XMLDOC_MODE: skip
   WORKFLOW_VERSION_PROJ: Directory.Build.props
   WORKFLOW_BUILD_SLN: csharp-resolver.slnx
+  WORKFLOW_TEST_SLN: csharp-resolver-test.slnx
 
 jobs:
   get-version:
@@ -40,6 +41,7 @@ jobs:
           dotnet-version: |
             8.0.x
             9.0.x
+            10.0.x
       - uses: actions/cache@v4
         with:
           path: ~/.nuget/packages
@@ -49,7 +51,7 @@ jobs:
       - name: Build
         run: dotnet build ${{ env.WORKFLOW_BUILD_SLN }} -c Release
       - name: Test
-        run: dotnet test --solution ${{ env.WORKFLOW_BUILD_SLN }} --no-build --github-logger -c Release
+        run: dotnet test --solution ${{ env.WORKFLOW_TEST_SLN }} --report-github
       - name: Pack
         run: dotnet pack ${{ env.WORKFLOW_BUILD_SLN }} --no-build -c Release
       - uses: actions/upload-artifact@v4

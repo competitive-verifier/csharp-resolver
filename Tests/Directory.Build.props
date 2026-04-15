@@ -1,6 +1,6 @@
 <Project>
   <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
   <ItemGroup>
-    <PackageReference Update="GitHubActionsTestLogger" Version="3.0.3" />
+    <PackageReference Include="GitHubActionsTestLogger" Version="3.0.3" />
   </ItemGroup>
 </Project>
