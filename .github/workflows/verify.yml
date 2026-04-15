@@ -1,8 +1,11 @@
 name: verify
 on:
+  pull_request:
+    branches:
+      - main
   push:
     branches:
-      - "main"
+      - main
   workflow_dispatch:
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
@@ -63,7 +66,7 @@ jobs:
           output-path: verify_files.json
           # Specify patterns
           include: |
-                Examples/**
+            Examples/**
           # exclude: your-own-exclude/
           unittest-result: ${{runner.temp}}/VerifierUnitTest/*.csv
           problems: ${{runner.temp}}/problems.json
