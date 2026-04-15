@@ -54,8 +54,9 @@ jobs:
         run: dotnet build ${{ env.WORKFLOW_BUILD_SLN_OLD_STYLE }} -c Release
       - name: setup CompetitiveVerifierCsResolver
         run: |
-          dotnet pack Sources/CompetitiveVerifierCsResolver/CompetitiveVerifierCsResolver.csproj -c Release -o ./pack
-          dotnet tool install -g CompetitiveVerifierCsResolver --source ./pack
+          dotnet build Sources/CompetitiveVerifierCsResolver/CompetitiveVerifierCsResolver.csproj -c Release -o .github/local
+          ln -s CompetitiveVerifierCsResolver .github/local/competitive-verifier-cs-resolver 
+          echo '${{github.workspace}}/.github/local' >> $GITHUB_PATH
       # required only if you have unit test.
       - name: Unit test
         run: dotnet test UnitTest/UnitTest.csproj --logger "CompetitiveVerifier;OutDirectory=$RUNNER_TEMP/VerifierUnitTest" --no-build -c Release

@@ -1,8 +1,9 @@
 <Project>
 
   <PropertyGroup>
-    <VersionPrefix>2.3.0-beta1</VersionPrefix>
-    <AssemblyVersion>$(VersionPrefix).100</AssemblyVersion>
+    <VersionPrefix>2.3.0</VersionPrefix>
+    <VersionSuffix>beta1</VersionSuffix>
+    <AssemblyVersion>$(VersionPrefix).001</AssemblyVersion>
     <Authors>kzrnm</Authors>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <Company>competitive-verifier</Company>
