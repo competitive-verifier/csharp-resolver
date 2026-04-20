@@ -18,16 +18,11 @@
     <Project Path="Tests/CompetitiveVerifierProblem.Generator.Generated/CompetitiveVerifierProblem.Generator.Generated.csproj" />
     <Project Path="Tests/CompetitiveVerifierProblem.Generator.Test/CompetitiveVerifierProblem.Generator.Test.csproj" />
   </Folder>
-  <Folder Name="/Sources/LocalExamples/">
-    <Project Path="Sources/LocalExamples/ClassLibrary/ClassLibrary.csproj" />
-    <Project Path="Sources/LocalExamples/Test.MSTest/Test.MSTest.csproj" />
-    <Project Path="Sources/LocalExamples/Test.NUnit/Test.NUnit.csproj" />
-    <Project Path="Sources/LocalExamples/Test.XUnit/Test.XUnit.csproj" />
-    <Project Path="Sources/LocalExamples/VerifyApp/VerifyApp.csproj" />
-  </Folder>
-  <Folder Name="/Examples/">
-    <Project Path="Examples/ClassLibrary/ClassLibrary.csproj" />
-    <Project Path="Examples/UnitTest/UnitTest.csproj" />
-    <Project Path="Examples/VerifyApp/VerifyApp.csproj" />
+  <Folder Name="/Example.VsTest/">
+    <Project Path="Example.VsTest/ClassLibrary/ClassLibrary.csproj" />
+    <Project Path="Example.VsTest/Test.MSTest/Test.MSTest.csproj" />
+    <Project Path="Example.VsTest/Test.NUnit/Test.NUnit.csproj" />
+    <Project Path="Example.VsTest/Test.XUnit/Test.XUnit.csproj" />
+    <Project Path="Example.VsTest/VerifyApp/VerifyApp.csproj" />
   </Folder>
 </Solution>

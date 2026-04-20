@@ -27,22 +27,21 @@ jobs:
       target: csharp-resolver.slnx
       dotnet-version: |
         8.0.x
-        9.0.x
+        10.0.x
       build-before-format: true
 
   build:
     runs-on: ubuntu-latest
     needs: [get-version]
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v5
         with:
           dotnet-version: |
             8.0.x
-            9.0.x
             10.0.x
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         with:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', '**/Directory.Build.props') }}
@@ -54,7 +53,7 @@ jobs:
         run: dotnet test --solution ${{ env.WORKFLOW_TEST_SLN }} --report-github
       - name: Pack
         run: dotnet pack ${{ env.WORKFLOW_BUILD_SLN }} --no-build -c Release
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: ${{ needs.get-version.outputs.is-new == 'true' }}
         with:
           name: dist
