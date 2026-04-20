@@ -1,4 +1,5 @@
 using ClassLibrary;
+using Assert = Xunit.Assert;
 
 namespace Local.XUnit;
 
