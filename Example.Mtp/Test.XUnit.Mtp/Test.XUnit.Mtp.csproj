@@ -1,6 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
-  <Import Project="../../Sources/CompetitiveVerifierResolverTestLogger/CompetitiveVerifierResolverTestLogger.props" />
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFrameworks>net10.0;net8.0</TargetFrameworks>
@@ -12,6 +10,10 @@
 
   <ItemGroup>
     <Content Include="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
   </ItemGroup>
 
   <ItemGroup>

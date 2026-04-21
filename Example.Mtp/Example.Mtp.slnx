@@ -4,12 +4,15 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="../Sources/CompetitiveVerifierProblem.Generator/CompetitiveVerifierProblem.Generator.csproj" />
-  <Project Path="../Sources/CompetitiveVerifierProblem/CompetitiveVerifierProblem.csproj" />
-  <Project Path="../Sources/CompetitiveVerifierResolverTestLogger/CompetitiveVerifierResolverTestLogger.csproj" />
+  <Folder Name="/Sources/">
+    <Project Path="../Sources/CompetitiveVerifierProblem.Generator/CompetitiveVerifierProblem.Generator.csproj" />
+    <Project Path="../Sources/CompetitiveVerifierProblem/CompetitiveVerifierProblem.csproj" />
+    <Project Path="../Sources/CompetitiveVerifierResolverTestLogger/CompetitiveVerifierResolverTestLogger.csproj" />
+  </Folder>
   <Project Path="ClassLibrary.Mtp/ClassLibrary.Mtp.csproj" />
   <Project Path="Test.MSTest.Mtp/Test.MSTest.Mtp.csproj" />
   <Project Path="Test.NUnit.Mtp/Test.NUnit.Mtp.csproj" />
+  <Project Path="Test.TUnit.Mtp/Test.TUnit.Mtp.csproj" />
   <Project Path="Test.XUnit.Mtp/Test.XUnit.Mtp.csproj" />
   <Project Path="VerifyApp.Mtp/VerifyApp.Mtp.csproj" />
 </Solution>

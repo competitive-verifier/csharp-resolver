@@ -1,4 +1,4 @@
-﻿namespace VerifyApp;
+﻿namespace Mtp.VerifyApp;
 
 internal class HelloWorldAoj : CompetitiveVerifier.ProblemSolver
 {

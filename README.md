@@ -99,5 +99,13 @@ Add unit test project.
 Run with OutFile parameter.
 
 ```sh
-dotnet test  --logger "CompetitiveVerifier;OutFile=$pwd/out.csv"
+dotnet test --logger "CompetitiveVerifier;OutDirectory=$PWD/VerifierUnitTest"
 ```
+
+For Microsoft.Testing.Platform project.
+
+```sh
+dotnet test --solution {your.slnx} --report-competitive-verifier "$PWD/VerifierUnitTest"
+```
+
+NUnit is not yet supported in the MTP version. https://github.com/nunit/nunit3-vs-adapter/issues/1351

@@ -1,4 +1,4 @@
-﻿namespace ClassLibrary;
+﻿namespace Mtp.ClassLibrary;
 
 public readonly struct Circle
 {

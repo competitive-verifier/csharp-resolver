@@ -1,7 +1,7 @@
 using System.Runtime.CompilerServices;
-using ClassLibrary;
+using Mtp.ClassLibrary;
 
-namespace Local;
+namespace Mtp.Local;
 
 [TestClass]
 public class CircleNoArgsTest

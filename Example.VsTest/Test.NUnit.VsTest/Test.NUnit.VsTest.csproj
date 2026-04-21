@@ -28,6 +28,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Using Include="NUnit.Framework" />
+  </ItemGroup>
+  
+  <ItemGroup>
     <ProjectReference Include="..\ClassLibrary.VsTest\ClassLibrary.VsTest.csproj" />
     <ProjectReference Include="..\..\Sources\CompetitiveVerifierResolverTestLogger\CompetitiveVerifierResolverTestLogger.csproj" />
   </ItemGroup>

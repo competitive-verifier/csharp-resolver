@@ -1,6 +1,6 @@
-using ClassLibrary;
+using Mtp.ClassLibrary;
 
-namespace Local.MSTest;
+namespace Mtp.Local.MSTest;
 
 [TestClass]
 public class CircleTest

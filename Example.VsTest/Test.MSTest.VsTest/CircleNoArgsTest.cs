@@ -1,7 +1,7 @@
 using System.Runtime.CompilerServices;
-using ClassLibrary;
+using VsTest.ClassLibrary;
 
-namespace Local;
+namespace VsTest.Local;
 
 [TestClass]
 public class CircleNoArgsTest

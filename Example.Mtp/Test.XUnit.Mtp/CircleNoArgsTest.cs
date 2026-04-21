@@ -1,8 +1,8 @@
 using System.Runtime.CompilerServices;
-using ClassLibrary;
+using Mtp.ClassLibrary;
 using Assert = Xunit.Assert;
 
-namespace Local;
+namespace Mtp.Local;
 
 public class CircleNoArgsTest
 {

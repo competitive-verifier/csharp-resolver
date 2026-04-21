@@ -1,4 +1,4 @@
-﻿namespace VerifyApp;
+﻿namespace VsTest.VerifyApp;
 
 internal class HelloWorldAoj : CompetitiveVerifier.ProblemSolver
 {

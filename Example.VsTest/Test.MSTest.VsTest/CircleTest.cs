@@ -1,6 +1,6 @@
-using ClassLibrary;
+using VsTest.ClassLibrary;
 
-namespace Local.MSTest;
+namespace VsTest.Local.MSTest;
 
 [TestClass]
 public class CircleTest

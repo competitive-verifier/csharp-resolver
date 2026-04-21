@@ -1,7 +1,7 @@
-using ClassLibrary;
+using VsTest.ClassLibrary;
 using Assert = Xunit.Assert;
 
-namespace Local.XUnit;
+namespace VsTest.Local.XUnit;
 
 public class CircleTest
 {

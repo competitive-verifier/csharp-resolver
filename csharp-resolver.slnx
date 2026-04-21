@@ -18,17 +18,11 @@
   </Folder>
   <Folder Name="/Example.VsTest/">
     <Project Path="Example.VsTest/ClassLibrary.VsTest/ClassLibrary.VsTest.csproj" />
-    <Project Path="Example.VsTest/Test.MSTest.VsTest/Test.MSTest.VsTest.csproj" />
-    <Project Path="Example.VsTest/Test.NUnit.VsTest/Test.NUnit.VsTest.csproj" />
-    <Project Path="Example.VsTest/Test.XUnit.VsTest/Test.XUnit.VsTest.csproj" />
     <Project Path="Example.VsTest/VerifyApp.VsTest/VerifyApp.VsTest.csproj" />
   </Folder>
   <Folder Name="/Example.Mtp/">
     <File Path="Example.Mtp/Directory.Build.props" />
     <Project Path="Example.Mtp/ClassLibrary.Mtp/ClassLibrary.Mtp.csproj" />
-    <Project Path="Example.Mtp/Test.MSTest.Mtp/Test.MSTest.Mtp.csproj" />
-    <Project Path="Example.Mtp/Test.NUnit.Mtp/Test.NUnit.Mtp.csproj" />
-    <Project Path="Example.Mtp/Test.XUnit.Mtp/Test.XUnit.Mtp.csproj" />
     <Project Path="Example.Mtp/VerifyApp.Mtp/VerifyApp.Mtp.csproj" />
   </Folder>
 </Solution>

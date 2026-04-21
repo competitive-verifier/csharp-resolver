@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace CompetitiveVerifierResolverTestLogger;
+namespace CompetitiveVerifierResolverTestLogger.VsTest;
 
 [FriendlyName("CompetitiveVerifier")]
 [ExtensionUri("logger://competitive-verifier/resolver/v1")]

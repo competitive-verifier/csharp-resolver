@@ -1,7 +1,7 @@
-using ClassLibrary;
+using Mtp.ClassLibrary;
 using Assert = Xunit.Assert;
 
-namespace Local.XUnit;
+namespace Mtp.Local.XUnit;
 
 public class CircleTest
 {

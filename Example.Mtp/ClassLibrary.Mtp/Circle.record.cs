@@ -1,4 +1,4 @@
-namespace ClassLibrary;
+namespace Mtp.ClassLibrary;
 
 public readonly record struct Circle(double R)
 {

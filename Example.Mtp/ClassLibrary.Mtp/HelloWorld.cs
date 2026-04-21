@@ -1,7 +1,7 @@
 ﻿using System;
 
 // competitive-verifier: document_title Hello World!
-namespace ClassLibrary;
+namespace Mtp.ClassLibrary;
 
 public static class HelloWorld
 {

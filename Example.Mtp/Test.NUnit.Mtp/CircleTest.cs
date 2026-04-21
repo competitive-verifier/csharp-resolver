@@ -1,7 +1,7 @@
-using ClassLibrary;
+using Mtp.ClassLibrary;
 using Assert = NUnit.Framework.Assert;
 
-namespace Local.NUnit;
+namespace Mtp.Local.NUnit;
 
 public class CircleTest
 {

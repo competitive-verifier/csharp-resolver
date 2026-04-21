@@ -1,7 +1,7 @@
-﻿using ClassLibrary;
+﻿using Mtp.ClassLibrary;
 using System;
 
-namespace VerifyApp;
+namespace Mtp.VerifyApp;
 
 internal class CircleAizu : CompetitiveVerifier.ProblemSolver
 {
