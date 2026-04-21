@@ -7,7 +7,7 @@
 |CompetitiveVerifierResolverTestLogger|[![NuGet version (CompetitiveVerifierResolverTestLogger)](https://img.shields.io/nuget/v/CompetitiveVerifierResolverTestLogger.svg?style=flat-square)](https://www.nuget.org/packages/CompetitiveVerifierResolverTestLogger/)|
 
 
-See [Examples](Examples).
+See [Example.VsTest](Example.VsTest).
 
 ## Usage
 
@@ -31,7 +31,7 @@ Use in GitHub Actions.
           output-path: verify_files.json
           # Specify patterns
           include: |
-                Examples/**
+                Example.VsTest/**
           # exclude: your-own-exclude/
           unittest-result: ${{runner.temp}}/VerifierUnitTest/*.csv
           problems: ${{runner.temp}}/problems.json
@@ -65,7 +65,7 @@ Subclasses of `CompetitiveVerifier.ProblemSolver` are treated as verification.
 
 The library assume for console application.
 
-See [Examples/VerifyApp](Examples/VerifyApp).
+See [Example.VsTest/VerifyApp](Example.VsTest/VerifyApp).
 
 #### Example: Problem
 

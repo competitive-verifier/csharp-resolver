@@ -1,19 +1,14 @@
 {
   "profiles": {
-    "All": {
+    "Example.VsTest": {
       "commandName": "Project",
-      "commandLineArgs": "$(ProjectDir)/../../Examples/Examples.sln -u $(ProjectDir)/Properties/unittest.csv -p $(ProjectDir)/Properties/problems.json --include Examples",
-      "workingDirectory": "$(ProjectDir)/../.."
-    },
-    "AllSlnx": {
-      "commandName": "Project",
-      "commandLineArgs": "$(ProjectDir)/../../Examples/Examples.slnx -u $(ProjectDir)/Properties/unittest.csv -p $(ProjectDir)/Properties/problems.json --include Examples",
-      "workingDirectory": "$(ProjectDir)/../.."
+      "commandLineArgs": "$(ProjectDir)../../Example.VsTest/Example.VsTest.sln -u $(ProjectDir)Properties/unittest.csv -p $(ProjectDir)Properties/problems.json --include Example.VsTest",
+      "workingDirectory": "$(ProjectDir)../.."
     },
     "Empty": {
       "commandName": "Project",
-      "commandLineArgs": "$(ProjectDir)/../../Examples/Examples.sln",
-      "workingDirectory": "$(ProjectDir)/../.."
+      "commandLineArgs": "$(ProjectDir)../../Example.VsTest/Example.VsTest.sln",
+      "workingDirectory": "$(ProjectDir)../.."
     },
     "Help": {
       "commandName": "Project",

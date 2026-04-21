@@ -1,5 +1,0 @@
-<Solution>
-  <Project Path="ClassLibrary/ClassLibrary.csproj" />
-  <Project Path="UnitTest/UnitTest.csproj" />
-  <Project Path="VerifyApp/VerifyApp.csproj" />
-</Solution>

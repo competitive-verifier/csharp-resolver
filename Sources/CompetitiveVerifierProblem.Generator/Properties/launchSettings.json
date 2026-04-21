@@ -2,7 +2,7 @@
   "profiles": {
     "Problem": {
       "commandName": "DebugRoslynComponent",
-      "targetProject": "..\\LocalExamples\\VerifyApp\\VerifyApp.csproj"
+      "targetProject": "..\\..\\Example.VsTest\\VerifyApp\\VerifyApp.csproj"
     }
   }
 }

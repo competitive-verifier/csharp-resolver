@@ -1,9 +1,4 @@
 <Solution>
-  <Folder Name="/Examples/">
-    <Project Path="Examples/ClassLibrary/ClassLibrary.csproj" />
-    <Project Path="Examples/UnitTest/UnitTest.csproj" />
-    <Project Path="Examples/VerifyApp/VerifyApp.csproj" />
-  </Folder>
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
     <File Path="CHANGELOG.md" />
@@ -16,17 +11,16 @@
     <Project Path="Sources/CompetitiveVerifierProblem/CompetitiveVerifierProblem.csproj" />
     <Project Path="Sources/CompetitiveVerifierResolverTestLogger/CompetitiveVerifierResolverTestLogger.csproj" />
   </Folder>
-  <Folder Name="/Sources/LocalExamples/">
-    <Project Path="Sources/LocalExamples/ClassLibrary/ClassLibrary.csproj" />
-    <Project Path="Sources/LocalExamples/Test.MSTest/Test.MSTest.csproj" />
-    <Project Path="Sources/LocalExamples/Test.NUnit/Test.NUnit.csproj" />
-    <Project Path="Sources/LocalExamples/Test.XUnit/Test.XUnit.csproj" />
-    <Project Path="Sources/LocalExamples/VerifyApp/VerifyApp.csproj" />
-  </Folder>
   <Folder Name="/Tests/">
-    <File Path="Tests/Directory.Build.props" />
     <Project Path="Tests/CompetitiveVerifierCsResolver.Test/CompetitiveVerifierCsResolver.Test.csproj" />
     <Project Path="Tests/CompetitiveVerifierProblem.Generator.Generated/CompetitiveVerifierProblem.Generator.Generated.csproj" />
     <Project Path="Tests/CompetitiveVerifierProblem.Generator.Test/CompetitiveVerifierProblem.Generator.Test.csproj" />
+  </Folder>
+  <Folder Name="/Example.VsTest/">
+    <Project Path="Example.VsTest/ClassLibrary.VsTest/ClassLibrary.VsTest.csproj" />
+    <Project Path="Example.VsTest/Test.MSTest.VsTest/Test.MSTest.VsTest.csproj" />
+    <Project Path="Example.VsTest/Test.NUnit.VsTest/Test.NUnit.VsTest.csproj" />
+    <Project Path="Example.VsTest/Test.XUnit.VsTest/Test.XUnit.VsTest.csproj" />
+    <Project Path="Example.VsTest/VerifyApp.VsTest/VerifyApp.VsTest.csproj" />
   </Folder>
 </Solution>

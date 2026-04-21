@@ -1,2 +1,4 @@
 Class,success,skipped,failure
-UnitTest.CircleTest,4,0,0
+Local.XUnit.CircleTest,4,0,0
+Local.MSTest.CircleTest,2,2,0
+Local.NUnit.CircleTest,3,0,1

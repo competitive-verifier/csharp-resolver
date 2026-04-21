@@ -1,0 +1,15 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="../Sources/CompetitiveVerifierProblem.Generator/CompetitiveVerifierProblem.Generator.csproj" />
+  <Project Path="../Sources/CompetitiveVerifierProblem/CompetitiveVerifierProblem.csproj" />
+  <Project Path="../Sources/CompetitiveVerifierResolverTestLogger/CompetitiveVerifierResolverTestLogger.csproj" />
+  <Project Path="ClassLibrary.VsTest/ClassLibrary.VsTest.csproj" />
+  <Project Path="Test.MSTest.VsTest/Test.MSTest.VsTest.csproj" />
+  <Project Path="Test.NUnit.VsTest/Test.NUnit.VsTest.csproj" />
+  <Project Path="Test.XUnit.VsTest/Test.XUnit.VsTest.csproj" />
+  <Project Path="VerifyApp.VsTest/VerifyApp.VsTest.csproj" />
+</Solution>

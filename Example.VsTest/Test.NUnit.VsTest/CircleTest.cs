@@ -1,4 +1,5 @@
 using ClassLibrary;
+using Assert = NUnit.Framework.Assert;
 
 namespace Local.NUnit;
 
