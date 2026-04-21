@@ -1,0 +1,9 @@
+<Project>
+
+  <!--
+  <Import Condition="$(MSBuildProjectName.StartsWith('Test.'))" Project="../Sources/CompetitiveVerifierResolverTestLogger/CompetitiveVerifierResolverTestLogger.props" />
+-->
+  <PropertyGroup>
+    <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
+  </PropertyGroup>
+</Project>

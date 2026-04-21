@@ -1,0 +1,16 @@
+﻿{
+  "profiles": {
+    "Interactive": {
+      "commandName": "Project",
+      "commandLineArgs": "--interactive"
+    },
+    "Empty": {
+      "commandName": "Project",
+      "commandLineArgs": ""
+    },
+    "Help": {
+      "commandName": "Project",
+      "commandLineArgs": "-h"
+    }
+  }
+}
