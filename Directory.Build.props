@@ -20,9 +20,6 @@
     <NoWarn>$(NoWarn);IDE0130</NoWarn>
 
     <PackageOutputPath>$(MSBuildThisFileDirectory)bin\Packages\$(Configuration)\</PackageOutputPath>
-
-    <!-- Explicitly configure; this project mixes vstest and mtp, as well as actual tests and example tests. -->
-    <IsTestProject>false</IsTestProject>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">

@@ -12,17 +12,15 @@
     <Project Path="Sources/CompetitiveVerifierResolverTestLogger/CompetitiveVerifierResolverTestLogger.csproj" />
   </Folder>
   <Folder Name="/Tests/">
-    <File Path="Tests/Directory.Build.props" />
-    <File Path="Tests/global.json" />
     <Project Path="Tests/CompetitiveVerifierCsResolver.Test/CompetitiveVerifierCsResolver.Test.csproj" />
     <Project Path="Tests/CompetitiveVerifierProblem.Generator.Generated/CompetitiveVerifierProblem.Generator.Generated.csproj" />
     <Project Path="Tests/CompetitiveVerifierProblem.Generator.Test/CompetitiveVerifierProblem.Generator.Test.csproj" />
   </Folder>
   <Folder Name="/Example.VsTest/">
-    <Project Path="Example.VsTest/ClassLibrary/ClassLibrary.csproj" />
-    <Project Path="Example.VsTest/Test.MSTest/Test.MSTest.csproj" />
-    <Project Path="Example.VsTest/Test.NUnit/Test.NUnit.csproj" />
-    <Project Path="Example.VsTest/Test.XUnit/Test.XUnit.csproj" />
-    <Project Path="Example.VsTest/VerifyApp/VerifyApp.csproj" />
+    <Project Path="Example.VsTest/ClassLibrary.VsTest/ClassLibrary.VsTest.csproj" />
+    <Project Path="Example.VsTest/Test.MSTest.VsTest/Test.MSTest.VsTest.csproj" />
+    <Project Path="Example.VsTest/Test.NUnit.VsTest/Test.NUnit.VsTest.csproj" />
+    <Project Path="Example.VsTest/Test.XUnit.VsTest/Test.XUnit.VsTest.csproj" />
+    <Project Path="Example.VsTest/VerifyApp.VsTest/VerifyApp.VsTest.csproj" />
   </Folder>
 </Solution>

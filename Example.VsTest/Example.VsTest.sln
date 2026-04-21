@@ -3,17 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassLibrary", "ClassLibrary\ClassLibrary.csproj", "{8027D338-CA73-4F8B-BDB0-465E581634C1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassLibrary", "ClassLibrary.VsTest\ClassLibrary.VsTest.csproj", "{8027D338-CA73-4F8B-BDB0-465E581634C1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.MSTest", "Test.MSTest\Test.MSTest.csproj", "{068E148D-0C15-47A2-A548-56ED557B713C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.MSTest.VsTest", "Test.MSTest.VsTest\Test.MSTest.VsTest.csproj", "{068E148D-0C15-47A2-A548-56ED557B713C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompetitiveVerifierResolverTestLogger", "..\Sources\CompetitiveVerifierResolverTestLogger\CompetitiveVerifierResolverTestLogger.csproj", "{9FDE16FB-076E-443F-A6B1-E5C4DA855EF4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.NUnit", "Test.NUnit\Test.NUnit.csproj", "{C775A893-5ED7-4CC1-9050-5A162E4C298B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.NUnit.VsTest", "Test.NUnit.VsTest\Test.NUnit.VsTest.csproj", "{C775A893-5ED7-4CC1-9050-5A162E4C298B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.XUnit", "Test.XUnit\Test.XUnit.csproj", "{E73DD5AB-C9AC-4D18-B4D9-5D5EF8EBA8A1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.XUnit.VsTest", "Test.XUnit.VsTest\Test.XUnit.VsTest.csproj", "{E73DD5AB-C9AC-4D18-B4D9-5D5EF8EBA8A1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VerifyApp", "VerifyApp\VerifyApp.csproj", "{3E09F24E-929E-43F5-B9DC-504B18018C05}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VerifyApp.VsTest", "VerifyApp.VsTest\VerifyApp.VsTest.csproj", "{3E09F24E-929E-43F5-B9DC-504B18018C05}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompetitiveVerifierProblem", "..\Sources\CompetitiveVerifierProblem\CompetitiveVerifierProblem.csproj", "{66FE2B7A-9F92-429A-AA6D-12DAE716EAC4}"
 EndProject

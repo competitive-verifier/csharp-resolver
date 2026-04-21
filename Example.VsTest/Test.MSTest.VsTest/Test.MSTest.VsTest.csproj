@@ -15,12 +15,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.3.0" />
-    <PackageReference Include="NUnit" Version="4.4.0" />
-    <PackageReference Include="NUnit3TestAdapter" Version="5.2.0" />
-    <PackageReference Include="NUnit.Analyzers" Version="4.10.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
+    <PackageReference Include="MSTest.TestAdapter" Version="4.2.1" />
     <PackageReference Include="coverlet.collector" Version="10.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -28,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ClassLibrary\ClassLibrary.csproj" />
+    <ProjectReference Include="..\ClassLibrary.VsTest\ClassLibrary.VsTest.csproj" />
     <ProjectReference Include="..\..\Sources\CompetitiveVerifierResolverTestLogger\CompetitiveVerifierResolverTestLogger.csproj" />
   </ItemGroup>
 </Project>
