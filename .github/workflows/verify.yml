@@ -7,7 +7,10 @@ on:
     branches:
       - main
   workflow_dispatch:
-
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 concurrency:
   group: "pages"
   cancel-in-progress: true
@@ -213,8 +216,7 @@ jobs:
       - name: Docs
         uses: competitive-verifier/actions/docs@v2
         with:
-          verify-result: ${{ steps.all-artifacts.outputs.artifacts-root
-            }}/Result-*/result.json
+          verify-result: ${{ steps.all-artifacts.outputs.artifacts-root }}/Result-*/result.json
           destination: _jekyll
           write-summary: true
 
@@ -231,8 +233,7 @@ jobs:
       - name: Check
         uses: competitive-verifier/actions/check@v2
         with:
-          verify-result: ${{ steps.all-artifacts.outputs.artifacts-root
-            }}/Result-*/result.json
+          verify-result: ${{ steps.all-artifacts.outputs.artifacts-root }}/Result-*/result.json
   deploy:
     if: (success() || failure()) && github.ref == 'refs/heads/main'
     needs: docs-and-check
