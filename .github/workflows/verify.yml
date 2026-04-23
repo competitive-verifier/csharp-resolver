@@ -8,32 +8,21 @@ on:
       - main
   workflow_dispatch:
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-# Allow one concurrent deployment
-concurrency:
-  group: "pages"
-  cancel-in-progress: true
-
 env:
-  WORKFLOW_BUILD_SLN_OLD_STYLE: Examples/Examples.sln
-  WORKFLOW_BUILD_SLN_NEW_STYLE: Examples/Examples.slnx
-  VERIFY_CSPROJ: Examples/VerifyApp/VerifyApp.csproj
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  DOTNET_NOLOGO: true
+  NUGET_XMLDOC_MODE: skip
 
 jobs:
   setup:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-
       - name: Set up competitive-verifier
         uses: competitive-verifier/actions/setup@v2
         with:
-          python-version: "3.9"
+          python-version: "3.12"
           cache-pip: true
 
       # Initialize your own environment for resolving.
@@ -49,51 +38,80 @@ jobs:
           key: ${{ runner.os }}-nuget-${{ hashFiles('Examples/**/*.csproj') }}
           restore-keys: |
             ${{ runner.os }}-nuget-
-      - name: Build
-        run: dotnet build ${{ env.WORKFLOW_BUILD_SLN_OLD_STYLE }} -c Release
       - name: setup CompetitiveVerifierCsResolver
         run: |
-          dotnet build Sources/CompetitiveVerifierCsResolver/CompetitiveVerifierCsResolver.csproj -c Release -o .github/local
-          ln -s CompetitiveVerifierCsResolver .github/local/competitive-verifier-cs-resolver 
-          echo '${{github.workspace}}/.github/local' >> $GITHUB_PATH
-      # required only if you have unit test.
-      - name: Unit test
-        run: dotnet test UnitTest/UnitTest.csproj --logger "CompetitiveVerifier;OutDirectory=$RUNNER_TEMP/VerifierUnitTest" --no-build -c Release
-        working-directory: Examples
-      - name: Resolve
-        run: dotnet run --project $VERIFY_CSPROJ --no-build -c Release | tee "$RUNNER_TEMP/problems.json"
-      - name: cs-resolve-old-style
+          dotnet build Sources/CompetitiveVerifierCsResolver/CompetitiveVerifierCsResolver.csproj -c Release -o '${{runner.temp}}/localbin'
+          ln -s CompetitiveVerifierCsResolver '${{runner.temp}}/localbin/competitive-verifier-cs-resolver'
+          echo '${{runner.temp}}/localbin' >> $GITHUB_PATH
+
+      - name: Test Example.Mtp
+        working-directory: Example.Mtp
+        run: |
+          dotnet test --solution Example.Mtp.slnx --report-competitive-verifier="${{runner.temp}}/Unittest.Mtp"
+
+      - name: Test Example.VsTest
+        working-directory: Example.VsTest
+        run: |
+          dotnet test Example.VsTest.slnx --logger "CompetitiveVerifier;OutDirectory=${{runner.temp}}/Unittest.VsTest"
+
+      - name: Problems Example.Mtp
+        run: |
+          dotnet run --project Example.Mtp/VerifyApp.Mtp/VerifyApp.Mtp.csproj -c Release --no-launch-profile | tee "${{runner.temp}}/problems.Mtp.json"
+
+      - name: Problems Example.VsTest
+        run: |
+          dotnet run --project Example.VsTest/VerifyApp.VsTest/VerifyApp.VsTest.csproj -c Release --no-launch-profile | tee "${{runner.temp}}/problems.VsTest.json"
+
+      - name: cs-resolve-mtp
         uses: competitive-verifier/actions/cs-resolve@v2
         with:
-          solution: ${{ env.WORKFLOW_BUILD_SLN_OLD_STYLE }}
-          output-path: verify_files.json
+          solution: Example.Mtp/Example.Mtp.slnx
+          output-path: verify_files.Mtp.json
           # Specify patterns
           include: |
-            Examples/**
+            Example.Mtp/**
           # exclude: your-own-exclude/
-          unittest-result: ${{runner.temp}}/VerifierUnitTest/*.csv
-          problems: ${{runner.temp}}/problems.json
-      - name: cs-resolve-new-style
+          unittest-result: ${{runner.temp}}/Unittest.Mtp/*.csv
+          problems: ${{runner.temp}}/problems.Mtp.json
+      - name: cs-resolve-vstest-old-style
         uses: competitive-verifier/actions/cs-resolve@v2
         with:
-          solution: ${{ env.WORKFLOW_BUILD_SLN_NEW_STYLE }}
-          output-path: verify_files-new.json
+          solution: Example.VsTest/Example.VsTest.sln
+          output-path: verify_files.VsTest.old.json
           # Specify patterns
           include: |
-            Examples/**
+            Example.VsTest/**
           # exclude: your-own-exclude/
-          unittest-result: ${{runner.temp}}/VerifierUnitTest/*.csv
-          problems: ${{runner.temp}}/problems.json
+          unittest-result: ${{runner.temp}}/Unittest.VsTest/*.csv
+          problems: ${{runner.temp}}/problems.VsTest.json
+      - name: cs-resolve-vstest-new-style
+        uses: competitive-verifier/actions/cs-resolve@v2
+        with:
+          solution: Example.VsTest/Example.VsTest.slnx
+          output-path: verify_files.VsTest.json
+          # Specify patterns
+          include: |
+            Example.VsTest/**
+          # exclude: your-own-exclude/
+          unittest-result: ${{runner.temp}}/Unittest.VsTest/*.csv
+          problems: ${{runner.temp}}/problems.VsTest.json
 
       - name: diff verify_files.json
         id: diff-json
         uses: josephburnett/jd@v2.5.0
         with:
-          args: -mset verify_files-new.json verify_files.json
+          args: -mset verify_files.VsTest.json verify_files.VsTest.old.json
       - name: Check verify_files.json
         run: |
           echo '${{ steps.diff-json.outputs.output }}'
           if [ "${{ steps.diff-json.outputs.exit_code }}" != "0" ]; then exit 1; fi
+
+      - name: Merge verify-files
+        uses: competitive-verifier/actions/merge-verify-files@v2
+        with:
+          verify-files: verify_files.VsTest.json verify_files.Mtp.json
+          output-path: verify_files.json
+
       - name: Upload verify_files.json
         uses: competitive-verifier/actions/upload-verify-artifact@v2
         with:
@@ -113,14 +131,7 @@ jobs:
 
   verify:
     runs-on: ubuntu-latest
-    needs: [setup]
-    env:
-      SPLIT_SIZE: 1
-    strategy:
-      matrix:
-        # prettier-ignore
-        index:
-          ["0"]
+    needs: [ setup ]
     steps:
       - uses: actions/checkout@v6
 
@@ -147,17 +158,14 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nuget-
       - name: Build
-        run: dotnet build ${{ env.WORKFLOW_BUILD_SLN_OLD_STYLE }} -c Release
+        run: |
+          dotnet build Example.VsTest/Example.VsTest.slnx -c Release
+          dotnet build Example.Mtp/Example.Mtp.slnx -c Release
 
       - name: Verify
         uses: competitive-verifier/actions/verify@v2
         with:
           destination: ${{runner.temp}}/result.json
-          split-size: ${{ env.SPLIT_SIZE }}
-          split-index: ${{ matrix.index }}
-        # specify tokens
-        # env:
-        #   YUKICODER_TOKEN: ${{secrets.YUKICODER_TOKEN}}
 
       - name: Upload result artifact
         uses: actions/upload-artifact@v7
@@ -168,7 +176,7 @@ jobs:
 
   docs-and-check:
     runs-on: ubuntu-latest
-    needs: [verify]
+    needs: [ verify ]
     steps:
       - uses: actions/checkout@v6
 
@@ -201,7 +209,8 @@ jobs:
       - name: Docs
         uses: competitive-verifier/actions/docs@v2
         with:
-          verify-result: ${{ steps.all-artifacts.outputs.artifacts-root }}/Result-*/result.json
+          verify-result: ${{ steps.all-artifacts.outputs.artifacts-root
+            }}/Result-*/result.json
           destination: _jekyll
           write-summary: true
 
@@ -218,7 +227,8 @@ jobs:
       - name: Check
         uses: competitive-verifier/actions/check@v2
         with:
-          verify-result: ${{ steps.all-artifacts.outputs.artifacts-root }}/Result-*/result.json
+          verify-result: ${{ steps.all-artifacts.outputs.artifacts-root
+            }}/Result-*/result.json
   deploy:
     if: (success() || failure()) && github.ref == 'refs/heads/main'
     needs: docs-and-check
