@@ -1,7 +1,7 @@
-﻿using ClassLibrary;
+﻿using VsTest.ClassLibrary;
 using System;
 
-namespace VerifyApp;
+namespace VsTest.VerifyApp;
 
 internal class CircleAizu : CompetitiveVerifier.ProblemSolver
 {

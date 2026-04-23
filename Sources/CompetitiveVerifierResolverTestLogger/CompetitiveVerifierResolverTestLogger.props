@@ -1,0 +1,9 @@
+﻿<Project>
+  <ItemGroup>
+    <!-- Auto-register the MTP extension in consuming projects -->
+    <TestingPlatformBuilderHook Include="8FD75E50-ECC4-49AF-BC30-0C0F45F6F77B" Visible="false">
+      <DisplayName>CompetitiveVerifierResolverTestLogger</DisplayName>
+      <TypeFullName>CompetitiveVerifierResolverTestLogger.Mtp.MtpHook</TypeFullName>
+    </TestingPlatformBuilderHook>
+  </ItemGroup>
+</Project>

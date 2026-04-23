@@ -3,15 +3,8 @@ using System.IO;
 
 namespace CompetitiveVerifierResolverTestLogger;
 
-internal class TeeStream : IDisposable
+internal class TeeStream(StreamWriter? sw) : IDisposable
 {
-    private readonly StreamWriter? sw;
-
-    public TeeStream(StreamWriter? sw)
-    {
-        this.sw = sw;
-    }
-
     public void WriteLine(string line)
     {
         Console.WriteLine(line);

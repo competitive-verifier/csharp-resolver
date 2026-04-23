@@ -27,6 +27,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\ClassLibrary.VsTest\ClassLibrary.VsTest.csproj" />
     <ProjectReference Include="..\..\Sources\CompetitiveVerifierResolverTestLogger\CompetitiveVerifierResolverTestLogger.csproj" />
   </ItemGroup>

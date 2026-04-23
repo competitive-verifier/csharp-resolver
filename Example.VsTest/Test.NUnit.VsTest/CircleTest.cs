@@ -1,7 +1,7 @@
-using ClassLibrary;
+using VsTest.ClassLibrary;
 using Assert = NUnit.Framework.Assert;
 
-namespace Local.NUnit;
+namespace VsTest.Local.NUnit;
 
 public class CircleTest
 {

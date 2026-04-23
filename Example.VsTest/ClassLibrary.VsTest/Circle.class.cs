@@ -1,4 +1,4 @@
-﻿namespace ClassLibrary;
+﻿namespace VsTest.ClassLibrary;
 
 public readonly struct Circle
 {

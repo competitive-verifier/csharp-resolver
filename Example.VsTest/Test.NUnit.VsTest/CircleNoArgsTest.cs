@@ -1,8 +1,8 @@
 using System.Runtime.CompilerServices;
-using ClassLibrary;
+using VsTest.ClassLibrary;
 using Assert = NUnit.Framework.Assert;
 
-namespace Local;
+namespace VsTest.Local;
 
 public class CircleNoArgsTest
 {
