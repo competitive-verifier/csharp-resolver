@@ -8,6 +8,10 @@ on:
       - main
   workflow_dispatch:
 
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
 env:
   DOTNET_CLI_TELEMETRY_OPTOUT: true
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
