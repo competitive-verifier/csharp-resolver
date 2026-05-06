@@ -2,7 +2,6 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Testing;
-using System.Collections.Immutable;
 
 namespace CompetitiveVerifierProblem.Generator.Test;
 
@@ -29,7 +28,8 @@ public abstract class TestBase
     {
         public Test()
         {
-            ReferenceAssemblies = ReferenceAssemblies.Net.Net80.AddPackages([new PackageIdentity("Newtonsoft.Json", "13.0.2")]);
+            TestState.AdditionalReferences.Add(typeof(CompetitiveVerifier.Core.ProblemSolverBase).Assembly);
+            ReferenceAssemblies = ReferenceAssemblies.Net.Net80.AddPackages([new PackageIdentity("System.Text.Json", "10.0.7")]);
         }
     }
 }

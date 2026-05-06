@@ -81,7 +81,7 @@ public partial class ProblemGenerator : IIncrementalGenerator
     {
         ((string FullName, IEnumerable<string> Names)? Names, IEnumerable<Diagnostic> Diagnostics) GetNames(INamedTypeSymbol s)
         {
-            if (s.IsAbstract) return (null, Array.Empty<Diagnostic>());
+            if (s.IsAbstract) return (null, []);
 
             var fullName = s.ToDisplayString(NameAndContainingTypesAndNamespacesFormat);
 
@@ -119,7 +119,7 @@ public partial class ProblemGenerator : IIncrementalGenerator
                 foreach (var name in names)
                 {
                     if (!namesDic.TryGetValue(name, out var lst))
-                        namesDic[name] = lst = new List<string>();
+                        namesDic[name] = lst = [];
                     lst.Add(fullName);
                 }
 

@@ -10,6 +10,7 @@
   <ItemGroup>
     <InternalsVisibleTo Include="CompetitiveVerifierProblem.Generator.Test" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <ProjectReference Include="..\..\Sources\CompetitiveVerifierProblem\CompetitiveVerifierProblem.csproj" />
     <ProjectReference Include="..\..\Sources\CompetitiveVerifierProblem.Generator\CompetitiveVerifierProblem.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" />
   </ItemGroup>
 
