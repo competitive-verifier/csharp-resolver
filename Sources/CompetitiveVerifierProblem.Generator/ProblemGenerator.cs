@@ -7,7 +7,9 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
 using System.Text;
+using System.Threading;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace CompetitiveVerifierProblem;
@@ -48,25 +50,21 @@ public partial class ProblemGenerator : IIncrementalGenerator
                     return context.SemanticModel.GetDeclaredSymbol(syntax, token);
                 }
             )
-            .Collect()
             .Combine(baseSolver)
-            .Select((tup, token) =>
-            {
-                token.ThrowIfCancellationRequested();
-                var (decs, baseSolver) = tup;
-                var builder = ImmutableArray.CreateBuilder<INamedTypeSymbol>();
-                foreach (var symbol in decs)
-                {
-                    if (symbol is null) continue;
-                    if (GetBaseTypes(symbol).Contains(baseSolver, SymbolEqualityComparer.Default))
-                    {
-                        builder.Add(symbol);
-                    }
-                }
-                return new GenerateParameters(builder.ToImmutable());
-            });
+            .SelectMany(static (tup, token) => SelectSolver(tup.Left, tup.Right, token))
+            .Collect()
+            .Select(static (arr, token) => new GenerateParameters(arr));
 
         context.RegisterImplementationSourceOutput(classessAndDiagnostics, ImplementationSource);
+
+        static ImmutableArray<INamedTypeSymbol> SelectSolver(INamedTypeSymbol? typeDec, INamedTypeSymbol? baseSolver, CancellationToken token)
+        {
+            token.ThrowIfCancellationRequested();
+            if (typeDec?.IsAbstract == false && GetBaseTypes(typeDec).Contains(baseSolver, SymbolEqualityComparer.Default))
+                return ImmutableArray.Create(typeDec);
+
+            return ImmutableArray<INamedTypeSymbol>.Empty;
+        }
 
         static IEnumerable<ITypeSymbol> GetBaseTypes(ITypeSymbol type)
         {
@@ -152,7 +150,7 @@ public partial class ProblemGenerator : IIncrementalGenerator
             else
             {
                 solverSelector
-                    .Append("case ").Append(Literal(name)).Append($":throw new System.ArgumentException(\"")
+                    .Append("case ").Append(Literal(name)).Append($":throw new global::System.ArgumentException(\"")
                     .Append(name).Append(" is ambiguous");
 
                 full.Sort(StringComparer.Ordinal);
@@ -170,28 +168,28 @@ public partial class ProblemGenerator : IIncrementalGenerator
             {
                 static partial void Enumerate()
                 {
-                    var classes = new CompetitiveVerifier.ProblemSolver[]
+                    var classes = new global::CompetitiveVerifier.ProblemSolver[]
                     {
             {{{classesCallToJson}}}
                     };
 
                     bool isFirst = true;
-                    System.Console.Write('{');
+                    global::System.Console.Write('{');
                     foreach(var c in classes)
                     {
                         if (isFirst)
                             isFirst = false;
                         else
-                            System.Console.Write(',');
-                        System.Console.Write('"');
-                        System.Console.Write(c.GetType().FullName);
-                        System.Console.Write('"');
-                        System.Console.Write(':');
-                        System.Console.Write('[');
-                        System.Console.Write(c.ToJson());
-                        System.Console.Write(']');
+                            global::System.Console.Write(',');
+                        global::System.Console.Write('"');
+                        global::System.Console.Write(c.GetType().FullName);
+                        global::System.Console.Write('"');
+                        global::System.Console.Write(':');
+                        global::System.Console.Write('[');
+                        global::System.Console.Write(c.ToJson());
+                        global::System.Console.Write(']');
                     }
-                    System.Console.WriteLine('}');
+                    global::System.Console.WriteLine('}');
                 }
 
                 static partial void Run(string className)
@@ -199,12 +197,12 @@ public partial class ProblemGenerator : IIncrementalGenerator
                     GetSolver(className).Solve();
                 }
             
-                static CompetitiveVerifier.ProblemSolver GetSolver(string className)
+                static global::CompetitiveVerifier.ProblemSolver GetSolver(string className)
                 {
                     switch(className)
                     {
             {{{solverSelector}}}
-                        default: throw new System.ArgumentException($"{className} is not found.", nameof(className));
+                        default: throw new global::System.ArgumentException($"{className} is not found.", nameof(className));
                     }
                 }
             }

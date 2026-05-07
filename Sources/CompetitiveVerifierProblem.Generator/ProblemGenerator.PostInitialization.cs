@@ -27,35 +27,31 @@ namespace CompetitiveVerifier
 {
     internal abstract class ProblemSolver : global::CompetitiveVerifier.Core.ProblemSolverBase
     {
-        private static bool _isNative = false;
-        private static string _cache_command = null;
+        private static global::CompetitiveVerifier.Core.RuntimeInfo _cache_runtimeinfo = null;
     
 #if NET6_0_OR_GREATER
         [global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("SingleFile", "IL3000", Justification = "Working as expected")]
 #endif
-        protected override global::CompetitiveVerifier.Core.ProblemSolverBase.RuntimeInfo GetRuntimeInfo()
+        protected override global::CompetitiveVerifier.Core.RuntimeInfo GetRuntimeInfo()
         {
-            if (_cache_command == null)
-            {
-                var dllLocation = global::System.Reflection.Assembly.GetEntryAssembly().Location;
-                _cache_command = $"dotnet {dllLocation}";
-                if (string.IsNullOrEmpty(dllLocation))
-                {
+            return ResolveRuntimeInfo();
+        }
 #if NET6_0_OR_GREATER
-                    _cache_command = global::System.Environment.ProcessPath;
-                    if(!global::System.Runtime.CompilerServices.RuntimeFeature.IsDynamicCodeSupported
-                     && _cache_command != null)
-                    {
-                        _isNative = true;
-                    }
-                    else
+        [global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("SingleFile", "IL3000", Justification = "Working as expected")]
 #endif
-                    {
-                        throw new global::System.InvalidOperationException("Cannot determine the location of the executing assembly.");
-                    }
-                }
+        internal static global::CompetitiveVerifier.Core.RuntimeInfo ResolveRuntimeInfo()
+        {
+            if (_cache_runtimeinfo == null)
+            {
+                _cache_runtimeinfo = new global::CompetitiveVerifier.Core.RuntimeInfo(global::System.Reflection.Assembly.GetEntryAssembly(), 
+#if NET6_0_OR_GREATER
+                    global::System.Environment.ProcessPath
+#else
+                    null
+#endif
+                );
             }
-            return new global::CompetitiveVerifier.Core.ProblemSolverBase.RuntimeInfo(_cache_command, _isNative);
+            return _cache_runtimeinfo;
         }
     }
 }
@@ -73,7 +69,13 @@ internal partial class Program
             var a = args[0];
             if (a == "-h" || a == "--help")
             {
-                global::System.Console.WriteLine(global::System.Reflection.Assembly.GetExecutingAssembly().GetName().Name);
+                var commandName = global::System.Reflection.Assembly.GetExecutingAssembly()?.GetName()?.Name;
+#if NET6_0_OR_GREATER
+                var processPath = global::System.Environment.ProcessPath;
+                if (commandName == null && processPath != null)
+                    commandName = global::System.IO.Path.GetFileNameWithoutExtension(processPath);
+#endif
+                global::System.Console.WriteLine(commandName);
                 global::System.Console.WriteLine();
                 global::System.Console.WriteLine(@"Options:
                         -i, --interactive   Run interactive mode.

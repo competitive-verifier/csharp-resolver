@@ -13,7 +13,7 @@
   </Folder>
   <Folder Name="/Tests/">
     <Project Path="Tests/CompetitiveVerifierCsResolver.Test/CompetitiveVerifierCsResolver.Test.csproj" />
-    <Project Path="Tests/CompetitiveVerifierProblem.Generator.Generated/CompetitiveVerifierProblem.Generator.Generated.csproj" />
+    <Project Path="Tests/CompetitiveVerifierProblem.Generator.GeneratedTest/CompetitiveVerifierProblem.Generator.GeneratedTest.csproj" />
     <Project Path="Tests/CompetitiveVerifierProblem.Generator.Test/CompetitiveVerifierProblem.Generator.Test.csproj" />
   </Folder>
   <Folder Name="/Example.VsTest/">
