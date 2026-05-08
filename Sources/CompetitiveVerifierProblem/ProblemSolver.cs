@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -69,6 +70,8 @@ namespace CompetitiveVerifier.Core
         public string? NativeCommand { get; } = nativeCommand;
 
         public bool IsNative => NativeCommand == Command;
+
+        [UnconditionalSuppressMessage("SingleFile", "IL3000", Justification = "This determine whether it is single-file publishing .")]
         public string Command => (EntryAssembly, NativeCommand) switch
         {
             ({ Location: { Length: > 0 } loc }, _) => $"dotnet {loc}",
