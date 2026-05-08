@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <VersionPrefix>3.0.0</VersionPrefix>
-    <VersionSuffix>beta1</VersionSuffix>
-    <AssemblyVersion>$(VersionPrefix).1</AssemblyVersion>
+    <VersionSuffix>beta2</VersionSuffix>
+    <AssemblyVersion>$(VersionPrefix).2</AssemblyVersion>
     <Authors>kzrnm</Authors>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <Company>competitive-verifier</Company>
