@@ -2,7 +2,6 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Testing;
-using System.Collections.Immutable;
 
 namespace CompetitiveVerifierProblem.Generator.Test;
 
@@ -25,11 +24,12 @@ public abstract class TestBase
         public override string Language => LanguageNames.CSharp;
         protected override IEnumerable<Type> GetSourceGenerators() => [typeof(TIncrementalGenerator)];
     }
-    public class Test : CSharpIncrementalGeneratorTest<ProblemGenerator>
+    public class GeneratorTest : CSharpIncrementalGeneratorTest<ProblemGenerator>
     {
-        public Test()
+        public GeneratorTest()
         {
-            ReferenceAssemblies = ReferenceAssemblies.Net.Net80.AddPackages([new PackageIdentity("Newtonsoft.Json", "13.0.2")]);
+            TestState.AdditionalReferences.Add(typeof(CompetitiveVerifier.Core.ProblemSolverBase).Assembly);
+            ReferenceAssemblies = ReferenceAssemblies.Net.Net80.AddPackages([new PackageIdentity("System.Text.Json", "10.0.7")]);
         }
     }
 }

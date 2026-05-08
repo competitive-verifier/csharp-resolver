@@ -4,7 +4,6 @@ using CompetitiveVerifierCsResolver.Verifier;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Moq;
-using System.CommandLine;
 
 namespace CompetitiveVerifierCsResolver;
 
@@ -68,26 +67,26 @@ public class CsResolverTest
             .WithProjectCompilationOptions(project2Id, new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
     }
 
-    [Fact]
-    public async Task Empty()
+    [Test]
+    public async Task Empty(CancellationToken cancellationToken)
     {
-        Assert.Equal("P1/a.cs", pathResolver.Object.RelativePath("/foo/bar/P1/a.cs"));
+        await Assert.That(pathResolver.Object.RelativePath("/foo/bar/P1/a.cs")).IsEqualTo("P1/a.cs");
 
         var solution = CreateSolution();
         var verifications = await new CsResolver(stdout.Object, stderr.Object).ResolveImplAsync(solution, pathResolver.Object
             , new Dictionary<string, UnitTestResult>()
             , new Dictionary<string, ProblemVerification[]>()
-            , TestContext.Current.CancellationToken);
+            , cancellationToken);
         var expected = """
             {"files":{"P1/P.cs":{"dependencies":["P1/R.cs"],"document_attributes":{},"verification":[]},"P1/R.cs":{"dependencies":[],"document_attributes":{"document_title":"RN"},"verification":[]},"P2/Solve.cs":{"dependencies":["P1/P.cs"],"document_attributes":{"links":["http://example.com/comment"]},"verification":[]}}}
             """;
-        Assert.Equivalent(expected, verifications.ToJson());
+        await Assert.That(verifications.ToJson()).IsEquivalentTo(expected);
     }
 
-    [Fact]
-    public async Task TestResult()
+    [Test]
+    public async Task TestResult(CancellationToken cancellationToken)
     {
-        Assert.Equal("P1/a.cs", pathResolver.Object.RelativePath("/foo/bar/P1/a.cs"));
+        await Assert.That(pathResolver.Object.RelativePath("/foo/bar/P1/a.cs")).IsEqualTo("P1/a.cs");
 
         var solution = CreateSolution();
         var verifications = await new CsResolver(stdout.Object, stderr.Object).ResolveImplAsync(
@@ -100,17 +99,17 @@ public class CsResolverTest
             new Dictionary<string, ProblemVerification[]>
             {
             }
-            , TestContext.Current.CancellationToken);
+            , cancellationToken);
         var expected = """
             {"files":{"P1/P.cs":{"dependencies":["P1/R.cs"],"document_attributes":{},"verification":[]},"P1/R.cs":{"dependencies":[],"document_attributes":{"document_title":"RN"},"verification":[]},"P2/Solve.cs":{"dependencies":["P1/P.cs"],"document_attributes":{"links":["http://example.com/comment"]},"verification":[{"type":"const","status":"success"},{"type":"const","status":"success"},{"type":"const","status":"success"},{"type":"const","status":"skipped"},{"type":"const","status":"skipped"},{"type":"const","status":"failure"}]}}}
             """;
-        Assert.Equivalent(expected, verifications.ToJson());
+        await Assert.That(verifications.ToJson()).IsEquivalentTo(expected);
     }
 
-    [Fact]
-    public async Task Problem()
+    [Test]
+    public async Task Problem(CancellationToken cancellationToken)
     {
-        Assert.Equal("P1/a.cs", pathResolver.Object.RelativePath("/foo/bar/P1/a.cs"));
+        await Assert.That(pathResolver.Object.RelativePath("/foo/bar/P1/a.cs")).IsEqualTo("P1/a.cs");
 
         var solution = CreateSolution();
         var verifications = await new CsResolver(stdout.Object, stderr.Object).ResolveImplAsync(
@@ -130,10 +129,10 @@ public class CsResolverTest
                     }
                 },
             }
-            , TestContext.Current.CancellationToken);
+            , cancellationToken);
         var expected = """
             {"files":{"P1/P.cs":{"dependencies":["P1/R.cs"],"document_attributes":{},"verification":[]},"P1/R.cs":{"dependencies":[],"document_attributes":{"document_title":"RN"},"verification":[]},"P2/Solve.cs":{"dependencies":["P1/P.cs"],"document_attributes":{"links":["http://example.com/comment"]},"verification":[{"type":"problem","problem":"http://example.com/solve","command":"dontet sol"},{"type":"problem","name":"C#(sol-err)","problem":"http://example.com/solve","command":"dontet sol err","error":1E-08}]}}}
             """;
-        Assert.Equivalent(expected, verifications.ToJson());
+        await Assert.That(verifications.ToJson()).IsEquivalentTo(expected);
     }
 }

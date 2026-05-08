@@ -9,6 +9,7 @@ env:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   DOTNET_NOLOGO: true
   NUGET_XMLDOC_MODE: skip
+  
 
 jobs:
   format:
@@ -20,9 +21,27 @@ jobs:
         10.0.x
 
   test:
-    uses: kzrnm/dotnet-actions/.github/workflows/unittest.yml@v2
-    with:
-      target: csharp-resolver.slnx
-      dotnet-version: |
-        8.0.x
-        10.0.x
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: |
+            8.0.x
+            10.0.x
+
+      - uses: actions/cache@v5
+        with:
+          path: '~/.nuget/packages'
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', '**/Directory.Build.props') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+      - name: Test
+        run: dotnet test --solution csharp-resolver.slnx
+
+      - name: Publish Aot
+        run: dotnet publish ./Tests/CompetitiveVerifierProblem.Generator.GeneratedTest/CompetitiveVerifierProblem.Generator.GeneratedTest.csproj -c Release --output publish -p:RunAotTest=true
+
+      - name: Test Aot
+        run: publish/CompetitiveVerifierProblem.Generator.GeneratedTest

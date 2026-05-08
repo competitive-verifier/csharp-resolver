@@ -3,6 +3,10 @@
     "Problem": {
       "commandName": "DebugRoslynComponent",
       "targetProject": "..\\..\\Example.VsTest\\VerifyApp\\VerifyApp.csproj"
+    },
+    "Test": {
+      "commandName": "DebugRoslynComponent",
+      "targetProject": "..\\..\\Tests\\CompetitiveVerifierProblem.Generator.Generated\\CompetitiveVerifierProblem.Generator.Generated.csproj"
     }
   }
 }

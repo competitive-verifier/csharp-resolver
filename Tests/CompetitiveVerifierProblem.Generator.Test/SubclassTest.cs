@@ -1,4 +1,5 @@
 using Microsoft.CodeAnalysis;
+using System.Threading.Tasks;
 
 namespace CompetitiveVerifierProblem.Generator.Test;
 
@@ -21,7 +22,7 @@ internal class HelloWorldAoj : AbstractSolver
     public override string Url => "https://onlinejudge.u-aizu.ac.jp/courses/lesson/2/ITP1/1/ITP1_1_A";
     public override void Solve()
     {
-        System.Console.WriteLine("Hello World");
+        global::System.Console.WriteLine("Hello World");
     }
 }
 """
@@ -35,7 +36,7 @@ internal class HelloWorldAoj2 : AbstractSolver3
     public override string Url => "https://onlinejudge.u-aizu.ac.jp/courses/lesson/2/ITP1/1/ITP1_1_A";
     public override void Solve()
     {
-        System.Console.WriteLine("Hello World");
+        global::System.Console.WriteLine("Hello World");
     }
 }
 }
@@ -53,7 +54,7 @@ internal class HelloWorldAoj2 : AbstractSolver3
                         {
                             static partial void Enumerate()
                             {
-                                var classes = new CompetitiveVerifier.ProblemSolver[]
+                                var classes = new global::CompetitiveVerifier.ProblemSolver[]
                                 {
                         new HelloWorldAoj(),
                         new Space.HelloWorldAoj2(),
@@ -61,22 +62,22 @@ internal class HelloWorldAoj2 : AbstractSolver3
                                 };
                         
                                 bool isFirst = true;
-                                System.Console.Write('{');
+                                global::System.Console.Write('{');
                                 foreach(var c in classes)
                                 {
                                     if (isFirst)
                                         isFirst = false;
                                     else
-                                        System.Console.Write(',');
-                                    System.Console.Write('"');
-                                    System.Console.Write(c.GetType().FullName);
-                                    System.Console.Write('"');
-                                    System.Console.Write(':');
-                                    System.Console.Write('[');
-                                    System.Console.Write(c.ToJson());
-                                    System.Console.Write(']');
+                                        global::System.Console.Write(',');
+                                    global::System.Console.Write('"');
+                                    global::System.Console.Write(c.GetType().FullName);
+                                    global::System.Console.Write('"');
+                                    global::System.Console.Write(':');
+                                    global::System.Console.Write('[');
+                                    global::System.Console.Write(c.ToJson());
+                                    global::System.Console.Write(']');
                                 }
-                                System.Console.WriteLine('}');
+                                global::System.Console.WriteLine('}');
                             }
 
                             static partial void Run(string className)
@@ -84,7 +85,7 @@ internal class HelloWorldAoj2 : AbstractSolver3
                                 GetSolver(className).Solve();
                             }
 
-                            static CompetitiveVerifier.ProblemSolver GetSolver(string className)
+                            static global::CompetitiveVerifier.ProblemSolver GetSolver(string className)
                             {
                                 switch(className)
                                 {
@@ -92,7 +93,7 @@ internal class HelloWorldAoj2 : AbstractSolver3
                         case "Space.HelloWorldAoj2":return new Space.HelloWorldAoj2();
                         case "HelloWorldAoj2":return new Space.HelloWorldAoj2();
 
-                                    default: throw new System.ArgumentException($"{className} is not found.", nameof(className));
+                                    default: throw new global::System.ArgumentException($"{className} is not found.", nameof(className));
                                 }
                             }
                         }
@@ -100,10 +101,10 @@ internal class HelloWorldAoj2 : AbstractSolver3
         ),
     ];
 
-    [Fact]
-    public async Task Default()
+    [Test]
+    public async Task Default(CancellationToken cancellationToken)
     {
-        var test = new Test
+        var test = new GeneratorTest
         {
             TestState =
                 {
@@ -116,6 +117,6 @@ internal class HelloWorldAoj2 : AbstractSolver3
         foreach (var tup in Sources) test.TestState.Sources.Add(tup);
         foreach (var tup in GeneratedSources) test.TestState.GeneratedSources.Add(tup);
 
-        await test.RunAsync(TestContext.Current.CancellationToken);
+        await test.RunAsync(cancellationToken);
     }
 }
