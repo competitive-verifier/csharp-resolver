@@ -1,33 +1,22 @@
-using Mtp.ClassLibrary;
 using Assert = Xunit.Assert;
 
 namespace Mtp.Local.XUnit;
 
-public class CircleTest
+public class MultiTests
 {
-    public static TheoryData<double, double> AreaData = new()
-    {
-        { 5, 5*5*Math.PI },
-        { 2, 2*2*Math.PI },
-    };
+    public static TheoryData<int> Numbers => new(Enumerable.Range(0, 4));
 
     [Theory]
-    [MemberData(nameof(AreaData))]
-    public void Area(double r, double expected)
+    [MemberData(nameof(Numbers), DisableDiscoveryEnumeration = true)]
+    public void Defer(int number)
     {
-        Assert.True(Math.Abs(new Circle(r).Area - expected) < 1e-5);
+        Assert.Equal(0, number % 2);
     }
 
-    public static TheoryData<double, double> CircumferenceData = new()
-    {
-        { 5, 2*5*Math.PI },
-        { 2, 2*2*Math.PI },
-    };
-
     [Theory]
-    [MemberData(nameof(CircumferenceData))]
-    public void Circumference(double r, double expected)
+    [MemberData(nameof(Numbers))]
+    public void Normal(int number)
     {
-        Assert.True(Math.Abs(new Circle(r).Circumference - expected) < 1e-5);
+        Assert.Equal(0, number % 2);
     }
 }
