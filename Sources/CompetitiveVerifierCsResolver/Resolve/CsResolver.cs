@@ -113,6 +113,12 @@ public partial class CsResolver(TextWriter stdout, TextWriter stderr)
                     WriteWarning($"{relative}: competitive-verifier-cs-resolver doesn't support UNITTEST attribute. Use --unittest option.");
                 }
 
+                if (attrBuilder.GetValueOrDefault("LOCALCASE") is string)
+                {
+                    WriteWarning($"{relative}: competitive-verifier-cs-resolver doesn't support LOCALCASE attribute.");
+                }
+
+
                 var urlsFinder = new UrlFinder(cancellationToken);
                 urlsFinder.Visit(root);
                 if (!urlsFinder.Urls.IsEmpty)
